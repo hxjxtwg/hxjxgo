@@ -1,139 +1,179 @@
 :root {
     --bg-color: #121212;
-    --card-color: #1e1e1e; /* 这是一个备用颜色 */
-    --text-color: #e0e0e0;
+    --surface-color: #1e1e1e;
     --primary-color: #bb86fc;
+    --text-color: #e0e0e0;
+    --text-secondary-color: #a0a0a0;
     --border-color: #333;
+    --card-text-color: #ffffff;
+}
+
+body.light-mode {
+    --bg-color: #f0f2f5;
+    --surface-color: #ffffff;
+    --primary-color: #6200ee;
+    --text-color: #000000;
+    --text-secondary-color: #5f6368;
+    --border-color: #e0e0e0;
+    --card-text-color: #ffffff;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
     background-color: var(--bg-color);
     color: var(--text-color);
-    margin: 0;
-    padding: 20px;
-    line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
     max-width: 1200px;
-    margin: auto;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 header {
-    text-align: center;
     margin-bottom: 2rem;
 }
 
-header h1 {
-    color: var(--primary-color);
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
     font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-}
-
-header p {
-    font-size: 1.1rem;
-    color: #a0a0a0;
-}
-
-/* 主导航栏样式 */
-.main-nav {
-    display: flex;
-    justify-content: center;
-    background-color: var(--card-color);
-    border-radius: 8px;
-    padding: 0.5rem 0;
-    margin-bottom: 2rem;
-    border: 1px solid var(--border-color);
-}
-
-.main-nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 1.5rem;
-}
-
-.main-nav a {
-    color: var(--text-color);
-    text-decoration: none;
-    font-size: 1rem;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.main-nav a:hover {
-    background-color: var(--primary-color);
-    color: var(--bg-color);
-}
-
-
-.link-group {
-    margin-bottom: 2.5rem;
-}
-
-.link-group h2 {
-    font-size: 1.5rem;
     color: var(--primary-color);
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
+    margin: 0;
+}
+
+.main-nav {
+    margin-top: 1rem;
     border-bottom: 1px solid var(--border-color);
 }
 
+.main-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.main-nav li a {
+    display: block;
+    padding: 0.8rem 1rem;
+    text-decoration: none;
+    color: var(--text-secondary-color);
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.main-nav li a:hover {
+    color: var(--primary-color);
+}
+
+.link-group {
+    margin-bottom: 2rem;
+}
+
+.card-group-title {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
 .link-group ul {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 15px;
 }
 
 .link-group a {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    height: 60px;
-    padding: 10px 15px;
+    justify-content: center;
     text-decoration: none;
-    color: #ffffff; 
+    color: var(--card-text-color);
     border-radius: 8px;
-    border: 1px solid transparent;
-    transition: transform 0.2s ease-out, border-color 0.2s;
-    font-weight: bold;
-    text-align: left;
-    overflow: hidden;
-    gap: 12px; /* 图标和文字的间距 */
+    padding: 15px;
+    height: 100px;
+    box-sizing: border-box;
+    text-align: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .link-group a:hover {
     transform: translateY(-5px);
-    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
 }
 
-.link-group a .favicon {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-    flex-shrink: 0; /* 防止图标被压缩 */
-    border-radius: 50%; /* 新增：将图标容器变为圆形，以柔化方形背景 */
+.card-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 10px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: rgba(255,255,255,0.2);
 }
 
-.link-group a span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.card-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    word-break: break-word;
 }
 
-
-.loading, .error {
+.placeholder {
     text-align: center;
     font-size: 1.2rem;
-    color: #a0a0a0;
-    padding: 2rem;
+    color: var(--text-secondary-color);
+    padding: 4rem;
 }
-.error {
-    color: #cf6679;
+
+.placeholder.error {
+    color: var(--error-color);
+}
+
+.theme-switcher {
+    display: flex;
+    align-items: center;
+}
+.theme-switcher label {
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    background-color: #555;
+    border-radius: 13px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.theme-switcher .slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 22px;
+    height: 22px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+.theme-switcher input {
+    display: none;
+}
+.theme-switcher input:checked + label {
+    background-color: var(--primary-color);
+}
+.theme-switcher input:checked + label .slider {
+    transform: translateX(24px);
 }
 
