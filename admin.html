@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航链接管理</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-color: #1e1e1e;
+            --text-color: #e0e0e0;
+            --primary-color: #bb86fc;
+            --border-color: #333;
+            --error-color: #cf6679;
+            --success-color: #03dac6;
+        }
+        body {
+            font-family: sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+        }
+        textarea {
+            width: 100%;
+            height: 50vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #a063f0;
+        }
+        #status {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .success { color: var(--success-color); }
+        .error { color: var(--error-color); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>导航链接管理</h1>
+        <p>在此处编辑 JSON 数据，然后保存。请确保格式正确。</p>
+        <textarea id="jsonData" placeholder="正在加载数据..."></textarea>
+        <button id="saveButton">保存更改</button>
+        <p id="status"></p>
+    </div>
+
+    <script>
+        const jsonDataEl = document.getElementById('jsonData');
+        const saveButton = document.getElementById('saveButton');
+        const statusEl = document.getElementById('status');
+        let adminPassword = '';
+
+        // API 端点
+        const API_ENDPOINT = '/api/admin';
+
+        // 页面加载时请求密码并获取数据
+        window.onload = () => {
+            adminPassword = prompt('请输入管理密码:');
+            if (adminPassword) {
+                fetchData();
+            } else {
+                statusEl.textContent = '未输入密码，无法操作。';
+                statusEl.className = 'error';
+            }
+        };
+
+        // 获取数据
+        async function fetchData() {
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    headers: { 'Authorization': adminPassword }
+                });
+                if (response.status === 401) {
+                    throw new Error('密码错误或未设置。');
+                }
+                if (!response.ok) {
+                    throw new Error(`服务器错误: ${response.statusText}`);
+                }
+                const data = await response.json();
+                jsonDataEl.value = JSON.stringify(data, null, 2); // 格式化显示
+                statusEl.textContent = '数据加载成功。';
+                statusEl.className = 'success';
+            } catch (error) {
+                statusEl.textContent = `加载失败: ${error.message}`;
+                statusEl.className = 'error';
+                jsonDataEl.value = '加载数据失败。';
+            }
+        }
+
+        // 保存数据
+        saveButton.addEventListener('click', async () => {
+            let dataToSave;
+            try {
+                // 验证 JSON 格式
+                dataToSave = JSON.parse(jsonDataEl.value);
+            } catch (error) {
+                statusEl.textContent = '保存失败: JSON 格式无效！';
+                statusEl.className = 'error';
+                return;
+            }
+
+            statusEl.textContent = '正在保存...';
+            statusEl.className = '';
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': adminPassword
+                    },
+                    body: JSON.stringify(dataToSave)
+                });
+
+                if (response.status === 401) {
+                    throw new Error('密码错误。');
+                }
+                 if (!response.ok) {
+                    throw new Error(`服务器错误: ${response.statusText}`);
+                }
+                
+                statusEl.textContent = '保存成功！';
+                statusEl.className = 'success';
+            } catch (error) {
+                 statusEl.textContent = `保存失败: ${error.message}`;
+                 statusEl.className = 'error';
+            }
+        });
+    </script>
+</body>
+</html>
