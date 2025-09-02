@@ -49,8 +49,8 @@ header {
 }
 
 .header-logo {
-    width: 56px; /* 调整：增大Logo尺寸 */
-    height: 56px; /* 调整：增大Logo尺寸 */
+    width: 48px; /* 调整：增大Logo尺寸 */
+    height: 48px; /* 调整：增大Logo尺寸 */
     background-image: url('/logo.svg');
     background-size: contain;
     background-position: center;
@@ -58,7 +58,7 @@ header {
 }
 
 h1 {
-    font-size: 1rem; /* 再次减小主标题字体 */
+    font-size: 1.2rem; /* 再次减小主标题字体 */
     color: var(--text-color);
     margin: 0;
 }
@@ -94,7 +94,7 @@ h1 {
 }
 
 .card-group-title {
-    font-size: 0.8rem; /* 再次减小分组标题字体 */
+    font-size: 1rem; /* 再次减小分组标题字体 */
     font-weight: 600;
     color: var(--text-color);
     margin-bottom: 1rem;
@@ -134,8 +134,8 @@ h1 {
 }
 
 .card-icon {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     margin-bottom: 12px;
     border-radius: 50%;
     background-color: rgba(255,255,255,0.2);
@@ -147,7 +147,7 @@ h1 {
 
 .card-name {
     font-weight: 500;
-    font-size: 1.2rem;
+    font-size: 1rem;
     line-height: 1.2;
     word-break: break-word;
 }
