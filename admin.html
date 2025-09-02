@@ -13,40 +13,90 @@
             --border-color: #333;
             --error-color: #cf6679;
             --success-color: #03dac6;
+            --input-bg: #2c2c2c;
         }
         body {
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
             padding: 20px;
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
+        .container { max-width: 800px; margin: auto; }
+        h1 { color: var(--primary-color); text-align: center; }
+        
+        .group-card {
             background-color: var(--card-color);
-            padding: 20px;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            border: 1px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 20px;
         }
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
         }
-        textarea {
-            width: 100%;
-            height: 50vh;
-            background-color: var(--bg-color);
+        .group-header input {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: none;
+            border: none;
+            border-bottom: 2px solid var(--border-color);
             color: var(--text-color);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 10px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            resize: vertical;
+            flex-grow: 1;
         }
-        button {
-            display: block;
+        .group-header input:focus {
+            outline: none;
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .link-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .link-item input {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .link-item input:focus {
+             outline: none;
+             border-color: var(--primary-color);
+        }
+        .link-item input[placeholder="名称"] { flex-basis: 30%; }
+        .link-item input[placeholder="URL"] { flex-grow: 1; }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+        .btn:hover { opacity: 0.8; }
+        .btn-delete { background-color: var(--error-color); color: #000; }
+        .btn-add { background-color: var(--success-color); color: #000; }
+
+        .btn-add-group {
+            width: 100%;
+            padding: 12px;
+            background: none;
+            border: 2px dashed var(--border-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .btn-save {
             width: 100%;
             padding: 15px;
             background-color: var(--primary-color);
@@ -55,17 +105,9 @@
             border-radius: 4px;
             font-size: 1.2rem;
             cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s;
         }
-        button:hover {
-            background-color: #a063f0;
-        }
-        #status {
-            text-align: center;
-            margin-top: 15px;
-            font-weight: bold;
-        }
+
+        #status { text-align: center; margin-top: 15px; font-weight: bold; }
         .success { color: var(--success-color); }
         .error { color: var(--error-color); }
     </style>
@@ -73,22 +115,130 @@
 <body>
     <div class="container">
         <h1>导航链接管理</h1>
-        <p>在此处编辑 JSON 数据，然后保存。请确保格式正确。</p>
-        <textarea id="jsonData" placeholder="正在加载数据..."></textarea>
-        <button id="saveButton">保存更改</button>
+        <div id="groups-container"></div>
+        <button id="add-group-btn" class="btn-add-group">＋ 添加新分组</button>
+        <hr style="border-color: var(--border-color); margin: 20px 0;">
+        <button id="save-btn" class="btn-save">保存所有更改</button>
         <p id="status"></p>
     </div>
 
     <script>
-        const jsonDataEl = document.getElementById('jsonData');
-        const saveButton = document.getElementById('saveButton');
+        const groupsContainer = document.getElementById('groups-container');
+        const addGroupBtn = document.getElementById('add-group-btn');
+        const saveBtn = document.getElementById('save-btn');
         const statusEl = document.getElementById('status');
         let adminPassword = '';
-
-        // API 端点
         const API_ENDPOINT = '/api/admin';
 
-        // 页面加载时请求密码并获取数据
+        // --- 核心渲染函数 ---
+        function render(data) {
+            groupsContainer.innerHTML = ''; // 清空现有内容
+            data.forEach((group, groupIndex) => {
+                const groupCard = document.createElement('div');
+                groupCard.className = 'group-card';
+                groupCard.dataset.groupIdx = groupIndex;
+
+                let linksHtml = group.links.map((link, linkIndex) => `
+                    <div class="link-item" data-link-idx="${linkIndex}">
+                        <input type="text" placeholder="名称" value="${link.name || ''}">
+                        <input type="text" placeholder="URL" value="${link.url || ''}">
+                        <button class="btn btn-delete btn-delete-link">删除</button>
+                    </div>
+                `).join('');
+
+                groupCard.innerHTML = `
+                    <div class="group-header">
+                        <input type="text" placeholder="分组标题" value="${group.title || ''}">
+                        <button class="btn btn-delete btn-delete-group">删除分组</button>
+                    </div>
+                    <div class="links-container">${linksHtml}</div>
+                    <button class="btn btn-add btn-add-link">＋ 添加链接</button>
+                `;
+                groupsContainer.appendChild(groupCard);
+            });
+        }
+        
+        // --- 事件处理 ---
+        groupsContainer.addEventListener('click', (e) => {
+            const target = e.target;
+            const groupCard = target.closest('.group-card');
+            
+            if (target.classList.contains('btn-delete-group')) {
+                if (confirm('确定要删除整个分组吗？')) {
+                    groupCard.remove();
+                }
+            } else if (target.classList.contains('btn-delete-link')) {
+                 if (confirm('确定要删除这个链接吗？')) {
+                    target.closest('.link-item').remove();
+                }
+            } else if (target.classList.contains('btn-add-link')) {
+                const newLink = document.createElement('div');
+                newLink.className = 'link-item';
+                newLink.innerHTML = `
+                    <input type="text" placeholder="名称" value="">
+                    <input type="text" placeholder="URL" value="">
+                    <button class="btn btn-delete btn-delete-link">删除</button>
+                `;
+                groupCard.querySelector('.links-container').appendChild(newLink);
+            }
+        });
+
+        addGroupBtn.addEventListener('click', () => {
+             render([...collectDataFromDOM(), { title: '', links: [{ name: '', url: '' }] }]);
+        });
+        
+        saveBtn.addEventListener('click', saveData);
+
+        // --- 数据交互 ---
+        function collectDataFromDOM() {
+            const groups = [];
+            document.querySelectorAll('.group-card').forEach(groupCard => {
+                const groupTitle = groupCard.querySelector('.group-header input').value;
+                const links = [];
+                groupCard.querySelectorAll('.link-item').forEach(linkItem => {
+                    const inputs = linkItem.querySelectorAll('input');
+                    links.push({ name: inputs[0].value, url: inputs[1].value });
+                });
+                groups.push({ title: groupTitle, links: links });
+            });
+            return groups;
+        }
+
+        async function fetchData() {
+            try {
+                const response = await fetch(API_ENDPOINT, { headers: { 'Authorization': adminPassword } });
+                if (response.status === 401) throw new Error('密码错误或未设置。');
+                if (!response.ok) throw new Error(`服务器错误: ${response.statusText}`);
+                const data = await response.json();
+                render(data);
+                statusEl.textContent = '数据加载成功。';
+                statusEl.className = 'success';
+            } catch (error) {
+                statusEl.textContent = `加载失败: ${error.message}`;
+                statusEl.className = 'error';
+            }
+        }
+
+        async function saveData() {
+            const dataToSave = collectDataFromDOM();
+            statusEl.textContent = '正在保存...';
+            statusEl.className = '';
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': adminPassword },
+                    body: JSON.stringify(dataToSave)
+                });
+                if (response.status === 401) throw new Error('密码错误。');
+                if (!response.ok) throw new Error(`服务器错误: ${response.statusText}`);
+                statusEl.textContent = '保存成功！';
+                statusEl.className = 'success';
+            } catch (error) {
+                statusEl.textContent = `保存失败: ${error.message}`;
+                statusEl.className = 'error';
+            }
+        }
+        
         window.onload = () => {
             adminPassword = prompt('请输入管理密码:');
             if (adminPassword) {
@@ -98,69 +248,7 @@
                 statusEl.className = 'error';
             }
         };
-
-        // 获取数据
-        async function fetchData() {
-            try {
-                const response = await fetch(API_ENDPOINT, {
-                    headers: { 'Authorization': adminPassword }
-                });
-                if (response.status === 401) {
-                    throw new Error('密码错误或未设置。');
-                }
-                if (!response.ok) {
-                    throw new Error(`服务器错误: ${response.statusText}`);
-                }
-                const data = await response.json();
-                jsonDataEl.value = JSON.stringify(data, null, 2); // 格式化显示
-                statusEl.textContent = '数据加载成功。';
-                statusEl.className = 'success';
-            } catch (error) {
-                statusEl.textContent = `加载失败: ${error.message}`;
-                statusEl.className = 'error';
-                jsonDataEl.value = '加载数据失败。';
-            }
-        }
-
-        // 保存数据
-        saveButton.addEventListener('click', async () => {
-            let dataToSave;
-            try {
-                // 验证 JSON 格式
-                dataToSave = JSON.parse(jsonDataEl.value);
-            } catch (error) {
-                statusEl.textContent = '保存失败: JSON 格式无效！';
-                statusEl.className = 'error';
-                return;
-            }
-
-            statusEl.textContent = '正在保存...';
-            statusEl.className = '';
-
-            try {
-                const response = await fetch(API_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': adminPassword
-                    },
-                    body: JSON.stringify(dataToSave)
-                });
-
-                if (response.status === 401) {
-                    throw new Error('密码错误。');
-                }
-                 if (!response.ok) {
-                    throw new Error(`服务器错误: ${response.statusText}`);
-                }
-                
-                statusEl.textContent = '保存成功！';
-                statusEl.className = 'success';
-            } catch (error) {
-                 statusEl.textContent = `保存失败: ${error.message}`;
-                 statusEl.className = 'error';
-            }
-        });
     </script>
 </body>
 </html>
+
