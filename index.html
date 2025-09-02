@@ -12,7 +12,7 @@
         <header>
             <div class="header-content">
                 <div class="logo-title">
-                    <img src="/my-logo.svg" alt="网站Logo" class="header-logo">
+                    <div class="header-logo"></div>
                     <h1>我的导航</h1>
                 </div>
                 <div class="theme-switcher">
@@ -114,7 +114,7 @@
                             const iconUrl = link.icon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
                             
                             linkElement.innerHTML = `
-                                <img src="${iconUrl}" alt="${link.name} icon" class="card-icon" onerror="this.style.display='none'">
+                                <div class="card-icon" style="background-image: url('${iconUrl}')"></div>
                                 <span class="card-name">${link.name}</span>
                             `;
                             
