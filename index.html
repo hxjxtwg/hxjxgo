@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人导航页</title>
+    <title>个人导航</title>
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="40" height="40" x="10" y="10" rx="5" fill="%23bb86fc"/><rect width="40" height="40" x="50" y="10" rx="5" fill="%23e0e0e0"/><rect width="40" height="40" x="10" y="50" rx="5" fill="%23e0e0e0"/><rect width="40" height="40" x="50" y="50" rx="5" fill="%23bb86fc"/></svg>'>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>我的导航</h1>
-            <p>一个简洁、快速的个人导航页面。</p>
-            <!-- 新增的网站导航栏 -->
+            <div class="header-content">
+                <h1>我的导航</h1>
+                <div class="theme-switcher">
+                    <input type="checkbox" id="theme-toggle">
+                    <label for="theme-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
             <nav class="main-nav">
                 <ul>
                     <li><a href="#">首页</a></li>
@@ -22,82 +28,108 @@
                 </ul>
             </nav>
         </header>
-
         <main id="links-container">
-            <div class="loading">正在加载数据...</div>
+            <!-- 链接将由JS动态加载 -->
         </main>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const linksContainer = document.getElementById('links-container');
-            // 定义一个漂亮的颜色数组，用于循环
-            const colors = [
-                "#3498db", "#9b59b6", "#e74c3c", "#f1c40f", 
-                "#2ecc71", "#1abc9c", "#e67e22", "#34495e"
-            ];
-            let colorIndex = 0;
+        const linksContainer = document.getElementById('links-container');
+        const themeToggle = document.getElementById('theme-toggle');
 
+        // --- Theme Switcher Logic ---
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                themeToggle.checked = true;
+            } else {
+                document.body.classList.remove('light-mode');
+                themeToggle.checked = false;
+            }
+        }
+
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
+                localStorage.setItem('theme', 'light');
+                applyTheme('light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+                applyTheme('dark');
+            }
+        });
+
+        // Apply saved theme on page load
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        applyTheme(savedTheme);
+        // --- End of Theme Switcher Logic ---
+
+
+        const defaultColors = [
+            "#bb86fc", "#03dac6", "#cf6679", "#448aff",
+            "#ff9800", "#4caf50", "#f44336", "#00bcd4"
+        ];
+        let colorIndex = 0;
+
+        async function loadLinks() {
             try {
                 const response = await fetch('/api/links');
                 if (!response.ok) {
-                    throw new Error('无法获取链接数据');
+                    throw new Error('网络响应错误');
                 }
                 const linkGroups = await response.json();
 
-                if (linkGroups.length === 0) {
-                     linksContainer.innerHTML = '<div class="loading">暂无数据，请先前往后台添加。</div>';
-                     return;
+                if (!linkGroups || linkGroups.length === 0) {
+                    linksContainer.innerHTML = '<p class="placeholder">暂无数据，请先前往后台添加。</p>';
+                    return;
                 }
 
                 linksContainer.innerHTML = ''; 
 
                 linkGroups.forEach(group => {
-                    const groupElement = document.createElement('section');
-                    groupElement.className = 'link-group';
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'link-group';
 
-                    const titleElement = document.createElement('h2');
-                    titleElement.textContent = group.title;
-                    groupElement.appendChild(titleElement);
+                    const title = document.createElement('h2');
+                    title.className = 'card-group-title';
+                    title.textContent = group.title;
+                    groupDiv.appendChild(title);
 
-                    const listElement = document.createElement('ul');
-                    group.links.forEach(link => {
-                        const listItem = document.createElement('li');
-                        const linkElement = document.createElement('a');
-                        linkElement.href = link.url;
-                        linkElement.target = '_blank';
-                        
-                        // 优先使用自定义颜色，否则从数组循环获取
-                        const bgColor = link.color || colors[colorIndex % colors.length];
-                        linkElement.style.backgroundColor = bgColor;
-                        colorIndex++;
-
-                        // 优先使用自定义图标，否则自动获取
-                        const iconUrl = link.icon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
-                        
-                        const iconElement = document.createElement('img');
-                        iconElement.src = iconUrl;
-                        iconElement.alt = `${link.name} icon`;
-                        iconElement.className = 'favicon';
-                        iconElement.onerror = (e) => { e.target.style.display = 'none'; }; // 图标加载失败则隐藏
-
-                        const nameElement = document.createElement('span');
-                        nameElement.textContent = link.name;
-                        
-                        linkElement.appendChild(iconElement);
-                        linkElement.appendChild(nameElement);
-                        listItem.appendChild(linkElement);
-                        listElement.appendChild(listItem);
-                    });
-                    groupElement.appendChild(listElement);
-                    linksContainer.appendChild(groupElement);
+                    const cardList = document.createElement('ul');
+                    
+                    if(Array.isArray(group.links)) {
+                        group.links.forEach(link => {
+                            const cardItem = document.createElement('li');
+                            const linkElement = document.createElement('a');
+                            linkElement.href = link.url;
+                            linkElement.target = '_blank';
+                            linkElement.rel = 'noopener noreferrer';
+                            
+                            const cardColor = link.color || defaultColors[colorIndex % defaultColors.length];
+                            linkElement.style.backgroundColor = cardColor;
+                            colorIndex++;
+                            
+                            const iconUrl = link.icon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
+                            
+                            linkElement.innerHTML = `
+                                <img src="${iconUrl}" alt="${link.name} icon" class="card-icon" onerror="this.style.display='none'">
+                                <span class="card-name">${link.name}</span>
+                            `;
+                            
+                            cardItem.appendChild(linkElement);
+                            cardList.appendChild(cardItem);
+                        });
+                    }
+                    
+                    groupDiv.appendChild(cardList);
+                    linksContainer.appendChild(groupDiv);
                 });
-
             } catch (error) {
-                linksContainer.innerHTML = `<div class="error">加载失败: ${error.message}</div>`;
-                console.error('Fetch error:', error);
+                console.error('加载链接失败:', error);
+                linksContainer.innerHTML = '<p class="placeholder error">加载数据失败，请检查网络或后台配置。</p>';
             }
-        });
+        }
+
+        loadLinks();
     </script>
 </body>
 </html>
