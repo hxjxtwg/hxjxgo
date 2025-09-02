@@ -3,9 +3,9 @@
 
 export async function onRequest(context) {
   try {
-    // 1. 获取 KV 命名空间绑定。'MY_LINKS_KV' 这个名字
+    // 1. 获取 KV 命名空间绑定。'KV' 这个名字
     //    必须与您在 Cloudflare Pages 后台设置的变量名完全一致。
-    const kv = context.env.MY_LINKS_KV;
+    const kv = context.env.KV;
 
     // 2. 使用 'linksData' 这个键从 KV 中获取链接数据。
     const linksJson = await kv.get("linksData");
