@@ -12,8 +12,22 @@
             --primary-color: #bb86fc;
             --text-color: #e0e0e0;
             --border-color: #333;
+            --input-bg-color: #333;
+            --input-border-color: #444;
+            --link-item-bg: #2a2a2a;
             --error-color: #cf6679;
             --success-color: #03dac6;
+        }
+
+        body.light-mode {
+            --bg-color: #f0f2f5;
+            --surface-color: #ffffff;
+            --primary-color: #6200ee;
+            --text-color: #000000;
+            --border-color: #e0e0e0;
+            --input-bg-color: #f5f5f5;
+            --input-border-color: #ccc;
+            --link-item-bg: #eeeeee;
         }
 
         body {
@@ -23,6 +37,7 @@
             margin: 0;
             padding: 20px;
             line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .container {
@@ -32,6 +47,12 @@
         
         h1, h2 {
             color: var(--primary-color);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         #password-container {
@@ -49,7 +70,7 @@
             border-radius: 8px;
             padding: 10px;
             font-size: 1rem;
-            width: 250px; /* 样式优化：减小宽度 */
+            width: 250px;
             text-align: center;
             margin-bottom: 1rem;
         }
@@ -74,6 +95,7 @@
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
+            transition: background-color 0.3s;
         }
 
         .group-header {
@@ -95,10 +117,10 @@
             padding: 10px;
             border-radius: 6px;
             margin-bottom: 10px;
-            background-color: #2a2a2a;
+            background-color: var(--link-item-bg);
+            transition: background-color 0.3s;
         }
 
-        /* 布局优化：使用Grid布局 */
         .link-inputs {
             flex-grow: 1;
             display: grid;
@@ -106,15 +128,16 @@
             gap: 10px;
         }
 
-        .link-item input {
-            background-color: #333;
-            border: 1px solid #444;
+        .link-item input, .group-header input {
+            background-color: var(--input-bg-color);
+            border: 1px solid var(--input-border-color);
             color: var(--text-color);
             border-radius: 5px;
             padding: 8px;
             font-size: 0.9rem;
             width: 100%;
             box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         button {
@@ -125,7 +148,7 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, background-color 0.3s;
         }
 
         button:hover {
@@ -192,6 +215,40 @@
             visibility: visible;
             opacity: 1;
         }
+        
+        .theme-switcher {
+            display: flex;
+            align-items: center;
+        }
+        .theme-switcher label {
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+            background-color: #555;
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .theme-switcher .slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background-color: #fff;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        .theme-switcher input {
+            display: none;
+        }
+        .theme-switcher input:checked + label {
+            background-color: var(--primary-color);
+        }
+        .theme-switcher input:checked + label .slider {
+            transform: translateX(24px);
+        }
     </style>
 </head>
 <body>
@@ -204,7 +261,15 @@
         </div>
 
         <div id="admin-panel">
-            <h1>后台管理</h1>
+            <div class="admin-header">
+                <h1>后台管理</h1>
+                <div class="theme-switcher">
+                    <input type="checkbox" id="theme-toggle">
+                    <label for="theme-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
             <div id="groups-container"></div>
             <button class="add-btn" id="add-group-btn">添加新分组</button>
         </div>
@@ -223,7 +288,35 @@
         const addGroupBtn = document.getElementById('add-group-btn');
         const saveAllBtn = document.getElementById('save-all-btn');
         const toast = document.getElementById('toast');
+        const themeToggle = document.getElementById('theme-toggle');
         let currentData = [];
+
+        // --- Theme Switcher Logic ---
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                themeToggle.checked = true;
+            } else {
+                document.body.classList.remove('light-mode');
+                themeToggle.checked = false;
+            }
+        }
+
+        themeToggle.addEventListener('change', () => {
+            if (themeToggle.checked) {
+                localStorage.setItem('theme', 'light');
+                applyTheme('light');
+            } else {
+                localStorage.setItem('theme', 'dark');
+                applyTheme('dark');
+            }
+        });
+
+        // Apply saved theme on page load
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        applyTheme(savedTheme);
+        // --- End of Theme Switcher Logic ---
+
 
         function showToast(message, isSuccess = true) {
             toast.textContent = message;
@@ -281,7 +374,7 @@
                     <div class="group-header">
                         <input type="text" class="group-title-input" value="${group.title || ''}" placeholder="分组标题">
                         <button class="delete-btn delete-group-btn" data-group-index="${groupIndex}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 S0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
                         </button>
                     </div>
                     <div class="links-container"></div>
