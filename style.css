@@ -52,15 +52,15 @@ header {
     width: 40px;
     height: 40px;
     /* 更新：使用背景图来显示Logo */
-    background-image: url('/logo.svg');
+    background-image: url('/my-logo.svg');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
 }
 
 h1 {
-    font-size: 2.5rem;
-    color: var(--primary-color);
+    font-size: 2rem;
+    color: var(--text-color);
     margin: 0;
 }
 
@@ -169,32 +169,38 @@ h1 {
     align-items: center;
 }
 .theme-switcher label {
-    display: inline-block;
-    width: 50px;
-    height: 26px;
-    background-color: #555;
-    border-radius: 13px;
-    position: relative;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.theme-switcher .slider {
+.theme-switcher svg {
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 22px;
-    height: 22px;
-    background-color: #fff;
-    border-radius: 50%;
-    transition: transform 0.3s;
+    width: 24px;
+    height: 24px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    stroke: var(--text-color);
+}
+.theme-switcher .sun-icon {
+    opacity: 0;
+    transform: rotate(-90deg);
+}
+.theme-switcher .moon-icon {
+    opacity: 1;
+    transform: rotate(0deg);
 }
 .theme-switcher input {
     display: none;
 }
-.theme-switcher input:checked + label {
-    background-color: var(--primary-color);
+.theme-switcher input:checked + label .sun-icon {
+    opacity: 1;
+    transform: rotate(0deg);
 }
-.theme-switcher input:checked + label .slider {
-    transform: translateX(24px);
+.theme-switcher input:checked + label .moon-icon {
+    opacity: 0;
+    transform: rotate(90deg);
 }
 
