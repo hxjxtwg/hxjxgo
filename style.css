@@ -134,8 +134,12 @@ h1 {
     height: 32px;
     margin-bottom: 10px;
     border-radius: 50%;
-    object-fit: cover;
     background-color: rgba(255,255,255,0.2);
+    /* 新增：用于背景图的样式 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: none; /* 新增：确保初始状态没有背景图 */
 }
 
 .card-name {
