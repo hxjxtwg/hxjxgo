@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的导航页</title>
+    <title>导航</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>我的个人导航</h1>
+            <h1>我的导航</h1>
+            <p>一个简洁、快速的个人导航页面。</p>
         </header>
-
-        <!-- 网站主导航栏 -->
+        
+        <!-- 新增的网站导航栏 -->
         <nav class="main-nav">
             <ul>
                 <li><a href="#">首页</a></li>
@@ -26,66 +24,72 @@
         </nav>
 
         <main id="links-container">
-            <p>正在加载链接...</p>
+            <p class="loading">正在从云端加载链接...</p>
         </main>
-        <footer>
-            <p>一个简洁的导航页</p>
-        </footer>
     </div>
-    
+
     <script>
-        // 使用 async/await 语法来异步获取数据
-        async function loadLinks() {
-            const container = document.getElementById('links-container');
-            if (!container) return;
+        const linksContainer = document.getElementById('links-container');
+        
+        // 为没有指定颜色的卡片提供一个漂亮的备用色板
+        const colorPalette = [
+            '#5E35B1', '#3949AB', '#1E88E5', '#00ACC1', '#00897B',
+            '#43A047', '#F4511E', '#D81B60', '#8E24AA', '#546E7A'
+        ];
+        let colorIndex = 0;
 
-            try {
-                // 从我们创建的 API 接口获取链接数据
-                const response = await fetch('/api/links');
+        // 函数：创建链接分组并填充到页面
+        function createLinkGroups(linkGroups) {
+            linksContainer.innerHTML = ''; // 清空加载提示
+            linkGroups.forEach(group => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'link-group';
 
-                if (!response.ok) {
-                    throw new Error(`获取链接出错: ${response.statusText}`);
-                }
+                const title = document.createElement('h2');
+                title.textContent = group.title;
+                groupDiv.appendChild(title);
 
-                // 将响应的 JSON 数据解析为对象
-                const linkGroups = await response.json();
+                const ul = document.createElement('ul');
+                group.links.forEach(link => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = link.url;
+                    a.target = "_blank";
+                    a.rel = "noopener noreferrer";
+                    a.textContent = link.name;
 
-                // 清空容器里的 "正在加载..." 提示
-                container.innerHTML = '';
-
-                // 渲染页面的逻辑
-                linkGroups.forEach(group => {
-                    const groupSection = document.createElement('section');
-                    groupSection.classList.add('link-group');
-
-                    const groupTitle = document.createElement('h2');
-                    groupTitle.textContent = group.title;
-                    groupSection.appendChild(groupTitle);
-
-                    const linkList = document.createElement('ul');
-                    group.links.forEach(link => {
-                        const listItem = document.createElement('li');
-                        const anchor = document.createElement('a');
-                        anchor.href = link.url;
-                        anchor.textContent = link.name;
-                        anchor.target = '_blank'; // 在新标签页打开
-                        listItem.appendChild(anchor);
-                        linkList.appendChild(listItem);
-                    });
-
-                    groupSection.appendChild(linkList);
-                    container.appendChild(groupSection);
+                    // --- 核心改动：设置背景色 ---
+                    // 如果链接数据中有 color 属性，并且格式正确，则使用它
+                    if (link.color && /^#[0-9A-F]{6}$/i.test(link.color)) {
+                        a.style.backgroundColor = link.color;
+                    } else {
+                        // 否则，从备用色板中循环取色
+                        a.style.backgroundColor = colorPalette[colorIndex % colorPalette.length];
+                        colorIndex++;
+                    }
+                    
+                    li.appendChild(a);
+                    ul.appendChild(li);
                 });
-
-            } catch (error) {
-                // 如果获取数据失败，在页面上显示错误信息
-                console.error(error);
-                container.innerHTML = `<p style="color: red;">无法加载链接数据。请检查 KV 绑定是否正确配置。</p>`;
-            }
+                groupDiv.appendChild(ul);
+                linksContainer.appendChild(groupDiv);
+            });
         }
 
-        // 当页面加载完成后，执行 loadLinks 函数
-        document.addEventListener('DOMContentLoaded', loadLinks);
+        // 页面加载时获取数据
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('/api/links');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const linkGroups = await response.json();
+                createLinkGroups(linkGroups);
+            } catch (error) {
+                console.error("加载链接失败:", error);
+                linksContainer.innerHTML = '<p class="error">加载链接失败，请检查后台配置或网络连接。</p>';
+            }
+        });
     </script>
 </body>
 </html>
