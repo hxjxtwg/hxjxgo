@@ -1,0 +1,140 @@
+:root {
+    --bg-color: #121212;
+    --card-color: #1e1e1e;
+    --text-color: #e0e0e0;
+    --primary-color: #bb86fc;
+    --border-color: #333;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+}
+
+body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px; /* 稍微加宽以容纳更多卡片 */
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.main-nav {
+    background-color: var(--card-color);
+    border-radius: 8px;
+    margin-bottom: 40px;
+    padding: 10px 0;
+    border: 1px solid var(--border-color);
+}
+
+.main-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.main-nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 10px 15px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.main-nav a:hover {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+}
+
+.link-group {
+    /* 移除分组的背景和边框，让卡片更突出 */
+    margin-bottom: 40px;
+}
+
+.link-group h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+/* --- 卡片布局核心修改 --- */
+.link-group ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid; /* 使用 Grid 布局创建网格 */
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* 响应式网格列 */
+    gap: 20px; /* 卡片之间的间距 */
+}
+
+.link-group li {
+    /* 在 Grid 布局中不再需要 flex-basis */
+}
+
+.link-group a {
+    /* 这是我们的卡片样式 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100px; /* 固定卡片高度 */
+    padding: 15px;
+    background-color: var(--card-color);
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px var(--shadow-color);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.link-group a:hover {
+    transform: translateY(-5px); /* 悬浮时上移 */
+    box-shadow: 0 8px 12px var(--shadow-color);
+    background-color: var(--primary-color); /* 继承悬浮颜色 */
+    color: var(--bg-color);
+}
+/* --- 结束卡片布局修改 --- */
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #888;
+}
+
+@media (max-width: 600px) {
+    .link-group ul {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+}
+
