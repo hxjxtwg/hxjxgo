@@ -51,14 +51,14 @@ header {
 .header-logo {
     width: 40px;
     height: 40px;
-    background-image: url('/logo.svg');
+    background-image: url('/my-logo.svg');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
 }
 
 h1 {
-    font-size: 1.8rem; /* 调整：减小主标题字体 */
+    font-size: 1.6rem; /* 再次减小主标题字体 */
     color: var(--text-color);
     margin: 0;
 }
@@ -94,7 +94,8 @@ h1 {
 }
 
 .card-group-title {
-    font-size: 1.3rem; /* 调整：减小分组标题字体 */
+    font-size: 1.2rem; /* 再次减小分组标题字体 */
+    font-weight: 600;
     color: var(--text-color);
     margin-bottom: 1rem;
     border-bottom: 2px solid var(--primary-color);
@@ -120,7 +121,7 @@ h1 {
     color: var(--card-text-color);
     border-radius: 8px;
     padding: 15px;
-    height: 110px; /* 调整：略微增加卡片高度 */
+    height: 110px;
     box-sizing: border-box;
     text-align: center;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -133,20 +134,20 @@ h1 {
 }
 
 .card-icon {
-    width: 36px;   /* 调整：增***标尺寸 */
-    height: 36px;  /* 调整：增***标尺寸 */
-    margin-bottom: 12px; /* 调整：增加间距 */
+    width: 36px;
+    height: 36px;
+    margin-bottom: 12px;
     border-radius: 50%;
     background-color: rgba(255,255,255,0.2);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: none; 
+    background-image: none;
 }
 
 .card-name {
     font-weight: 500;
-    font-size: 1rem; /* 调整：增大网站名称字体 */
+    font-size: 1rem;
     line-height: 1.2;
     word-break: break-word;
 }
