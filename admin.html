@@ -289,9 +289,12 @@
                 `;
 
                 const linksContainer = groupItem.querySelector('.links-container');
-                (group.links || []).forEach((link, linkIndex) => {
-                    linksContainer.appendChild(createLinkItem(groupIndex, linkIndex, link));
-                });
+                // 安全性增强：确保 group.links 是一个数组
+                if (Array.isArray(group.links)) {
+                    group.links.forEach((link, linkIndex) => {
+                        linksContainer.appendChild(createLinkItem(groupIndex, linkIndex, link));
+                    });
+                }
                 groupsContainer.appendChild(groupItem);
             });
         }
@@ -333,18 +336,24 @@
             const newGroups = [];
             const groupElements = document.querySelectorAll('.group-item');
             groupElements.forEach(groupEl => {
-                const title = groupEl.querySelector('.group-title-input').value;
+                const title = groupEl.querySelector('.group-title-input').value.trim();
                 const links = [];
                 const linkElements = groupEl.querySelectorAll('.link-item');
                 linkElements.forEach(linkEl => {
-                    const name = linkEl.querySelector('.link-name').value;
-                    const url = linkEl.querySelector('.link-url').value;
-                    const icon = linkEl.querySelector('.link-icon').value;
-                    const color = linkEl.querySelector('.link-color').value;
+                    const name = linkEl.querySelector('.link-name').value.trim();
+                    const url = linkEl.querySelector('.link-url').value.trim();
+                    const icon = linkEl.querySelector('.link-icon').value.trim();
+                    const color = linkEl.querySelector('.link-color').value.trim();
+                    
                     if (name && url) {
                         const linkData = { name, url };
-                        if (icon) linkData.icon = icon;
-                        if (color) linkData.color = color;
+                        // 健壮性增强：只添加有值的可选字段
+                        if (icon) {
+                            linkData.icon = icon;
+                        }
+                        if (color) {
+                            linkData.color = color;
+                        }
                         links.push(linkData);
                     }
                 });
