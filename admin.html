@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>导航管理后台</title>
+    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="40" height="40" x="10" y="10" rx="5" fill="%23bb86fc"/><rect width="40" height="40" x="50" y="10" rx="5" fill="%23e0e0e0"/><rect width="40" height="40" x="10" y="50" rx="5" fill="%23e0e0e0"/><rect width="40" height="40" x="50" y="50" rx="5" fill="%23bb86fc"/></svg>'>
     <style>
         :root {
             --bg-color: #121212;
@@ -252,7 +253,8 @@
                     return;
                 }
                 if (!response.ok) {
-                    throw new Error('获取数据失败');
+                    const errorText = await response.text();
+                    throw new Error(errorText || '获取数据失败');
                 }
 
                 currentData = await response.json();
@@ -287,7 +289,7 @@
                 `;
 
                 const linksContainer = groupItem.querySelector('.links-container');
-                group.links.forEach((link, linkIndex) => {
+                (group.links || []).forEach((link, linkIndex) => {
                     linksContainer.appendChild(createLinkItem(groupIndex, linkIndex, link));
                 });
                 groupsContainer.appendChild(groupItem);
@@ -340,7 +342,10 @@
                     const icon = linkEl.querySelector('.link-icon').value;
                     const color = linkEl.querySelector('.link-color').value;
                     if (name && url) {
-                        links.push({ name, url, icon, color });
+                        const linkData = { name, url };
+                        if (icon) linkData.icon = icon;
+                        if (color) linkData.color = color;
+                        links.push(linkData);
                     }
                 });
                 if (title) {
@@ -365,6 +370,9 @@
                 render();
             } else if (target.classList.contains('add-link-btn')) {
                 const groupIndex = parseInt(target.dataset.groupIndex);
+                if (!currentData[groupIndex].links) {
+                    currentData[groupIndex].links = [];
+                }
                 currentData[groupIndex].links.push({ name: '', url: '', icon: '', color: '' });
                 render();
             }
@@ -387,8 +395,9 @@
                         data: newData
                     })
                 });
-                if (!response.ok) {
-                    throw new Error('保存失败');
+                 if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || '保存失败');
                 }
                 currentData = newData;
                 showToast('保存成功！');
