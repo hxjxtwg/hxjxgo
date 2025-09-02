@@ -319,7 +319,6 @@
             }
         });
 
-        // Apply saved theme on page load
         const savedTheme = localStorage.getItem('theme') || 'dark';
         applyTheme(savedTheme);
         // --- End of Theme Switcher Logic ---
@@ -389,7 +388,6 @@
                 `;
 
                 const linksContainer = groupItem.querySelector('.links-container');
-                // 安全性增强：确保 group.links 是一个数组
                 if (Array.isArray(group.links)) {
                     group.links.forEach((link, linkIndex) => {
                         linksContainer.appendChild(createLinkItem(groupIndex, linkIndex, link));
@@ -447,13 +445,8 @@
                     
                     if (name && url) {
                         const linkData = { name, url };
-                        // 健壮性增强：只添加有值的可选字段
-                        if (icon) {
-                            linkData.icon = icon;
-                        }
-                        if (color) {
-                            linkData.color = color;
-                        }
+                        if (icon) linkData.icon = icon;
+                        if (color) linkData.color = color;
                         links.push(linkData);
                     }
                 });
@@ -467,6 +460,9 @@
         groupsContainer.addEventListener('click', (e) => {
             const target = e.target.closest('button');
             if (!target) return;
+            
+            // 修复：在执行任何操作前，先从页面收集最新的数据状态
+            currentData = collectDataFromDOM();
 
             if (target.classList.contains('delete-group-btn')) {
                 const groupIndex = parseInt(target.dataset.groupIndex);
@@ -488,6 +484,8 @@
         });
 
         addGroupBtn.addEventListener('click', () => {
+            // 修复：在执行任何操作前，先从页面收集最新的数据状态
+            currentData = collectDataFromDOM();
             currentData.push({ title: '新分组', links: [] });
             render();
         });
