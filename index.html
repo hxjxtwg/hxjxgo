@@ -13,7 +13,6 @@
             <p>一个简洁、快速的个人导航页面。</p>
         </header>
         
-        <!-- 新增的网站导航栏 -->
         <nav class="main-nav">
             <ul>
                 <li><a href="#">首页</a></li>
@@ -31,16 +30,14 @@
     <script>
         const linksContainer = document.getElementById('links-container');
         
-        // 为没有指定颜色的卡片提供一个漂亮的备用色板
         const colorPalette = [
             '#5E35B1', '#3949AB', '#1E88E5', '#00ACC1', '#00897B',
             '#43A047', '#F4511E', '#D81B60', '#8E24AA', '#546E7A'
         ];
         let colorIndex = 0;
 
-        // 函数：创建链接分组并填充到页面
         function createLinkGroups(linkGroups) {
-            linksContainer.innerHTML = ''; // 清空加载提示
+            linksContainer.innerHTML = '';
             linkGroups.forEach(group => {
                 const groupDiv = document.createElement('div');
                 groupDiv.className = 'link-group';
@@ -56,14 +53,33 @@
                     a.href = link.url;
                     a.target = "_blank";
                     a.rel = "noopener noreferrer";
-                    a.textContent = link.name;
 
-                    // --- 核心改动：设置背景色 ---
-                    // 如果链接数据中有 color 属性，并且格式正确，则使用它
+                    // --- 核心改动：创建并添加图标 ---
+                    const img = document.createElement('img');
+                    img.className = 'favicon';
+                    // 优先使用自定义图标
+                    if (link.icon && link.icon.trim() !== '') {
+                        img.src = link.icon;
+                    } else {
+                         // 否则，尝试通过URL获取
+                        try {
+                           const domain = new URL(link.url).hostname;
+                           img.src = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+                        } catch (e) {
+                           img.style.display = 'none'; // 如果URL格式不正确，则隐藏图标
+                        }
+                    }
+                    // 如果图标加载失败，则隐藏它
+                    img.onerror = () => { img.style.display = 'none'; };
+                    a.appendChild(img);
+
+                    const nameSpan = document.createElement('span');
+                    nameSpan.textContent = link.name;
+                    a.appendChild(nameSpan);
+
                     if (link.color && /^#[0-9A-F]{6}$/i.test(link.color)) {
                         a.style.backgroundColor = link.color;
                     } else {
-                        // 否则，从备用色板中循环取色
                         a.style.backgroundColor = colorPalette[colorIndex % colorPalette.length];
                         colorIndex++;
                     }
@@ -76,7 +92,6 @@
             });
         }
 
-        // 页面加载时获取数据
         window.addEventListener('load', async () => {
             try {
                 const response = await fetch('/api/links');
