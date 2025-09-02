@@ -1,66 +1,67 @@
 :root {
     --bg-color: #121212;
-    --card-color: #1e1e1e;
+    --card-color: #1e1e1e; /* 这是一个备用颜色 */
     --text-color: #e0e0e0;
     --primary-color: #bb86fc;
     --border-color: #333;
-    --shadow-color: rgba(0, 0, 0, 0.2);
 }
 
 body {
-    font-family: 'Noto Sans SC', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
     padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
+    line-height: 1.6;
 }
 
 .container {
-    width: 100%;
-    max-width: 900px; /* 稍微加宽以容纳更多卡片 */
+    max-width: 1200px;
+    margin: auto;
 }
 
 header {
     text-align: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 20px;
+    margin-bottom: 2rem;
 }
 
 header h1 {
-    font-size: 2.5rem;
     color: var(--primary-color);
-    margin: 0;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
 }
 
+header p {
+    font-size: 1.1rem;
+    color: #a0a0a0;
+}
+
+/* 主导航栏样式 */
 .main-nav {
+    display: flex;
+    justify-content: center;
     background-color: var(--card-color);
     border-radius: 8px;
-    margin-bottom: 40px;
-    padding: 10px 0;
+    padding: 0.5rem 0;
+    margin-bottom: 2rem;
     border: 1px solid var(--border-color);
 }
 
 .main-nav ul {
-    list-style: none;
-    padding: 0;
+    list-style-type: none;
     margin: 0;
+    padding: 0;
     display: flex;
-    justify-content: center;
-    gap: 20px;
+    gap: 1.5rem;
 }
 
 .main-nav a {
     color: var(--text-color);
     text-decoration: none;
     font-size: 1rem;
-    padding: 10px 15px;
+    padding: 0.5rem 1rem;
     border-radius: 6px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .main-nav a:hover {
@@ -68,73 +69,58 @@ header h1 {
     color: var(--bg-color);
 }
 
+
 .link-group {
-    /* 移除分组的背景和边框，让卡片更突出 */
-    margin-bottom: 40px;
+    margin-bottom: 2.5rem;
 }
 
 .link-group h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
     font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
-/* --- 卡片布局核心修改 --- */
 .link-group ul {
-    list-style: none;
+    list-style-type: none;
     padding: 0;
     margin: 0;
-    display: grid; /* 使用 Grid 布局创建网格 */
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* 响应式网格列 */
-    gap: 20px; /* 卡片之间的间距 */
-}
-
-.link-group li {
-    /* 在 Grid 布局中不再需要 flex-basis */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
 }
 
 .link-group a {
-    /* 这是我们的卡片样式 */
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    height: 100px; /* 固定卡片高度 */
-    padding: 15px;
-    background-color: var(--card-color);
-    color: var(--text-color);
+    justify-content: center;
+    height: 60px;
+    padding: 10px;
     text-decoration: none;
-    border-radius: 10px;
+    /* --- 核心改动：背景色现在由 JS 控制 --- */
+    color: #ffffff; /* 确保文字总是白色以保证对比度 */
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: transform 0.2s ease-out, border-color 0.2s;
+    font-weight: bold;
     text-align: center;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 6px var(--shadow-color);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .link-group a:hover {
-    transform: translateY(-5px); /* 悬浮时上移 */
-    box-shadow: 0 8px 12px var(--shadow-color);
-    background-color: var(--primary-color); /* 继承悬浮颜色 */
-    color: var(--bg-color);
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.8);
 }
-/* --- 结束卡片布局修改 --- */
 
-footer {
+.loading, .error {
     text-align: center;
-    margin-top: 40px;
-    color: #888;
+    font-size: 1.2rem;
+    color: #a0a0a0;
+    padding: 2rem;
 }
-
-@media (max-width: 600px) {
-    .link-group ul {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 15px;
-    }
-
-    header h1 {
-        font-size: 2rem;
-    }
+.error {
+    color: #cf6679;
 }
 
