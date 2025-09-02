@@ -54,11 +54,21 @@
         }
         
         .link-item {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
             gap: 10px;
             margin-bottom: 10px;
             align-items: center;
         }
+        .link-item.full-width {
+             grid-template-columns: 1fr auto;
+        }
+         .link-item.full-width .link-inputs {
+             grid-column: 1 / -1;
+             display: grid;
+             grid-template-columns: 1fr 1fr 1fr;
+             gap: 10px;
+         }
         .link-item input {
             background-color: var(--input-bg);
             border: 1px solid var(--border-color);
@@ -66,13 +76,17 @@
             padding: 8px 12px;
             border-radius: 4px;
             font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
         }
         .link-item input:focus {
              outline: none;
              border-color: var(--primary-color);
         }
-        .link-item input[placeholder="名称"] { flex-basis: 30%; }
-        .link-item input[placeholder="URL"] { flex-grow: 1; }
+        .link-item .icon-input {
+            grid-column: 1 / -2;
+            margin-top: 5px;
+        }
         
         /* 颜色选择器样式 */
         .link-item input[type="color"] {
@@ -224,8 +238,11 @@
 
             let linksHtml = group.links.map((link) => `
                 <div class="link-item">
-                    <input type="text" placeholder="名称" value="${link.name || ''}">
-                    <input type="text" placeholder="URL" value="${link.url || ''}">
+                    <div class="link-inputs">
+                        <input type="text" placeholder="名称" value="${link.name || ''}">
+                        <input type="text" placeholder="URL" value="${link.url || ''}">
+                        <input type="text" placeholder="图标URL(可选)" value="${link.icon || ''}">
+                    </div>
                     <input type="color" title="选择颜色" value="${link.color || '#333333'}">
                     <button class="btn btn-icon btn-delete-link" title="删除链接"><svg viewBox="0 0 24 24"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path></svg></button>
                 </div>
@@ -264,8 +281,11 @@
                 const newLink = document.createElement('div');
                 newLink.className = 'link-item';
                 newLink.innerHTML = `
-                    <input type="text" placeholder="名称" value="">
-                    <input type="text" placeholder="URL" value="">
+                    <div class="link-inputs">
+                        <input type="text" placeholder="名称" value="">
+                        <input type="text" placeholder="URL" value="">
+                        <input type="text" placeholder="图标URL(可选)" value="">
+                    </div>
                     <input type="color" title="选择颜色" value="#333333">
                     <button class="btn btn-icon btn-delete-link" title="删除链接"><svg viewBox="0 0 24 24"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path></svg></button>
                 `;
@@ -275,7 +295,7 @@
         });
 
         addGroupBtn.addEventListener('click', () => {
-             const groupCard = createGroupElement({ title: '', links: [{ name: '', url: '', color: '#333333' }] });
+             const groupCard = createGroupElement({ title: '', links: [{ name: '', url: '', icon: '', color: '#333333' }] });
              groupsContainer.appendChild(groupCard);
              requestAnimationFrame(() => { groupCard.classList.add('fade-in'); });
         });
@@ -289,11 +309,13 @@
                 const groupTitle = groupCard.querySelector('.group-header input').value;
                 const links = [];
                 groupCard.querySelectorAll('.link-item').forEach(linkItem => {
-                    const inputs = linkItem.querySelectorAll('input');
+                    const textInputs = linkItem.querySelectorAll('input[type="text"]');
+                    const colorInput = linkItem.querySelector('input[type="color"]');
                     links.push({ 
-                        name: inputs[0].value, 
-                        url: inputs[1].value,
-                        color: inputs[2].value
+                        name: textInputs[0].value, 
+                        url: textInputs[1].value,
+                        icon: textInputs[2].value,
+                        color: colorInput.value
                     });
                 });
                 groups.push({ title: groupTitle, links: links });
@@ -317,7 +339,8 @@
                 const data = await response.json();
                 render(data);
                 showToast('数据加载成功。', 'success');
-            } catch (error) {
+            } catch (error)
+        {
                 showToast(`加载失败: ${error.message}`, 'error');
             }
         }
