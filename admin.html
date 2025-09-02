@@ -73,6 +73,28 @@
         }
         .link-item input[placeholder="名称"] { flex-basis: 30%; }
         .link-item input[placeholder="URL"] { flex-grow: 1; }
+        
+        /* 颜色选择器样式 */
+        .link-item input[type="color"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: 1px solid var(--border-color);
+            border-radius: 50%; /* 圆形 */
+            cursor: pointer;
+            background-color: transparent;
+        }
+        .link-item input[type="color"]::-webkit-color-swatch {
+            border-radius: 50%;
+            border: none;
+        }
+        .link-item input[type="color"]::-moz-color-swatch {
+            border-radius: 50%;
+            border: none;
+        }
 
         .btn {
             padding: 6px 12px;
@@ -204,6 +226,7 @@
                 <div class="link-item">
                     <input type="text" placeholder="名称" value="${link.name || ''}">
                     <input type="text" placeholder="URL" value="${link.url || ''}">
+                    <input type="color" title="选择颜色" value="${link.color || '#333333'}">
                     <button class="btn btn-icon btn-delete-link" title="删除链接"><svg viewBox="0 0 24 24"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path></svg></button>
                 </div>
             `).join('');
@@ -243,6 +266,7 @@
                 newLink.innerHTML = `
                     <input type="text" placeholder="名称" value="">
                     <input type="text" placeholder="URL" value="">
+                    <input type="color" title="选择颜色" value="#333333">
                     <button class="btn btn-icon btn-delete-link" title="删除链接"><svg viewBox="0 0 24 24"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path></svg></button>
                 `;
                 addLinkBtn.previousElementSibling.appendChild(newLink);
@@ -251,7 +275,7 @@
         });
 
         addGroupBtn.addEventListener('click', () => {
-             const groupCard = createGroupElement({ title: '', links: [{ name: '', url: '' }] });
+             const groupCard = createGroupElement({ title: '', links: [{ name: '', url: '', color: '#333333' }] });
              groupsContainer.appendChild(groupCard);
              requestAnimationFrame(() => { groupCard.classList.add('fade-in'); });
         });
@@ -266,7 +290,11 @@
                 const links = [];
                 groupCard.querySelectorAll('.link-item').forEach(linkItem => {
                     const inputs = linkItem.querySelectorAll('input');
-                    links.push({ name: inputs[0].value, url: inputs[1].value });
+                    links.push({ 
+                        name: inputs[0].value, 
+                        url: inputs[1].value,
+                        color: inputs[2].value
+                    });
                 });
                 groups.push({ title: groupTitle, links: links });
             });
