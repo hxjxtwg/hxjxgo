@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>导航</title>
+    <title>个人导航页</title>
+    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="40" height="40" x="10" y="10" rx="5" fill="%23bb86fc"/><rect width="40" height="40" x="50" y="10" rx="5" fill="%23e0e0e0"/><rect width="40" height="40" x="10" y="50" rx="5" fill="%23e0e0e0"/><rect width="40" height="40" x="50" y="50" rx="5" fill="%23bb86fc"/></svg>'>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,98 +12,90 @@
         <header>
             <h1>我的导航</h1>
             <p>一个简洁、快速的个人导航页面。</p>
+            <!-- 新增的网站导航栏 -->
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#">首页</a></li>
+                    <li><a href="#">博客</a></li>
+                    <li><a href="#">项目</a></li>
+                    <li><a href="#">关于我</a></li>
+                </ul>
+            </nav>
         </header>
-        
-        <nav class="main-nav">
-            <ul>
-                <li><a href="#">首页</a></li>
-                <li><a href="#">博客</a></li>
-                <li><a href="#">项目</a></li>
-                <li><a href="#">关于我</a></li>
-            </ul>
-        </nav>
 
         <main id="links-container">
-            <p class="loading">正在从云端加载链接...</p>
+            <div class="loading">正在加载数据...</div>
         </main>
     </div>
 
     <script>
-        const linksContainer = document.getElementById('links-container');
-        
-        const colorPalette = [
-            '#5E35B1', '#3949AB', '#1E88E5', '#00ACC1', '#00897B',
-            '#43A047', '#F4511E', '#D81B60', '#8E24AA', '#546E7A'
-        ];
-        let colorIndex = 0;
+        document.addEventListener('DOMContentLoaded', async () => {
+            const linksContainer = document.getElementById('links-container');
+            // 定义一个漂亮的颜色数组，用于循环
+            const colors = [
+                "#3498db", "#9b59b6", "#e74c3c", "#f1c40f", 
+                "#2ecc71", "#1abc9c", "#e67e22", "#34495e"
+            ];
+            let colorIndex = 0;
 
-        function createLinkGroups(linkGroups) {
-            linksContainer.innerHTML = '';
-            linkGroups.forEach(group => {
-                const groupDiv = document.createElement('div');
-                groupDiv.className = 'link-group';
-
-                const title = document.createElement('h2');
-                title.textContent = group.title;
-                groupDiv.appendChild(title);
-
-                const ul = document.createElement('ul');
-                group.links.forEach(link => {
-                    const li = document.createElement('li');
-                    const a = document.createElement('a');
-                    a.href = link.url;
-                    a.target = "_blank";
-                    a.rel = "noopener noreferrer";
-
-                    // --- 核心改动：创建并添加图标 ---
-                    const img = document.createElement('img');
-                    img.className = 'favicon';
-                    // 优先使用自定义图标
-                    if (link.icon && link.icon.trim() !== '') {
-                        img.src = link.icon;
-                    } else {
-                         // 否则，尝试通过URL获取
-                        try {
-                           const domain = new URL(link.url).hostname;
-                           img.src = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
-                        } catch (e) {
-                           img.style.display = 'none'; // 如果URL格式不正确，则隐藏图标
-                        }
-                    }
-                    // 如果图标加载失败，则隐藏它
-                    img.onerror = () => { img.style.display = 'none'; };
-                    a.appendChild(img);
-
-                    const nameSpan = document.createElement('span');
-                    nameSpan.textContent = link.name;
-                    a.appendChild(nameSpan);
-
-                    if (link.color && /^#[0-9A-F]{6}$/i.test(link.color)) {
-                        a.style.backgroundColor = link.color;
-                    } else {
-                        a.style.backgroundColor = colorPalette[colorIndex % colorPalette.length];
-                        colorIndex++;
-                    }
-                    
-                    li.appendChild(a);
-                    ul.appendChild(li);
-                });
-                groupDiv.appendChild(ul);
-                linksContainer.appendChild(groupDiv);
-            });
-        }
-
-        window.addEventListener('load', async () => {
             try {
                 const response = await fetch('/api/links');
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error('无法获取链接数据');
                 }
                 const linkGroups = await response.json();
-                createLinkGroups(linkGroups);
+
+                if (linkGroups.length === 0) {
+                     linksContainer.innerHTML = '<div class="loading">暂无数据，请先前往后台添加。</div>';
+                     return;
+                }
+
+                linksContainer.innerHTML = ''; 
+
+                linkGroups.forEach(group => {
+                    const groupElement = document.createElement('section');
+                    groupElement.className = 'link-group';
+
+                    const titleElement = document.createElement('h2');
+                    titleElement.textContent = group.title;
+                    groupElement.appendChild(titleElement);
+
+                    const listElement = document.createElement('ul');
+                    group.links.forEach(link => {
+                        const listItem = document.createElement('li');
+                        const linkElement = document.createElement('a');
+                        linkElement.href = link.url;
+                        linkElement.target = '_blank';
+                        
+                        // 优先使用自定义颜色，否则从数组循环获取
+                        const bgColor = link.color || colors[colorIndex % colors.length];
+                        linkElement.style.backgroundColor = bgColor;
+                        colorIndex++;
+
+                        // 优先使用自定义图标，否则自动获取
+                        const iconUrl = link.icon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
+                        
+                        const iconElement = document.createElement('img');
+                        iconElement.src = iconUrl;
+                        iconElement.alt = `${link.name} icon`;
+                        iconElement.className = 'favicon';
+                        iconElement.onerror = (e) => { e.target.style.display = 'none'; }; // 图标加载失败则隐藏
+
+                        const nameElement = document.createElement('span');
+                        nameElement.textContent = link.name;
+                        
+                        linkElement.appendChild(iconElement);
+                        linkElement.appendChild(nameElement);
+                        listItem.appendChild(linkElement);
+                        listElement.appendChild(listItem);
+                    });
+                    groupElement.appendChild(listElement);
+                    linksContainer.appendChild(groupElement);
+                });
+
             } catch (error) {
-                console.error("加载链接失败:", error);
-                linksContainer.innerHTML = '<p class="error">加载链接失败，请检查后台配置或网络连接。</p>';
+                linksContainer.innerHTML = `<div class="error">加载失败: ${error.message}</div>`;
+                console.error('Fetch error:', error);
             }
         });
     </script>
