@@ -221,33 +221,39 @@
             align-items: center;
         }
         .theme-switcher label {
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-            background-color: #555;
-            border-radius: 13px;
-            position: relative;
+            width: 30px;
+            height: 30px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .theme-switcher .slider {
+        .theme-switcher svg {
             position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 22px;
-            height: 22px;
-            background-color: #fff;
-            border-radius: 50%;
-            transition: transform 0.3s;
+            width: 24px;
+            height: 24px;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            stroke: var(--text-color);
+        }
+        .theme-switcher .sun-icon {
+            opacity: 0;
+            transform: rotate(-90deg);
+        }
+        .theme-switcher .moon-icon {
+            opacity: 1;
+            transform: rotate(0deg);
         }
         .theme-switcher input {
             display: none;
         }
-        .theme-switcher input:checked + label {
-            background-color: var(--primary-color);
+        .theme-switcher input:checked + label .sun-icon {
+            opacity: 1;
+            transform: rotate(0deg);
         }
-        .theme-switcher input:checked + label .slider {
-            transform: translateX(24px);
+        .theme-switcher input:checked + label .moon-icon {
+            opacity: 0;
+            transform: rotate(90deg);
         }
     </style>
 </head>
@@ -266,7 +272,8 @@
                 <div class="theme-switcher">
                     <input type="checkbox" id="theme-toggle">
                     <label for="theme-toggle">
-                        <span class="slider"></span>
+                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                     </label>
                 </div>
             </div>
@@ -374,7 +381,7 @@
                     <div class="group-header">
                         <input type="text" class="group-title-input" value="${group.title || ''}" placeholder="分组标题">
                         <button class="delete-btn delete-group-btn" data-group-index="${groupIndex}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 S0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
                         </button>
                     </div>
                     <div class="links-container"></div>
