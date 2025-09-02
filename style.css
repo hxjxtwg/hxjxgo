@@ -52,7 +52,7 @@ header {
     width: 40px;
     height: 40px;
     /* 更新：使用背景图来显示Logo */
-    background-image: url('/my-logo.svg');
+    background-image: url('/logo.svg');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
