@@ -46,6 +46,7 @@
             border-bottom: 2px solid var(--border-color);
             color: var(--text-color);
             flex-grow: 1;
+            margin-right: 15px;
         }
         .group-header input:focus {
             outline: none;
@@ -82,8 +83,24 @@
             transition: opacity 0.3s;
         }
         .btn:hover { opacity: 0.8; }
-        .btn-delete { background-color: var(--error-color); color: #000; }
         .btn-add { background-color: var(--success-color); color: #000; }
+        
+        .btn-icon {
+            background: transparent;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--error-color);
+            transition: transform 0.2s;
+        }
+        .btn-icon:hover svg {
+            transform: scale(1.1);
+        }
 
         .btn-add-group {
             width: 100%;
@@ -94,6 +111,11 @@
             font-size: 1rem;
             cursor: pointer;
             margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .btn-add-group:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
         }
 
         .btn-save {
@@ -105,11 +127,46 @@
             border-radius: 4px;
             font-size: 1.2rem;
             cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-save:hover {
+            background-color: #a970f8;
         }
 
-        #status { text-align: center; margin-top: 15px; font-weight: bold; }
-        .success { color: var(--success-color); }
-        .error { color: var(--error-color); }
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.9); }
+        }
+        .is-deleting {
+            animation: fadeOut 0.3s ease-in forwards;
+        }
+
+        /* Toast Notification */
+        #toast {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: bottom 0.5s ease-in-out;
+            z-index: 1000;
+            font-weight: bold;
+        }
+        #toast.show {
+            bottom: 30px;
+        }
+        #toast.success { background-color: var(--success-color); color: #000; }
+        #toast.error { background-color: var(--error-color); color: #000; }
     </style>
 </head>
 <body>
@@ -119,72 +176,84 @@
         <button id="add-group-btn" class="btn-add-group">＋ 添加新分组</button>
         <hr style="border-color: var(--border-color); margin: 20px 0;">
         <button id="save-btn" class="btn-save">保存所有更改</button>
-        <p id="status"></p>
     </div>
+    
+    <div id="toast"></div>
 
     <script>
         const groupsContainer = document.getElementById('groups-container');
         const addGroupBtn = document.getElementById('add-group-btn');
         const saveBtn = document.getElementById('save-btn');
-        const statusEl = document.getElementById('status');
+        const toastEl = document.getElementById('toast');
         let adminPassword = '';
         const API_ENDPOINT = '/api/admin';
 
         // --- 核心渲染函数 ---
         function render(data) {
-            groupsContainer.innerHTML = ''; // 清空现有内容
-            data.forEach((group, groupIndex) => {
-                const groupCard = document.createElement('div');
-                groupCard.className = 'group-card';
-                groupCard.dataset.groupIdx = groupIndex;
-
-                let linksHtml = group.links.map((link, linkIndex) => `
-                    <div class="link-item" data-link-idx="${linkIndex}">
-                        <input type="text" placeholder="名称" value="${link.name || ''}">
-                        <input type="text" placeholder="URL" value="${link.url || ''}">
-                        <button class="btn btn-delete btn-delete-link">删除</button>
-                    </div>
-                `).join('');
-
-                groupCard.innerHTML = `
-                    <div class="group-header">
-                        <input type="text" placeholder="分组标题" value="${group.title || ''}">
-                        <button class="btn btn-delete btn-delete-group">删除分组</button>
-                    </div>
-                    <div class="links-container">${linksHtml}</div>
-                    <button class="btn btn-add btn-add-link">＋ 添加链接</button>
-                `;
-                groupsContainer.appendChild(groupCard);
+            groupsContainer.innerHTML = ''; 
+            data.forEach((group) => {
+                groupsContainer.appendChild(createGroupElement(group));
             });
+        }
+
+        function createGroupElement(group) {
+            const groupCard = document.createElement('div');
+            groupCard.className = 'group-card';
+
+            let linksHtml = group.links.map((link) => `
+                <div class="link-item">
+                    <input type="text" placeholder="名称" value="${link.name || ''}">
+                    <input type="text" placeholder="URL" value="${link.url || ''}">
+                    <button class="btn btn-icon btn-delete-link" title="删除链接"><svg viewBox="0 0 24 24"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path></svg></button>
+                </div>
+            `).join('');
+
+            groupCard.innerHTML = `
+                <div class="group-header">
+                    <input type="text" placeholder="分组标题" value="${group.title || ''}">
+                    <button class="btn btn-icon btn-delete-group" title="删除分组"><svg viewBox="0 0 24 24"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path></svg></button>
+                </div>
+                <div class="links-container">${linksHtml}</div>
+                <button class="btn btn-add btn-add-link">＋ 添加链接</button>
+            `;
+            return groupCard;
         }
         
         // --- 事件处理 ---
         groupsContainer.addEventListener('click', (e) => {
-            const target = e.target;
-            const groupCard = target.closest('.group-card');
-            
-            if (target.classList.contains('btn-delete-group')) {
+            const deleteGroupBtn = e.target.closest('.btn-delete-group');
+            const deleteLinkBtn = e.target.closest('.btn-delete-link');
+            const addLinkBtn = e.target.closest('.btn-add-link');
+
+            if (deleteGroupBtn) {
                 if (confirm('确定要删除整个分组吗？')) {
-                    groupCard.remove();
+                    const groupCard = deleteGroupBtn.closest('.group-card');
+                    groupCard.classList.add('is-deleting');
+                    groupCard.addEventListener('animationend', () => groupCard.remove());
                 }
-            } else if (target.classList.contains('btn-delete-link')) {
+            } else if (deleteLinkBtn) {
                  if (confirm('确定要删除这个链接吗？')) {
-                    target.closest('.link-item').remove();
+                    const linkItem = deleteLinkBtn.closest('.link-item');
+                    linkItem.classList.add('is-deleting');
+                    linkItem.addEventListener('animationend', () => linkItem.remove());
                 }
-            } else if (target.classList.contains('btn-add-link')) {
+            } else if (addLinkBtn) {
                 const newLink = document.createElement('div');
                 newLink.className = 'link-item';
                 newLink.innerHTML = `
                     <input type="text" placeholder="名称" value="">
                     <input type="text" placeholder="URL" value="">
-                    <button class="btn btn-delete btn-delete-link">删除</button>
+                    <button class="btn btn-icon btn-delete-link" title="删除链接"><svg viewBox="0 0 24 24"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path></svg></button>
                 `;
-                groupCard.querySelector('.links-container').appendChild(newLink);
+                addLinkBtn.previousElementSibling.appendChild(newLink);
+                requestAnimationFrame(() => { newLink.classList.add('fade-in'); });
             }
         });
 
         addGroupBtn.addEventListener('click', () => {
-             render([...collectDataFromDOM(), { title: '', links: [{ name: '', url: '' }] }]);
+             const groupCard = createGroupElement({ title: '', links: [{ name: '', url: '' }] });
+             groupsContainer.appendChild(groupCard);
+             requestAnimationFrame(() => { groupCard.classList.add('fade-in'); });
         });
         
         saveBtn.addEventListener('click', saveData);
@@ -204,6 +273,14 @@
             return groups;
         }
 
+        function showToast(message, type = 'success') {
+            toastEl.textContent = message;
+            toastEl.className = `show ${type}`;
+            setTimeout(() => {
+                toastEl.className = '';
+            }, 3000);
+        }
+
         async function fetchData() {
             try {
                 const response = await fetch(API_ENDPOINT, { headers: { 'Authorization': adminPassword } });
@@ -211,18 +288,15 @@
                 if (!response.ok) throw new Error(`服务器错误: ${response.statusText}`);
                 const data = await response.json();
                 render(data);
-                statusEl.textContent = '数据加载成功。';
-                statusEl.className = 'success';
+                showToast('数据加载成功。', 'success');
             } catch (error) {
-                statusEl.textContent = `加载失败: ${error.message}`;
-                statusEl.className = 'error';
+                showToast(`加载失败: ${error.message}`, 'error');
             }
         }
 
         async function saveData() {
             const dataToSave = collectDataFromDOM();
-            statusEl.textContent = '正在保存...';
-            statusEl.className = '';
+            showToast('正在保存...', 'info');
             try {
                 const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
@@ -231,11 +305,9 @@
                 });
                 if (response.status === 401) throw new Error('密码错误。');
                 if (!response.ok) throw new Error(`服务器错误: ${response.statusText}`);
-                statusEl.textContent = '保存成功！';
-                statusEl.className = 'success';
+                showToast('保存成功！', 'success');
             } catch (error) {
-                statusEl.textContent = `保存失败: ${error.message}`;
-                statusEl.className = 'error';
+                showToast(`保存失败: ${error.message}`, 'error');
             }
         }
         
@@ -244,8 +316,7 @@
             if (adminPassword) {
                 fetchData();
             } else {
-                statusEl.textContent = '未输入密码，无法操作。';
-                statusEl.className = 'error';
+                showToast('未输入密码，无法操作。', 'error');
             }
         };
     </script>
