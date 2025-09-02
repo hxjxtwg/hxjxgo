@@ -51,7 +51,11 @@ header {
 .header-logo {
     width: 40px;
     height: 40px;
-    object-fit: contain; /* 确保图片比例正确 */
+    /* 更新：使用背景图来显示Logo */
+    background-image: url('/my-logo.svg');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 h1 {
