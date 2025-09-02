@@ -87,32 +87,44 @@ header p {
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 15px;
 }
 
 .link-group a {
     display: flex;
     align-items: center;
-    justify-content: center;
     height: 60px;
-    padding: 10px;
+    padding: 10px 15px;
     text-decoration: none;
-    /* --- 核心改动：背景色现在由 JS 控制 --- */
-    color: #ffffff; /* 确保文字总是白色以保证对比度 */
+    color: #ffffff; 
     border-radius: 8px;
     border: 1px solid transparent;
     transition: transform 0.2s ease-out, border-color 0.2s;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
     overflow: hidden;
-    text-overflow: ellipsis;
+    gap: 12px; /* 图标和文字的间距 */
 }
 
 .link-group a:hover {
     transform: translateY(-5px);
     border-color: rgba(255, 255, 255, 0.8);
 }
+
+.link-group a .favicon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0; /* 防止图标被压缩 */
+}
+
+.link-group a span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 
 .loading, .error {
     text-align: center;
