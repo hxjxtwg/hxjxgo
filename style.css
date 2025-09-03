@@ -8,7 +8,7 @@
     /* 修复：深色模式下的卡片文字和背景 */
     --card-text-color: #ffffff;
     --card-border-color: rgba(255, 255, 255, 0.18);
-    --card-bg-color: rgba(0, 0, 0, 0.35); /* 调整：降低透明度 */
+    --card-bg-color: rgba(0, 0, 0, 0.25); /* 调整：降低透明度 */
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
@@ -31,11 +31,22 @@ body {
     margin: 0;
     color: var(--text-color);
     transition: color 0.3s;
+    background-color: var(--bg-color); /* 将背景颜色设置在body上 */
+}
+
+/* 修复：使用伪元素创建兼容性更好的固定背景 */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* 确保背景在内容之下 */
     
     background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/wallpaper_1.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
 }
 
 .container {
@@ -61,8 +72,8 @@ header {
 }
 
 .header-logo {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     background-image: url('/logo.svg');
     background-size: contain;
     background-position: center;
@@ -107,7 +118,7 @@ h1 {
 }
 
 .card-group-title {
-    font-size: 1.0rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: var(--text-color);
     margin-bottom: 1rem;
@@ -227,9 +238,9 @@ h1 {
         padding: 15px;
     }
 
-    body {
+    body::before {
+        /* 修复：为手机设置不同的背景图片 */
         background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/IMG_5251.JPG');
-        background-attachment: scroll; /* 修复：提高移动端兼容性 */
     }
 
     h1 {
