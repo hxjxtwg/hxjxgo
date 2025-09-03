@@ -66,28 +66,6 @@
         applyTheme(savedTheme);
         // --- End of Theme Switcher Logic ---
 
-        // 新增：将HEX颜色转换为带有透明度的RGBA颜色
-        function hexToRgba(hex, alpha) {
-            let r = 0, g = 0, b = 0;
-            if (hex.length === 4) {
-                r = "0x" + hex[1] + hex[1];
-                g = "0x" + hex[2] + hex[2];
-                b = "0x" + hex[3] + hex[3];
-            } else if (hex.length === 7) {
-                r = "0x" + hex[1] + hex[2];
-                g = "0x" + hex[3] + hex[4];
-                b = "0x" + hex[5] + hex[6];
-            }
-            return `rgba(${+r}, ${+g}, ${+b}, ${alpha})`;
-        }
-
-
-        const defaultColors = [
-            "#bb86fc", "#03dac6", "#cf6679", "#448aff",
-            "#ff9800", "#4caf50", "#f44336", "#00bcd4"
-        ];
-        let colorIndex = 0;
-
         async function loadLinks() {
             try {
                 const response = await fetch('/api/links');
@@ -121,11 +99,6 @@
                             linkElement.href = link.url;
                             linkElement.target = '_blank';
                             linkElement.rel = 'noopener noreferrer';
-                            
-                            const cardColor = link.color || defaultColors[colorIndex % defaultColors.length];
-                            // 更新：使用转换后的半透明颜色
-                            linkElement.style.backgroundColor = hexToRgba(cardColor, 0.2);
-                            colorIndex++;
                             
                             const iconUrl = link.icon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
                             
