@@ -6,6 +6,7 @@
     --text-secondary-color: #a0a0a0;
     --border-color: #333;
     --card-text-color: #ffffff;
+    --card-border-color: rgba(255, 255, 255, 0.1);
 }
 
 body.light-mode {
@@ -16,6 +17,7 @@ body.light-mode {
     --text-secondary-color: #5f6368;
     --border-color: #e0e0e0;
     --card-text-color: #ffffff;
+    --card-border-color: rgba(255, 255, 255, 0.5);
 }
 
 body {
@@ -49,8 +51,8 @@ header {
 }
 
 .header-logo {
-    width: 48px; /* 调整：增大Logo尺寸 */
-    height: 48px; /* 调整：增大Logo尺寸 */
+    width: 44px;
+    height: 44px;
     background-image: url('/logo.svg');
     background-size: contain;
     background-position: center;
@@ -58,7 +60,7 @@ header {
 }
 
 h1 {
-    font-size: 1.2rem; /* 再次减小主标题字体 */
+    font-size: 1.4rem;
     color: var(--text-color);
     margin: 0;
 }
@@ -94,7 +96,7 @@ h1 {
 }
 
 .card-group-title {
-    font-size: 1rem; /* 再次减小分组标题字体 */
+    font-size: 1.1rem;
     font-weight: 600;
     color: var(--text-color);
     margin-bottom: 1rem;
@@ -119,26 +121,31 @@ h1 {
     justify-content: center;
     text-decoration: none;
     color: var(--card-text-color);
-    border-radius: 8px;
+    border-radius: 12px; /* 增加圆角以配合玻璃效果 */
     padding: 15px;
     height: 110px;
     box-sizing: border-box;
     text-align: center;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    
+    /* 玻璃效果的关键样式 */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* 兼容 Safari */
+    border: 1px solid var(--card-border-color);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .link-group a:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
 .card-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     margin-bottom: 12px;
     border-radius: 50%;
-    background-color: rgba(255,255,255,0.2);
+    background-color: transparent; /* 移除图标背景色以增强玻璃感 */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -150,6 +157,8 @@ h1 {
     font-size: 1rem;
     line-height: 1.2;
     word-break: break-word;
+    /* 增加文字阴影以提高可读性 */
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 .placeholder {
