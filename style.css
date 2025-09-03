@@ -8,7 +8,7 @@
     /* 修复：深色模式下的卡片文字和背景 */
     --card-text-color: #ffffff;
     --card-border-color: rgba(255, 255, 255, 0.18);
-    --card-bg-color: rgba(0, 0, 0, 0.25); /* 调整：降低透明度 */
+    --card-bg-color: rgba(0, 0, 0, 0.45); /* 调整：降低透明度 */
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
