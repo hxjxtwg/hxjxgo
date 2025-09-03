@@ -124,7 +124,7 @@
                             
                             const cardColor = link.color || defaultColors[colorIndex % defaultColors.length];
                             // 更新：使用转换后的半透明颜色
-                            linkElement.style.backgroundColor = hexToRgba(cardColor, 0.4);
+                            linkElement.style.backgroundColor = hexToRgba(cardColor, 0.2);
                             colorIndex++;
                             
                             const iconUrl = link.icon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
