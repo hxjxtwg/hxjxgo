@@ -16,16 +16,34 @@ body.light-mode {
     --text-color: #000000;
     --text-secondary-color: #5f6368;
     --border-color: #e0e0e0;
-    --card-text-color: #ffffff;
-    --card-border-color: rgba(255, 255, 255, 0.5);
+    --card-text-color: #000000;
+    --card-border-color: rgba(0, 0, 0, 0.1);
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
-    background-color: var(--bg-color);
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
+    
+    /* 新增：动态极光背景 (深色模式) */
+    background: linear-gradient(-45deg, #1d1b26, #2c2a3e, #1a293e, #1e3a3a);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
+body.light-mode {
+    /* 新增：动态极光背景 (浅色模式) */
+    background: linear-gradient(-45deg, #e0c3fc, #8ec5fc, #a8edea, #fed6e3);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
+/* 新增：背景动画 */
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .container {
@@ -53,7 +71,7 @@ header {
 .header-logo {
     width: 44px;
     height: 44px;
-    background-image: url('/logo.svg');
+    background-image: url('/my-logo.svg');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -121,16 +139,15 @@ h1 {
     justify-content: center;
     text-decoration: none;
     color: var(--card-text-color);
-    border-radius: 12px; /* 增加圆角以配合玻璃效果 */
+    border-radius: 12px;
     padding: 15px;
     height: 110px;
     box-sizing: border-box;
     text-align: center;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     
-    /* 玻璃效果的关键样式 */
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* 兼容 Safari */
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--card-border-color);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
@@ -145,7 +162,7 @@ h1 {
     height: 36px;
     margin-bottom: 12px;
     border-radius: 50%;
-    background-color: transparent; /* 移除图标背景色以增强玻璃感 */
+    background-color: transparent;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -157,7 +174,6 @@ h1 {
     font-size: 1rem;
     line-height: 1.2;
     word-break: break-word;
-    /* 增加文字阴影以提高可读性 */
     text-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
