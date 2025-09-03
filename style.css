@@ -5,9 +5,10 @@
     --text-color: #e0e0e0;
     --text-secondary-color: #a0a0a0;
     --border-color: #333;
+    /* 修复：深色模式下的卡片文字和背景 */
     --card-text-color: #ffffff;
     --card-border-color: rgba(255, 255, 255, 0.18);
-    --card-bg-color: rgba(255, 255, 255, 0.1);
+    --card-bg-color: rgba(0, 0, 0, 0.25); /* 改为黑色半透明 */
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
@@ -18,10 +19,11 @@ body.light-mode {
     --text-color: #000000;
     --text-secondary-color: #5f6368;
     --border-color: #e0e0e0;
+    /* 修复：浅色模式下的卡片文字和背景 */
     --card-text-color: #000000;
     --card-border-color: rgba(0, 0, 0, 0.1);
-    --card-bg-color: rgba(255, 255, 255, 0.3);
-    --card-text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+    --card-bg-color: rgba(255, 255, 255, 0.4); /* 改为白色半透明 */
+    --card-text-shadow: none; /* 浅色模式下通常不需要文字阴影 */
 }
 
 body {
@@ -59,8 +61,8 @@ header {
 }
 
 .header-logo {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     background-image: url('/logo.svg');
     background-size: contain;
     background-position: center;
@@ -68,7 +70,7 @@ header {
 }
 
 h1 {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: var(--text-color);
     margin: 0;
 }
@@ -84,7 +86,7 @@ h1 {
     margin: 0;
     display: flex;
     justify-content: center;
-    flex-wrap: wrap; /* 允许换行 */
+    flex-wrap: wrap; 
 }
 
 .main-nav li a {
@@ -119,7 +121,6 @@ h1 {
     padding: 0;
     margin: 0;
     display: grid;
-    /* 响应式核心：自动填充列，最小140px */
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 15px;
 }
@@ -221,19 +222,17 @@ h1 {
     transform: rotate(90deg);
 }
 
-/* 响应式设计：针对手机等小屏幕设备的优化 */
 @media (max-width: 768px) {
     .container {
         padding: 15px;
     }
 
     body {
-        /* 新增：为手机设置不同的背景图片 */
         background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/IMG_5251.JPG');
     }
 
     h1 {
-        font-size: 1.2rem; /* 缩小手机上的主标题 */
+        font-size: 1.2rem;
     }
 
     .header-logo {
@@ -242,15 +241,15 @@ h1 {
     }
 
     .card-group-title {
-        font-size: 1rem; /* 缩小手机上的分组标题 */
+        font-size: 1rem;
     }
 
     .link-group ul {
-        gap: 10px; /* 减小卡片间距 */
+        gap: 10px;
     }
 
     .main-nav li a {
-        padding: 0.6rem 0.8rem; /* 减小导航项的间距 */
+        padding: 0.6rem 0.8rem;
         font-size: 0.9rem;
     }
 }
