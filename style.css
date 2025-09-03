@@ -30,8 +30,7 @@ body {
     color: var(--text-color);
     transition: color 0.3s;
     
-    /* 更新：使用高清壁纸作为背景 */
-    background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2070&auto=format&fit=crop');
+    background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/wallpaper_1.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -85,6 +84,7 @@ h1 {
     margin: 0;
     display: flex;
     justify-content: center;
+    flex-wrap: wrap; /* 允许换行 */
 }
 
 .main-nav li a {
@@ -119,7 +119,8 @@ h1 {
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    /* 响应式核心：自动填充列，最小140px */
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 15px;
 }
 
@@ -137,7 +138,6 @@ h1 {
     text-align: center;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     
-    /* 更新：玻璃效果的关键样式 */
     background: var(--card-bg-color);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -219,5 +219,39 @@ h1 {
 .theme-switcher input:checked + label .moon-icon {
     opacity: 0;
     transform: rotate(90deg);
+}
+
+/* 响应式设计：针对手机等小屏幕设备的优化 */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    body {
+        /* 新增：为手机设置不同的背景图片 */
+        background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/IMG_5251.JPG');
+    }
+
+    h1 {
+        font-size: 1.2rem; /* 缩小手机上的主标题 */
+    }
+
+    .header-logo {
+        width: 36px;
+        height: 36px;
+    }
+
+    .card-group-title {
+        font-size: 1rem; /* 缩小手机上的分组标题 */
+    }
+
+    .link-group ul {
+        gap: 10px; /* 减小卡片间距 */
+    }
+
+    .main-nav li a {
+        padding: 0.6rem 0.8rem; /* 减小导航项的间距 */
+        font-size: 0.9rem;
+    }
 }
 
