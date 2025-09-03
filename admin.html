@@ -124,7 +124,7 @@
         .link-inputs {
             flex-grow: 1;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 调整布局以适应更少的输入框 */
             gap: 10px;
         }
 
@@ -181,20 +181,6 @@
             font-size: 1rem;
             z-index: 100;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        }
-
-        .color-picker-wrapper {
-            position: relative;
-        }
-
-        .color-picker-wrapper input[type="color"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
         }
 
         #toast {
@@ -401,32 +387,17 @@
             const linkItem = document.createElement('div');
             linkItem.className = 'link-item';
             
-            const color = link.color || '#333333';
-
             linkItem.innerHTML = `
                 <div class="link-inputs">
                     <input type="text" class="link-name" value="${link.name || ''}" placeholder="名称">
                     <input type="text" class="link-url" value="${link.url || ''}" placeholder="URL">
                     <input type="text" class="link-icon" value="${link.icon || ''}" placeholder="图标URL (可选)">
-                    <div class="color-picker-wrapper" style="background-color: ${color}; border-radius: 5px;">
-                        <input type="text" class="link-color" value="${link.color || ''}" placeholder="颜色 (可选)">
-                        <input type="color" value="${color}">
-                    </div>
                 </div>
                 <button class="delete-btn delete-link-btn" data-group-index="${groupIndex}" data-link-index="${linkIndex}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
                 </button>
             `;
             
-            const colorTextInput = linkItem.querySelector('.link-color');
-            const colorPicker = linkItem.querySelector('input[type="color"]');
-            const colorWrapper = linkItem.querySelector('.color-picker-wrapper');
-
-            colorPicker.addEventListener('input', (e) => {
-                colorTextInput.value = e.target.value.toUpperCase();
-                colorWrapper.style.backgroundColor = e.target.value;
-            });
-
             return linkItem;
         }
 
@@ -441,12 +412,10 @@
                     const name = linkEl.querySelector('.link-name').value.trim();
                     const url = linkEl.querySelector('.link-url').value.trim();
                     const icon = linkEl.querySelector('.link-icon').value.trim();
-                    const color = linkEl.querySelector('.link-color').value.trim();
                     
                     if (name && url) {
                         const linkData = { name, url };
                         if (icon) linkData.icon = icon;
-                        if (color) linkData.color = color;
                         links.push(linkData);
                     }
                 });
@@ -461,7 +430,6 @@
             const target = e.target.closest('button');
             if (!target) return;
             
-            // 修复：在执行任何操作前，先从页面收集最新的数据状态
             currentData = collectDataFromDOM();
 
             if (target.classList.contains('delete-group-btn')) {
@@ -478,13 +446,12 @@
                 if (!currentData[groupIndex].links) {
                     currentData[groupIndex].links = [];
                 }
-                currentData[groupIndex].links.push({ name: '', url: '', icon: '', color: '' });
+                currentData[groupIndex].links.push({ name: '', url: '', icon: '' });
                 render();
             }
         });
 
         addGroupBtn.addEventListener('click', () => {
-            // 修复：在执行任何操作前，先从页面收集最新的数据状态
             currentData = collectDataFromDOM();
             currentData.push({ title: '新分组', links: [] });
             render();
