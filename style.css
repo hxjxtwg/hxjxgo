@@ -62,7 +62,7 @@ header {
 .header-logo {
     width: 44px;
     height: 44px;
-    background-image: url('/my-logo.svg');
+    background-image: url('/logo.svg');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
