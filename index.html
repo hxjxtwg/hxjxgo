@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人导航</title>
-    <link rel="icon" href="/logo.svg">
+    <link rel="icon" href="/my-logo.svg">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,8 +25,8 @@
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="https://hxjx.webn.cc">首页</a></li>
-                    <li><a href="https://bg.363689.xyz">博客</a></li>
+                    <li><a href="#">首页</a></li>
+                    <li><a href="#">博客</a></li>
                     <li><a href="#">项目</a></li>
                     <li><a href="#">关于我</a></li>
                 </ul>
@@ -62,10 +62,24 @@
             }
         });
 
-        // Apply saved theme on page load
         const savedTheme = localStorage.getItem('theme') || 'dark';
         applyTheme(savedTheme);
         // --- End of Theme Switcher Logic ---
+
+        // 新增：将HEX颜色转换为带有透明度的RGBA颜色
+        function hexToRgba(hex, alpha) {
+            let r = 0, g = 0, b = 0;
+            if (hex.length === 4) {
+                r = "0x" + hex[1] + hex[1];
+                g = "0x" + hex[2] + hex[2];
+                b = "0x" + hex[3] + hex[3];
+            } else if (hex.length === 7) {
+                r = "0x" + hex[1] + hex[2];
+                g = "0x" + hex[3] + hex[4];
+                b = "0x" + hex[5] + hex[6];
+            }
+            return `rgba(${+r}, ${+g}, ${+b}, ${alpha})`;
+        }
 
 
         const defaultColors = [
@@ -109,7 +123,8 @@
                             linkElement.rel = 'noopener noreferrer';
                             
                             const cardColor = link.color || defaultColors[colorIndex % defaultColors.length];
-                            linkElement.style.backgroundColor = cardColor;
+                            // 更新：使用转换后的半透明颜色
+                            linkElement.style.backgroundColor = hexToRgba(cardColor, 0.4);
                             colorIndex++;
                             
                             const iconUrl = link.icon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
