@@ -107,7 +107,7 @@ h1 {
 }
 
 .card-group-title {
-    font-size: 1.1rem;
+    font-size: 1.0rem;
     font-weight: 600;
     color: var(--text-color);
     margin-bottom: 1rem;
@@ -229,6 +229,7 @@ h1 {
 
     body {
         background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/IMG_5251.JPG');
+        background-attachment: scroll; /* 修复：提高移动端兼容性 */
     }
 
     h1 {
