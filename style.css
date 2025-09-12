@@ -8,7 +8,7 @@
     /* 修复：深色模式下的卡片文字和背景 */
     --card-text-color: #ffffff;
     --card-border-color: rgba(255, 255, 255, 0.18);
-    --card-bg-color: rgba(0, 0, 0, 0.15); /* 再次调整：增加透明度 */
+    --card-bg-color: rgba(0, 0, 0, 0.05); /* 再次调整：增加透明度 */
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
@@ -22,7 +22,7 @@ body.light-mode {
     /* 修复：浅色模式下的卡片文字和背景 */
     --card-text-color: #000000;
     --card-border-color: rgba(0, 0, 0, 0.1);
-    --card-bg-color: rgba(255, 255, 255, 0.25); /* 再次调整：增加透明度 */
+    --card-bg-color: rgba(255, 255, 255, 0.15); /* 再次调整：增加透明度 */
     --card-text-shadow: none; /* 浅色模式下通常不需要文字阴影 */
 }
 
@@ -151,8 +151,8 @@ h1 {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     
     background: var(--card-bg-color);
-    backdrop-filter: blur(4px); /* 再次调整：大幅减小模糊度 */
-    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(1px); /* 再次调整：大幅减小模糊度 */
+    -webkit-backdrop-filter: blur(1px);
     border: 1px solid var(--card-border-color);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
