@@ -17,6 +17,7 @@
             --link-item-bg: #2a2a2a;
             --error-color: #cf6679;
             --success-color: #03dac6;
+            --drag-over-bg: rgba(187, 134, 252, 0.2);
         }
 
         body.light-mode {
@@ -28,6 +29,7 @@
             --input-bg-color: #f5f5f5;
             --input-border-color: #ccc;
             --link-item-bg: #eeeeee;
+            --drag-over-bg: rgba(98, 0, 238, 0.1);
         }
 
         body {
@@ -95,8 +97,17 @@
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, box-shadow 0.2s;
+            cursor: grab;
         }
+        .group-item.dragging {
+            opacity: 0.5;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .group-item.drag-over {
+            background-color: var(--drag-over-bg);
+        }
+
 
         .group-header {
             display: flex;
@@ -118,13 +129,20 @@
             border-radius: 6px;
             margin-bottom: 10px;
             background-color: var(--link-item-bg);
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, opacity 0.2s;
+            cursor: grab;
+        }
+        .link-item.dragging {
+            opacity: 0.5;
+        }
+        .link-item.drag-over {
+            background-color: var(--drag-over-bg);
         }
 
         .link-inputs {
             flex-grow: 1;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 调整布局以适应更少的输入框 */
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 10px;
         }
 
@@ -294,7 +312,6 @@
                 themeToggle.checked = false;
             }
         }
-
         themeToggle.addEventListener('change', () => {
             if (themeToggle.checked) {
                 localStorage.setItem('theme', 'light');
@@ -304,11 +321,8 @@
                 applyTheme('dark');
             }
         });
-
         const savedTheme = localStorage.getItem('theme') || 'dark';
         applyTheme(savedTheme);
-        // --- End of Theme Switcher Logic ---
-
 
         function showToast(message, isSuccess = true) {
             toast.textContent = message;
@@ -325,14 +339,12 @@
                 showToast('请输入密码', false);
                 return;
             }
-
             try {
                 const response = await fetch('/api/admin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password, action: 'GET' })
                 });
-
                 if (response.status === 401) {
                     showToast('密码错误', false);
                     return;
@@ -341,7 +353,6 @@
                     const errorText = await response.text();
                     throw new Error(errorText || '获取数据失败');
                 }
-
                 currentData = await response.json();
                 passwordContainer.style.display = 'none';
                 adminPanel.style.display = 'block';
@@ -351,7 +362,6 @@
                 showToast(error.message, false);
             }
         }
-
         loginBtn.addEventListener('click', handleLogin);
         passwordInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') handleLogin();
@@ -362,6 +372,8 @@
             currentData.forEach((group, groupIndex) => {
                 const groupItem = document.createElement('div');
                 groupItem.className = 'group-item';
+                groupItem.setAttribute('draggable', true);
+                groupItem.dataset.groupIndex = groupIndex;
                 groupItem.innerHTML = `
                     <div class="group-header">
                         <input type="text" class="group-title-input" value="${group.title || ''}" placeholder="分组标题">
@@ -369,7 +381,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
                         </button>
                     </div>
-                    <div class="links-container"></div>
+                    <div class="links-container" data-group-index="${groupIndex}"></div>
                     <button class="add-btn add-link-btn" data-group-index="${groupIndex}">添加链接</button>
                 `;
 
@@ -386,7 +398,9 @@
         function createLinkItem(groupIndex, linkIndex, link) {
             const linkItem = document.createElement('div');
             linkItem.className = 'link-item';
-            
+            linkItem.setAttribute('draggable', true);
+            linkItem.dataset.groupIndex = groupIndex;
+            linkItem.dataset.linkIndex = linkIndex;
             linkItem.innerHTML = `
                 <div class="link-inputs">
                     <input type="text" class="link-name" value="${link.name || ''}" placeholder="名称">
@@ -397,22 +411,18 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
                 </button>
             `;
-            
             return linkItem;
         }
 
         function collectDataFromDOM() {
             const newGroups = [];
-            const groupElements = document.querySelectorAll('.group-item');
-            groupElements.forEach(groupEl => {
+            document.querySelectorAll('.group-item').forEach(groupEl => {
                 const title = groupEl.querySelector('.group-title-input').value.trim();
                 const links = [];
-                const linkElements = groupEl.querySelectorAll('.link-item');
-                linkElements.forEach(linkEl => {
+                groupEl.querySelectorAll('.link-item').forEach(linkEl => {
                     const name = linkEl.querySelector('.link-name').value.trim();
                     const url = linkEl.querySelector('.link-url').value.trim();
                     const icon = linkEl.querySelector('.link-icon').value.trim();
-                    
                     if (name && url) {
                         const linkData = { name, url };
                         if (icon) linkData.icon = icon;
@@ -429,26 +439,20 @@
         groupsContainer.addEventListener('click', (e) => {
             const target = e.target.closest('button');
             if (!target) return;
-            
             currentData = collectDataFromDOM();
-
             if (target.classList.contains('delete-group-btn')) {
                 const groupIndex = parseInt(target.dataset.groupIndex);
                 currentData.splice(groupIndex, 1);
-                render();
             } else if (target.classList.contains('delete-link-btn')) {
                 const groupIndex = parseInt(target.dataset.groupIndex);
                 const linkIndex = parseInt(target.dataset.linkIndex);
                 currentData[groupIndex].links.splice(linkIndex, 1);
-                render();
             } else if (target.classList.contains('add-link-btn')) {
                 const groupIndex = parseInt(target.dataset.groupIndex);
-                if (!currentData[groupIndex].links) {
-                    currentData[groupIndex].links = [];
-                }
+                if (!currentData[groupIndex].links) currentData[groupIndex].links = [];
                 currentData[groupIndex].links.push({ name: '', url: '', icon: '' });
-                render();
             }
+            render();
         });
 
         addGroupBtn.addEventListener('click', () => {
@@ -463,13 +467,9 @@
                 const response = await fetch('/api/admin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        password: passwordInput.value,
-                        action: 'SET',
-                        data: newData
-                    })
+                    body: JSON.stringify({ password: passwordInput.value, action: 'SET', data: newData })
                 });
-                 if (!response.ok) {
+                if (!response.ok) {
                     const errorText = await response.text();
                     throw new Error(errorText || '保存失败');
                 }
@@ -478,6 +478,61 @@
             } catch (error) {
                 showToast(error.message, false);
             }
+        });
+
+        // --- Drag and Drop Logic ---
+        let draggedItem = null;
+
+        groupsContainer.addEventListener('dragstart', (e) => {
+            draggedItem = e.target;
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        });
+
+        groupsContainer.addEventListener('dragend', (e) => {
+            e.target.classList.remove('dragging');
+        });
+
+        groupsContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const target = e.target.closest('.group-item, .link-item');
+            if (target && target !== draggedItem) {
+                document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+                target.classList.add('drag-over');
+            }
+        });
+
+        groupsContainer.addEventListener('dragleave', (e) => {
+            e.target.closest('.group-item, .link-item')?.classList.remove('drag-over');
+        });
+
+        groupsContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+            const dropTarget = e.target.closest('.group-item, .link-item');
+            if (!dropTarget || dropTarget === draggedItem) return;
+
+            currentData = collectDataFromDOM(); // Get latest state before reordering
+
+            // Reorder groups
+            if (draggedItem.classList.contains('group-item') && dropTarget.classList.contains('group-item')) {
+                const fromIndex = parseInt(draggedItem.dataset.groupIndex);
+                const toIndex = parseInt(dropTarget.dataset.groupIndex);
+                const [movedGroup] = currentData.splice(fromIndex, 1);
+                currentData.splice(toIndex, 0, movedGroup);
+            }
+            // Reorder links within the same group
+            else if (draggedItem.classList.contains('link-item') && dropTarget.classList.contains('link-item')) {
+                const fromGroupIndex = parseInt(draggedItem.dataset.groupIndex);
+                const toGroupIndex = parseInt(dropTarget.dataset.groupIndex);
+                if (fromGroupIndex === toGroupIndex) {
+                    const fromLinkIndex = Array.from(draggedItem.parentNode.children).indexOf(draggedItem);
+                    const toLinkIndex = Array.from(dropTarget.parentNode.children).indexOf(dropTarget);
+                    const group = currentData[fromGroupIndex];
+                    const [movedLink] = group.links.splice(fromLinkIndex, 1);
+                    group.links.splice(toLinkIndex, 0, movedLink);
+                }
+            }
+            render();
         });
     </script>
 </body>
