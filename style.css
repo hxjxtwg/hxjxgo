@@ -5,10 +5,9 @@
     --text-color: #e0e0e0;
     --text-secondary-color: #a0a0a0;
     --border-color: #333;
-    /* 修复：深色模式下的卡片文字和背景 */
     --card-text-color: #ffffff;
     --card-border-color: rgba(255, 255, 255, 0.18);
-    --card-bg-color: rgba(0, 0, 0, 0.45); /* 调整：降低透明度 */
+    --card-bg-color: rgba(0, 0, 0, 0.35);
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
@@ -19,11 +18,10 @@ body.light-mode {
     --text-color: #000000;
     --text-secondary-color: #5f6368;
     --border-color: #e0e0e0;
-    /* 修复：浅色模式下的卡片文字和背景 */
     --card-text-color: #000000;
     --card-border-color: rgba(0, 0, 0, 0.1);
-    --card-bg-color: rgba(255, 255, 255, 0.5); /* 调整：降低透明度 */
-    --card-text-shadow: none; /* 浅色模式下通常不需要文字阴影 */
+    --card-bg-color: rgba(255, 255, 255, 0.5);
+    --card-text-shadow: none;
 }
 
 body {
@@ -31,10 +29,9 @@ body {
     margin: 0;
     color: var(--text-color);
     transition: color 0.3s;
-    background-color: var(--bg-color); /* 将背景颜色设置在body上 */
+    background-color: var(--bg-color);
 }
 
-/* 修复：使用伪元素创建兼容性更好的固定背景 */
 body::before {
     content: '';
     position: fixed;
@@ -42,8 +39,7 @@ body::before {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -1; /* 确保背景在内容之下 */
-    
+    z-index: -1;
     background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/wallpaper_1.jpg');
     background-size: cover;
     background-position: center;
@@ -81,7 +77,7 @@ header {
 }
 
 h1 {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     color: var(--text-color);
     margin: 0;
 }
@@ -148,18 +144,20 @@ h1 {
     height: 110px;
     box-sizing: border-box;
     text-align: center;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     
     background: var(--card-bg-color);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--card-border-color);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    /* 新增：3D效果样式 */
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
 }
 
 .link-group a:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
 .card-icon {
@@ -239,7 +237,6 @@ h1 {
     }
 
     body::before {
-        /* 修复：为手机设置不同的背景图片 */
         background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/IMG_5251.JPG');
     }
 
