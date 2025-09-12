@@ -490,6 +490,7 @@
 
         groupsContainer.addEventListener('dragend', (e) => {
             e.target.classList.remove('dragging');
+            draggedItem = null;
         });
 
         groupsContainer.addEventListener('dragover', (e) => {
@@ -509,30 +510,44 @@
             e.preventDefault();
             document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
             const dropTarget = e.target.closest('.group-item, .link-item');
-            if (!dropTarget || dropTarget === draggedItem) return;
+            if (!dropTarget || !draggedItem || dropTarget === draggedItem) {
+                return;
+            }
 
-            currentData = collectDataFromDOM(); // Get latest state before reordering
+            currentData = collectDataFromDOM();
 
-            // Reorder groups
             if (draggedItem.classList.contains('group-item') && dropTarget.classList.contains('group-item')) {
-                const fromIndex = parseInt(draggedItem.dataset.groupIndex);
-                const toIndex = parseInt(dropTarget.dataset.groupIndex);
-                const [movedGroup] = currentData.splice(fromIndex, 1);
-                currentData.splice(toIndex, 0, movedGroup);
-            }
-            // Reorder links within the same group
-            else if (draggedItem.classList.contains('link-item') && dropTarget.classList.contains('link-item')) {
-                const fromGroupIndex = parseInt(draggedItem.dataset.groupIndex);
-                const toGroupIndex = parseInt(dropTarget.dataset.groupIndex);
-                if (fromGroupIndex === toGroupIndex) {
-                    const fromLinkIndex = Array.from(draggedItem.parentNode.children).indexOf(draggedItem);
-                    const toLinkIndex = Array.from(dropTarget.parentNode.children).indexOf(dropTarget);
-                    const group = currentData[fromGroupIndex];
-                    const [movedLink] = group.links.splice(fromLinkIndex, 1);
-                    group.links.splice(toLinkIndex, 0, movedLink);
+                const fromIndex = Array.from(groupsContainer.children).indexOf(draggedItem);
+                const toIndex = Array.from(groupsContainer.children).indexOf(dropTarget);
+                if (fromIndex > -1 && toIndex > -1) {
+                    const [movedGroup] = currentData.splice(fromIndex, 1);
+                    currentData.splice(toIndex, 0, movedGroup);
                 }
+            } else if (draggedItem.classList.contains('link-item')) {
+                const fromGroupEl = draggedItem.closest('.group-item');
+                const fromGroupIndex = Array.from(groupsContainer.children).indexOf(fromGroupEl);
+                const fromLinkIndex = Array.from(draggedItem.parentNode.children).indexOf(draggedItem);
+
+                const [movedLink] = currentData[fromGroupIndex].links.splice(fromLinkIndex, 1);
+
+                const targetGroupEl = dropTarget.closest('.group-item');
+                const toGroupIndex = Array.from(groupsContainer.children).indexOf(targetGroupEl);
+
+                let toLinkIndex;
+                if (dropTarget.classList.contains('link-item')) {
+                    toLinkIndex = Array.from(dropTarget.parentNode.children).indexOf(dropTarget);
+                } else {
+                    toLinkIndex = currentData[toGroupIndex].links.length;
+                }
+                
+                if (!currentData[toGroupIndex].links) {
+                    currentData[toGroupIndex].links = [];
+                }
+                currentData[toGroupIndex].links.splice(toLinkIndex, 0, movedLink);
             }
+            
             render();
+            draggedItem = null;
         });
     </script>
 </body>
