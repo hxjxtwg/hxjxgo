@@ -8,7 +8,7 @@
     /* 修复：深色模式下的卡片文字和背景 */
     --card-text-color: #ffffff;
     --card-border-color: rgba(255, 255, 255, 0.18);
-    --card-bg-color: rgba(0, 0, 0, 0.35); /* 再次调整：增加透明度 */
+    --card-bg-color: rgba(0, 0, 0, 0.65); /* 再次调整：增加透明度 */
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
@@ -22,7 +22,7 @@ body.light-mode {
     /* 修复：浅色模式下的卡片文字和背景 */
     --card-text-color: #000000;
     --card-border-color: rgba(0, 0, 0, 0.1);
-    --card-bg-color: rgba(255, 255, 255, 0.45); /* 再次调整：增加透明度 */
+    --card-bg-color: rgba(255, 255, 255, 0.75); /* 再次调整：增加透明度 */
     --card-text-shadow: none; /* 浅色模式下通常不需要文字阴影 */
 }
 
