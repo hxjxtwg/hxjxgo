@@ -240,6 +240,7 @@ h1 {
 
     body::before {
         background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/IMG_5251.JPG');
+        background-attachment: scroll; /* 新增：修复移动端背景闪烁和缩放问题 */
     }
 
     h1 {
@@ -264,4 +265,5 @@ h1 {
         font-size: 0.9rem;
     }
 }
+
 
