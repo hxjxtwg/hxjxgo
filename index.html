@@ -39,30 +39,23 @@
         const themeToggle = document.getElementById('theme-toggle');
         const mainNavUl = document.getElementById('main-nav-ul');
         const mainTitle = document.getElementById('main-title');
-        let mainNavItems = []; // 将从API获取
+        let navigationData = [];
 
         // --- Theme Switcher Logic ---
         function applyTheme(theme) {
-            if (theme === 'light') {
-                document.body.classList.add('light-mode');
-                themeToggle.checked = true;
-            } else {
-                document.body.classList.remove('light-mode');
-                themeToggle.checked = false;
-            }
+            document.body.classList.toggle('light-mode', theme === 'light');
+            themeToggle.checked = theme === 'light';
         }
         themeToggle.addEventListener('change', () => {
             const theme = themeToggle.checked ? 'light' : 'dark';
             localStorage.setItem('theme', theme);
             applyTheme(theme);
         });
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        applyTheme(savedTheme);
+        applyTheme(localStorage.getItem('theme') || 'dark');
         
         // --- 3D Tilt Effect Logic ---
         function applyTiltEffect() {
-            const cards = document.querySelectorAll('.link-group a');
-            cards.forEach(card => {
+            document.querySelectorAll('.link-group a').forEach(card => {
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
                     const x = e.clientX - rect.left;
@@ -82,61 +75,68 @@
         /**
          * 加载并渲染指定分类的链接
          */
-        async function loadCategory(categoryKey, categoryName) {
+        function loadCategory(menuItem) {
             linksContainer.innerHTML = '<p class="placeholder">正在加载...</p>';
-            mainTitle.textContent = categoryName;
-            document.title = `${categoryName} - 个人导航`;
+            mainTitle.textContent = menuItem.name;
+            document.title = `${menuItem.name} - 个人导航`;
 
             document.querySelectorAll('.main-nav a').forEach(a => {
-                a.classList.toggle('active', a.dataset.key === categoryKey);
+                a.classList.toggle('active', a.dataset.id === menuItem.id);
             });
 
-            try {
-                const response = await fetch(`/api/links?cat=${categoryKey}`);
-                if (!response.ok) throw new Error('网络响应错误');
-                const linkData = await response.json();
-
-                if (!linkData.groups || linkData.groups.length === 0) {
-                    linksContainer.innerHTML = '<p class="placeholder">暂无数据，请先前往后台添加。</p>';
-                    return;
+            linksContainer.innerHTML = '';
+            
+            (menuItem.children || []).forEach(child => {
+                let group;
+                if(child.type === 'submenu') {
+                    group = { title: child.name, links: child.children || [] };
+                } else if(child.type === 'card') {
+                    // 将直属卡片放入一个默认分组
+                    group = { title: '快捷访问', links: [child] };
                 }
 
-                linksContainer.innerHTML = ''; 
-                linkData.groups.forEach(group => {
+                const existingGroupDiv = linksContainer.querySelector(`.link-group[data-group-title="${group.title}"]`);
+
+                if (existingGroupDiv) {
+                     const cardList = existingGroupDiv.querySelector('ul');
+                     (group.links || []).filter(link => link.type === 'card').forEach(link => cardList.appendChild(createCardElement(link)));
+                } else {
                     const groupDiv = document.createElement('div');
                     groupDiv.className = 'link-group';
-                    const title = document.createElement('h2');
-                    title.className = 'card-group-title';
-                    title.textContent = group.title;
-                    groupDiv.appendChild(title);
+                    groupDiv.dataset.groupTitle = group.title;
+
+                    const titleEl = document.createElement('h2');
+                    titleEl.className = 'card-group-title';
+                    titleEl.textContent = group.title;
+                    groupDiv.appendChild(titleEl);
 
                     const cardList = document.createElement('ul');
-                    if(Array.isArray(group.links)) {
-                        group.links.forEach(link => {
-                            const cardItem = document.createElement('li');
-                            const linkElement = document.createElement('a');
-                            linkElement.href = link.url;
-                            linkElement.target = '_blank';
-                            linkElement.rel = 'noopener noreferrer';
-                            const iconUrl = link.icon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
-                            linkElement.innerHTML = `
-                                <div class="card-icon" style="background-image: url('${iconUrl}')"></div>
-                                <span class="card-name">${link.name}</span>
-                            `;
-                            cardItem.appendChild(linkElement);
-                            cardList.appendChild(cardItem);
-                        });
-                    }
+                    (group.links || []).filter(link => link.type === 'card').forEach(link => cardList.appendChild(createCardElement(link)));
                     groupDiv.appendChild(cardList);
                     linksContainer.appendChild(groupDiv);
-                });
-                
-                applyTiltEffect();
+                }
+            });
 
-            } catch (error) {
-                console.error('加载链接失败:', error);
-                linksContainer.innerHTML = '<p class="placeholder error">加载数据失败，请检查网络或后台配置。</p>';
+            if (linksContainer.innerHTML === '') {
+                linksContainer.innerHTML = '<p class="placeholder">该分类下暂无内容。</p>';
             }
+            
+            applyTiltEffect();
+        }
+
+        function createCardElement(link) {
+            const cardItem = document.createElement('li');
+            const linkElement = document.createElement('a');
+            linkElement.href = link.url;
+            linkElement.target = '_blank';
+            linkElement.rel = 'noopener noreferrer';
+            const iconUrl = link.icon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
+            linkElement.innerHTML = `
+                <div class="card-icon" style="background-image: url('${iconUrl}')"></div>
+                <span class="card-name">${link.name}</span>
+            `;
+            cardItem.appendChild(linkElement);
+            return cardItem;
         }
 
         /**
@@ -144,15 +144,16 @@
          */
         function renderMainNav() {
             mainNavUl.innerHTML = '';
-            mainNavItems.forEach(item => {
+            navigationData.forEach(item => {
+                if (item.type !== 'menu') return;
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 a.href = '#';
                 a.textContent = item.name;
-                a.dataset.key = item.key;
+                a.dataset.id = item.id;
                 a.addEventListener('click', (e) => {
                     e.preventDefault();
-                    loadCategory(item.key, item.name);
+                    loadCategory(item);
                 });
                 li.appendChild(a);
                 mainNavUl.appendChild(li);
@@ -164,22 +165,16 @@
          */
         async function initialize() {
             try {
-                // 首先获取主导航配置
-                const response = await fetch('/api/links?cat=main_nav_config');
-                if (!response.ok) throw new Error('获取主导航配置失败');
-                mainNavItems = await response.json();
+                const response = await fetch('/api/links');
+                if (!response.ok) throw new Error('获取导航数据失败');
+                navigationData = await response.json();
                 
-                if (mainNavItems.length === 0) {
+                if (navigationData.length === 0) {
                     linksContainer.innerHTML = '<p class="placeholder">导航菜单为空，请先前往后台配置。</p>';
                     return;
                 }
-
-                // 渲染主导航
                 renderMainNav();
-
-                // 加载默认分类
-                const defaultCategory = mainNavItems[0];
-                loadCategory(defaultCategory.key, defaultCategory.name);
+                loadCategory(navigationData[0]);
 
             } catch(error) {
                 console.error('初始化失败:', error);
@@ -188,7 +183,6 @@
         }
 
         initialize();
-
     </script>
 </body>
 </html>
