@@ -18,7 +18,7 @@
                 <div class="theme-switcher">
                     <input type="checkbox" id="theme-toggle">
                     <label for="theme-toggle">
-                        <svg class="sun-icon" xmlns="http://www.w.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                         <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                     </label>
                 </div>
@@ -88,19 +88,16 @@
             
             if (!currentSearchEngine) currentSearchEngine = searchEngines[0];
 
-            // Render Tabs
             searchTabsContainer.innerHTML = searchEngines.map(engine => `
                 <div class="search-tab" data-key="${engine.key}">
-                    <img src="${engine.icon}" alt="${engine.name}">
                     <span>${engine.name}</span>
                 </div>
             `).join('');
 
-            // Render Input Box
             searchInputWrapper.innerHTML = `
                 <input type="text" id="search-input" class="search-input" placeholder="搜索...">
                 <button id="search-button" class="search-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 </button>
             `;
 
@@ -138,48 +135,14 @@
             updateActiveTab();
         }
 
-        // --- Category Loading ---
-        function loadCategory(menuItem) { /* ... (same as before) ... */ }
-        function createCardElement(link) { /* ... (same as before) ... */ }
-        function renderMainNav() { /* ... (same as before) ... */ }
-        
-        // --- Initialize ---
-        async function initialize() {
-            try {
-                const response = await fetch('/api/links');
-                if (!response.ok) throw new Error('获取导航数据失败');
-                const appData = await response.json();
-                
-                navigationData = appData.navigation || [];
-                searchEngines = appData.search_engines || [];
-
-                renderSearch();
-                renderMainNav();
-                
-                if (navigationData.length > 0) {
-                    loadCategory(navigationData[0]);
-                } else {
-                    linksContainer.innerHTML = '<p class="placeholder">导航菜单为空，请先前往后台配置。</p>';
-                }
-
-            } catch(error) {
-                console.error('初始化失败:', error);
-                linksContainer.innerHTML = `<p class="placeholder error">${error.message}</p>`;
-            }
-        }
-        
-        // --- Full function implementations ---
+        // --- Category Loading & Rendering ---
         function loadCategory(menuItem) {
             linksContainer.innerHTML = '';
             mainTitle.textContent = menuItem.name;
             document.title = `${menuItem.name} - 个人导航`;
 
             document.querySelectorAll('.main-nav a').forEach(a => {
-                a.classList.toggle('active', a.dataset.id === menuItem.id);
-                 const parentLi = a.closest('li.dropdown');
-                if(parentLi && a.classList.contains('active')) {
-                     parentLi.querySelector('.nav-link').classList.add('active');
-                }
+                a.classList.toggle('active', a.dataset.id === menuItem.id || a.dataset.parentId === menuItem.id);
             });
 
             const allCards = [];
@@ -203,11 +166,7 @@
             const groupDiv = document.createElement('div');
             groupDiv.className = 'link-group';
             const cardList = document.createElement('ul');
-
-            allCards.forEach(link => {
-                cardList.appendChild(createCardElement(link));
-            });
-
+            allCards.forEach(link => cardList.appendChild(createCardElement(link)));
             groupDiv.appendChild(cardList);
             linksContainer.appendChild(groupDiv);
             
@@ -246,7 +205,10 @@
                     a.innerHTML += ' &#9662;';
                     a.addEventListener('click', (e) => {
                         e.preventDefault();
-                        e.currentTarget.nextElementSibling.classList.toggle('show');
+                        const dropdown = e.currentTarget.nextElementSibling;
+                        const isVisible = dropdown.classList.contains('show');
+                        document.querySelectorAll('.dropdown-content.show').forEach(d => d.classList.remove('show'));
+                        if (!isVisible) dropdown.classList.add('show');
                     });
                     
                     const dropdownContent = document.createElement('ul');
@@ -258,6 +220,7 @@
                         submenuA.href = '#';
                         submenuA.textContent = submenu.name;
                         submenuA.dataset.id = submenu.id;
+                        submenuA.dataset.parentId = item.id;
                         submenuA.addEventListener('click', (e) => {
                             e.preventDefault();
                             loadCategory(submenu);
@@ -267,7 +230,6 @@
                     });
                     li.appendChild(a);
                     li.appendChild(dropdownContent);
-
                 } else {
                     a.addEventListener('click', (e) => {
                         e.preventDefault();
@@ -287,6 +249,29 @@
             }
         }
         
+        async function initialize() {
+            try {
+                const response = await fetch('/api/links');
+                if (!response.ok) throw new Error('获取导航数据失败');
+                const appData = await response.json();
+                
+                navigationData = appData.navigation || [];
+                searchEngines = appData.search_engines || [];
+
+                renderSearch();
+                renderMainNav();
+                
+                if (navigationData.length > 0) {
+                    loadCategory(navigationData[0]);
+                } else {
+                    linksContainer.innerHTML = '<p class="placeholder">导航菜单为空，请先前往后台配置。</p>';
+                }
+            } catch(error) {
+                console.error('初始化失败:', error);
+                linksContainer.innerHTML = `<p class="placeholder error">${error.message}</p>`;
+            }
+        }
+
         initialize();
     </script>
 </body>
