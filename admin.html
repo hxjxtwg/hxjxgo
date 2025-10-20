@@ -72,8 +72,10 @@
         .tree-item[data-type="submenu"] .item-inputs {
             grid-template-columns: 1fr;
         }
+        /* 修复：为卡片输入框设置固定的比例和最小宽度 */
         .tree-item[data-type="card"] .item-inputs {
-            grid-template-columns: 2fr 4fr 4fr;
+            grid-template-columns: 2fr 4fr 4fr; /* 名称:URL:图标 的比例 (2:4:4) */
+            min-width: 500px; /* 强制展开以保证足够长度 */
         }
     </style>
 </head>
@@ -219,7 +221,7 @@
             li.setAttribute('draggable', true);
 
             let inputs = (item.type === 'card')
-                ? `<div class="tree-item-inputs">
+                ? `<div class="item-inputs">
                        <input class="item-name" value="${item.name || ''}" placeholder="卡片名称">
                        <input class="item-url" value="${item.url || ''}" placeholder="URL">
                        <input class="item-icon" value="${item.icon || ''}" placeholder="图标 (可选)">
