@@ -64,6 +64,11 @@
         .tree-item-content { display: flex; align-items: center; gap: 10px; }
         .item-controls { display: flex; gap: 5px; }
         .item-controls button { padding: 4px 8px; font-size: 0.8rem; }
+
+        /* 新增：为卡片输入框设置特定的网格布局 */
+        .tree-item[data-type="card"] .tree-item-inputs {
+            grid-template-columns: 2fr 3fr 3fr; /* 名称:URL:图标 的比例 */
+        }
     </style>
 </head>
 <body>
@@ -249,7 +254,6 @@
                 const key = el.querySelector('.engine-key').value.trim();
                 const icon = el.querySelector('.engine-icon').value.trim();
                 const url = el.querySelector('.engine-url').value.trim();
-                // 修复：移除严格的检查，确保即使是未填写的项目也能被保存
                 newSearchEngines.push({ name, key, icon, url });
             });
             appData.search_engines = newSearchEngines;
