@@ -287,7 +287,8 @@ body.light-mode .search-input {
 
 /* --- 响应式设计 --- */
 @media (max-width: 768px) {
-    body:has(#main-nav-ul)::before {
+    /* 修复：移除 :has() 选择器以提高兼容性 */
+    body::before {
         /* * --- 手机端背景图 ---
          * 修改这里的图片地址来更换手机端的背景。
          */
