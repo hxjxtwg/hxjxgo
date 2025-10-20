@@ -412,14 +412,18 @@
         treeContainer.addEventListener('dragend', handleDragEnd);
         treeContainer.addEventListener('dragover', (e) => {
              e.preventDefault();
-             // A simplified logic for tree dragover. A full library would be better.
-             const target = e.target.closest('li.tree-item');
+             const target = e.target.closest('li.tree-item, ul');
+             const placeholder = document.querySelector('.drag-placeholder') || createPlaceholder();
+             
+             if(target.tagName === 'UL') {
+                 target.appendChild(placeholder);
+                 return;
+             }
+
              if (target) {
                  const rect = target.getBoundingClientRect();
                  const offsetY = e.clientY - rect.top;
-                 const placeholder = document.querySelector('.drag-placeholder') || createPlaceholder();
                  
-                 // Basic placeholder logic
                  if (offsetY < rect.height / 2) {
                      target.parentNode.insertBefore(placeholder, target);
                  } else {
