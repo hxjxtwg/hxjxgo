@@ -5,10 +5,9 @@
     --text-color: #e0e0e0;
     --text-secondary-color: #a0a0a0;
     --border-color: #333;
-    /* 修复：深色模式下的卡片文字和背景 */
     --card-text-color: #ffffff;
     --card-border-color: rgba(255, 255, 255, 0.18);
-    --card-bg-color: rgba(0, 0, 0, 0.45); /* 再次调整：增加透明度 */
+    --card-bg-color: rgba(0, 0, 0, 0.45);
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
@@ -19,11 +18,10 @@ body.light-mode {
     --text-color: #000000;
     --text-secondary-color: #5f6368;
     --border-color: #e0e0e0;
-    /* 修复：浅色模式下的卡片文字和背景 */
     --card-text-color: #000000;
     --card-border-color: rgba(0, 0, 0, 0.1);
-    --card-bg-color: rgba(255, 255, 255, 0.55); /* 再次调整：增加透明度 */
-    --card-text-shadow: none; /* 浅色模式下通常不需要文字阴影 */
+    --card-bg-color: rgba(255, 255, 255, 0.55);
+    --card-text-shadow: none;
 }
 
 body {
@@ -31,10 +29,9 @@ body {
     margin: 0;
     color: var(--text-color);
     transition: color 0.3s;
-    background-color: var(--bg-color); /* 将背景颜色设置在body上 */
+    background-color: var(--bg-color);
 }
 
-/* 修复：使用伪元素创建兼容性更好的固定背景 (仅桌面端) */
 body::before {
     content: '';
     position: fixed;
@@ -42,8 +39,7 @@ body::before {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -1; /* 确保背景在内容之下 */
-    
+    z-index: -1;
     background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/wallpaper_1.jpg');
     background-size: cover;
     background-position: center;
@@ -106,25 +102,21 @@ h1 {
     text-decoration: none;
     color: var(--text-secondary-color);
     font-weight: 500;
-    transition: color 0.2s;
+    transition: color 0.2s, border-bottom-color 0.2s;
+    border-bottom: 2px solid transparent;
 }
 
 .main-nav li a:hover {
     color: var(--primary-color);
 }
 
-.link-group {
-    margin-bottom: 2rem;
+.main-nav li a.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
 }
 
-.card-group-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text-color);
-    margin-bottom: 1rem;
-    border-bottom: 2px solid var(--primary-color);
-    padding-bottom: 0.5rem;
-    display: inline-block;
+.link-group {
+    margin-top: 2rem;
 }
 
 .link-group ul {
@@ -148,18 +140,20 @@ h1 {
     height: 110px;
     box-sizing: border-box;
     text-align: center;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     
     background: var(--card-bg-color);
-    backdrop-filter: blur(1px); /* 再次调整：大幅减小模糊度 */
+    backdrop-filter: blur(1px);
     -webkit-backdrop-filter: blur(1px);
     border: 1px solid var(--card-border-color);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+    will-change: transform;
 }
 
 .link-group a:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
 .card-icon {
@@ -238,18 +232,9 @@ h1 {
         padding: 15px;
     }
 
-    /* 修复：针对iOS闪烁问题，彻底改变移动端背景实现方式 */
     body::before {
-        /* 在移动端隐藏伪元素背景 */
-        display: none; 
-    }
-
-    body {
-        /* 在移动端直接将背景应用到body，并确保其随页面滚动 */
         background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/IMG_5251.JPG');
         background-attachment: scroll;
-        background-size: cover;
-        background-position: center;
     }
 
     h1 {
@@ -259,10 +244,6 @@ h1 {
     .header-logo {
         width: 36px;
         height: 36px;
-    }
-
-    .card-group-title {
-        font-size: 1rem;
     }
 
     .link-group ul {
