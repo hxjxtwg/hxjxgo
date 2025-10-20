@@ -75,11 +75,6 @@
         .tree-item[data-type="card"] .item-inputs {
             grid-template-columns: 2fr 4fr 4fr;
         }
-
-        /* --- 临时视觉标记：如果您看到这个红色边框，说明您已加载最新文件 --- */
-        #tree-container.tree {
-            border: 2px solid red;
-        }
     </style>
 </head>
 <body>
@@ -131,7 +126,9 @@
         const addMenuBtn = document.getElementById('add-menu-btn');
         
         let appData = { navigation: [], search_engines: [] };
+        let draggedElement = null;
 
+        // --- Theme ---
         function applyTheme(theme) {
             document.body.classList.toggle('light-mode', theme === 'light');
             themeToggle.checked = theme === 'light';
@@ -143,6 +140,7 @@
         });
         applyTheme(localStorage.getItem('theme') || 'dark');
 
+        // --- Toast & API ---
         function showToast(message, isSuccess = true) {
             toast.textContent = message;
             toast.style.backgroundColor = isSuccess ? 'var(--success-color)' : 'var(--error-color)';
@@ -167,6 +165,7 @@
             if (action === 'GET') return response.json();
         }
 
+        // --- Login ---
         async function handleLogin() {
             try {
                 appData = await apiCall('GET');
@@ -182,6 +181,7 @@
         loginBtn.addEventListener('click', handleLogin);
         passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
         
+        // --- Renderers ---
         function renderSearchEngines() {
             searchEnginesContainer.innerHTML = '';
             (appData.search_engines || []).forEach((engine, index) => {
@@ -219,7 +219,7 @@
             li.setAttribute('draggable', true);
 
             let inputs = (item.type === 'card')
-                ? `<div class="item-inputs">
+                ? `<div class="tree-item-inputs">
                        <input class="item-name" value="${item.name || ''}" placeholder="卡片名称">
                        <input class="item-url" value="${item.url || ''}" placeholder="URL">
                        <input class="item-icon" value="${item.icon || ''}" placeholder="图标 (可选)">
@@ -253,6 +253,7 @@
             return li;
         }
 
+        // --- Data Sync ---
         function syncDataFromDOM() {
             const newSearchEngines = [];
             document.querySelectorAll('#search-engines-container .draggable-item').forEach(el => {
@@ -295,7 +296,8 @@
             }
         }
         
-        function addEngineBtn.addEventListener('click', () => {
+        // --- Manipulators ---
+        addEngineBtn.addEventListener('click', () => {
             syncDataFromDOM();
             if (!appData.search_engines) appData.search_engines = [];
             appData.search_engines.push({ name: '新引擎', key: `se_${Date.now()}`, icon: '', url: 'https://www.google.com/search?q={query}' });
@@ -355,6 +357,7 @@
             renderTree();
         }
 
+        // --- Save ---
         saveAllBtn.addEventListener('click', async () => {
             syncDataFromDOM();
             try {
@@ -364,6 +367,89 @@
         });
         
         Object.assign(window, { deleteEngine, addItem, deleteItem });
+
+        // --- Drag & Drop ---
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => draggedElement.classList.add('dragging'), 0);
+        }
+
+        function handleDragEnd(e) {
+            if (draggedElement) {
+                draggedElement.classList.remove('dragging');
+            }
+            document.querySelectorAll('.drag-placeholder').forEach(p => p.remove());
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            const placeholder = document.querySelector('.drag-placeholder') || createPlaceholder();
+            const target = e.target.closest('.draggable-item, .tree-item');
+            
+            if (!target || target === draggedElement) return;
+
+            const rect = target.getBoundingClientRect();
+            const offsetY = e.clientY - rect.top;
+            const parent = target.parentElement;
+            
+            if (offsetY < rect.height / 2) {
+                parent.insertBefore(placeholder, target);
+            } else {
+                parent.insertBefore(placeholder, target.nextSibling);
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const placeholder = document.querySelector('.drag-placeholder');
+            if (placeholder) {
+                placeholder.parentNode.replaceChild(draggedElement, placeholder);
+            }
+            draggedElement = null;
+        }
+
+        function createPlaceholder() {
+            const el = document.createElement('div');
+            el.className = 'drag-placeholder';
+            return el;
+        }
+
+        searchEnginesContainer.addEventListener('dragstart', handleDragStart);
+        searchEnginesContainer.addEventListener('dragend', handleDragEnd);
+        searchEnginesContainer.addEventListener('dragover', handleDragOver);
+        searchEnginesContainer.addEventListener('drop', handleDrop);
+
+        treeContainer.addEventListener('dragstart', handleDragStart);
+        treeContainer.addEventListener('dragend', handleDragEnd);
+        treeContainer.addEventListener('dragover', (e) => {
+             e.preventDefault();
+             const target = e.target.closest('li.tree-item, ul');
+             const placeholder = document.querySelector('.drag-placeholder') || createPlaceholder();
+             
+             if(target.tagName === 'UL') {
+                 target.appendChild(placeholder);
+                 return;
+             }
+
+             if (target) {
+                 const rect = target.getBoundingClientRect();
+                 const offsetY = e.clientY - rect.top;
+                 
+                 if (offsetY < rect.height / 2) {
+                     target.parentNode.insertBefore(placeholder, target);
+                 } else {
+                     let childrenUl = target.querySelector('ul');
+                     if (!childrenUl) {
+                         childrenUl = document.createElement('ul');
+                         target.appendChild(childrenUl);
+                     }
+                     childrenUl.prepend(placeholder);
+                 }
+             }
+        });
+        treeContainer.addEventListener('drop', handleDrop);
+
     </script>
 </body>
 </html>
