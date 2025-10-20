@@ -65,16 +65,20 @@
         .item-controls { display: flex; gap: 5px; }
         .item-controls button { padding: 4px 8px; font-size: 0.8rem; }
 
-        /* 更新：为不同类型的条目设置特定的网格布局 */
         #search-engines-container .item-inputs {
-            grid-template-columns: 2fr 1fr 3fr 4fr; /* 名称:Key:图标:URL */
+            grid-template-columns: 2fr 1fr 3fr 4fr;
         }
-        .tree-item[data-type="menu"] .tree-item-inputs,
-        .tree-item[data-type="submenu"] .tree-item-inputs {
-            grid-template-columns: 1fr; /* 菜单和二级菜单只有1个输入框 */
+        .tree-item[data-type="menu"] .item-inputs,
+        .tree-item[data-type="submenu"] .item-inputs {
+            grid-template-columns: 1fr;
         }
-        .tree-item[data-type="card"] .tree-item-inputs {
-            grid-template-columns: 2fr 4fr 4fr; /* 名称:URL:图标 的比例 (2:4:4) */
+        .tree-item[data-type="card"] .item-inputs {
+            grid-template-columns: 2fr 4fr 4fr;
+        }
+
+        /* --- 临时视觉标记：如果您看到这个红色边框，说明您已加载最新文件 --- */
+        #tree-container.tree {
+            border: 2px solid red;
         }
     </style>
 </head>
@@ -128,7 +132,6 @@
         
         let appData = { navigation: [], search_engines: [] };
 
-        // --- Theme ---
         function applyTheme(theme) {
             document.body.classList.toggle('light-mode', theme === 'light');
             themeToggle.checked = theme === 'light';
@@ -140,7 +143,6 @@
         });
         applyTheme(localStorage.getItem('theme') || 'dark');
 
-        // --- Toast & API ---
         function showToast(message, isSuccess = true) {
             toast.textContent = message;
             toast.style.backgroundColor = isSuccess ? 'var(--success-color)' : 'var(--error-color)';
@@ -165,7 +167,6 @@
             if (action === 'GET') return response.json();
         }
 
-        // --- Login ---
         async function handleLogin() {
             try {
                 appData = await apiCall('GET');
@@ -181,7 +182,6 @@
         loginBtn.addEventListener('click', handleLogin);
         passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
         
-        // --- Renderers ---
         function renderSearchEngines() {
             searchEnginesContainer.innerHTML = '';
             (appData.search_engines || []).forEach((engine, index) => {
@@ -219,7 +219,7 @@
             li.setAttribute('draggable', true);
 
             let inputs = (item.type === 'card')
-                ? `<div class="tree-item-inputs">
+                ? `<div class="item-inputs">
                        <input class="item-name" value="${item.name || ''}" placeholder="卡片名称">
                        <input class="item-url" value="${item.url || ''}" placeholder="URL">
                        <input class="item-icon" value="${item.icon || ''}" placeholder="图标 (可选)">
@@ -253,7 +253,6 @@
             return li;
         }
 
-        // --- Data Sync ---
         function syncDataFromDOM() {
             const newSearchEngines = [];
             document.querySelectorAll('#search-engines-container .draggable-item').forEach(el => {
@@ -296,8 +295,7 @@
             }
         }
         
-        // --- Manipulators ---
-        addEngineBtn.addEventListener('click', () => {
+        function addEngineBtn.addEventListener('click', () => {
             syncDataFromDOM();
             if (!appData.search_engines) appData.search_engines = [];
             appData.search_engines.push({ name: '新引擎', key: `se_${Date.now()}`, icon: '', url: 'https://www.google.com/search?q={query}' });
@@ -357,7 +355,6 @@
             renderTree();
         }
 
-        // --- Save ---
         saveAllBtn.addEventListener('click', async () => {
             syncDataFromDOM();
             try {
@@ -367,7 +364,6 @@
         });
         
         Object.assign(window, { deleteEngine, addItem, deleteItem });
-
     </script>
 </body>
 </html>
