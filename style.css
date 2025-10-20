@@ -78,11 +78,9 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     padding: 8px 12px;
     border-radius: 8px;
     cursor: pointer;
-    background: var(--card-bg-color);
+    background: transparent; /* 改动：背景完全透明 */
     border: 1px solid transparent;
     transition: background-color 0.2s, border-color 0.2s;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
 }
 .search-tab:hover {
     background: rgba(255,255,255,0.1);
@@ -94,6 +92,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .search-tab img {
     width: 20px;
     height: 20px;
+    display: none; /* 改动：隐藏图标 */
 }
 .search-tab span {
     color: var(--text-secondary-color);
@@ -110,7 +109,8 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 }
 .search-input {
     width: 100%;
-    background: var(--card-bg-color);
+    /* 改动：使用更透明的背景色 */
+    background: rgba(0, 0, 0, 0.25);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--card-border-color);
@@ -121,6 +121,9 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     outline: none;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
+}
+body.light-mode .search-input {
+    background: rgba(255, 255, 255, 0.4);
 }
 .search-button {
     position: absolute;
