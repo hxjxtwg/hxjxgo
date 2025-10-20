@@ -96,6 +96,10 @@ h1 {
     flex-wrap: wrap; 
 }
 
+.main-nav li {
+    position: relative; /* For dropdown positioning */
+}
+
 .main-nav li a {
     display: block;
     padding: 0.8rem 1rem;
@@ -104,6 +108,7 @@ h1 {
     font-weight: 500;
     transition: color 0.2s, border-bottom-color 0.2s;
     border-bottom: 2px solid transparent;
+    cursor: pointer;
 }
 
 .main-nav li a:hover {
@@ -113,6 +118,33 @@ h1 {
 .main-nav li a.active {
     color: var(--primary-color);
     border-bottom-color: var(--primary-color);
+}
+
+/* Dropdown Styles */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--surface-color);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    list-style: none;
+    padding: 0;
+    margin-top: -2px;
+    border-radius: 0 0 8px 8px;
+    border: 1px solid var(--border-color);
+    border-top: none;
+}
+.dropdown-content.show {
+    display: block;
+}
+.dropdown-content a {
+    padding: 12px 16px;
+    border-bottom: none !important;
+}
+.dropdown-content a.active {
+    color: var(--primary-color);
+    font-weight: bold;
 }
 
 .link-group {
