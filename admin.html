@@ -249,7 +249,8 @@
                 const key = el.querySelector('.engine-key').value.trim();
                 const icon = el.querySelector('.engine-icon').value.trim();
                 const url = el.querySelector('.engine-url').value.trim();
-                if(name && key && icon && url) newSearchEngines.push({ name, key, icon, url });
+                // 修复：移除严格的检查，确保即使是未填写的项目也能被保存
+                newSearchEngines.push({ name, key, icon, url });
             });
             appData.search_engines = newSearchEngines;
 
@@ -288,6 +289,7 @@
         // --- Manipulators ---
         addEngineBtn.addEventListener('click', () => {
             syncDataFromDOM();
+            if (!appData.search_engines) appData.search_engines = [];
             appData.search_engines.push({ name: '新引擎', key: `se_${Date.now()}`, icon: '', url: 'https://www.google.com/search?q={query}' });
             renderSearchEngines();
         });
