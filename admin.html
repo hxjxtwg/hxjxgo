@@ -73,7 +73,16 @@
         </div>
 
         <div id="admin-panel">
-            <div class="admin-header"><h1>导航管理后台</h1><div class="theme-switcher">...</div></div>
+            <div class="admin-header">
+                <h1>导航管理后台</h1>
+                <div class="theme-switcher">
+                    <input type="checkbox" id="theme-toggle">
+                    <label for="theme-toggle">
+                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </label>
+                </div>
+            </div>
 
             <div class="section">
                 <div class="section-header"><h2>结构编辑器</h2><button class="add-btn" id="add-menu-btn">添加主菜单</button></div>
@@ -99,13 +108,42 @@
         let navigationData = [];
 
         // --- Theme ---
-        function applyTheme(theme) { /* ... */ }
-        themeToggle.addEventListener('change', () => { /* ... */ });
+        function applyTheme(theme) {
+            document.body.classList.toggle('light-mode', theme === 'light');
+            themeToggle.checked = theme === 'light';
+        }
+        themeToggle.addEventListener('change', () => {
+            const theme = themeToggle.checked ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+            applyTheme(theme);
+        });
         applyTheme(localStorage.getItem('theme') || 'dark');
 
         // --- Toast & API ---
-        function showToast(message, isSuccess = true) { /* ... */ }
-        async function apiCall(action, data = null) { /* ... */ }
+        function showToast(message, isSuccess = true) {
+            toast.textContent = message;
+            toast.style.backgroundColor = isSuccess ? 'var(--success-color)' : 'var(--error-color)';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        
+        async function apiCall(action, data = null) {
+            const password = passwordInput.value;
+            const body = { password, action, key: 'navigation_data', data }; // Simplified key
+            if (data === null) delete body.data;
+
+            const response = await fetch('/api/admin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (response.status === 401) throw new Error('密码错误');
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || `${action} action failed`);
+            }
+            if (action === 'GET') return response.json();
+        }
 
         // --- Login ---
         async function handleLogin() {
@@ -129,10 +167,57 @@
             treeContainer.appendChild(rootUl);
         }
 
-        function createTreeItem(item) { /* ... same as before ... */ }
+        function createTreeItem(item) {
+            const li = document.createElement('li');
+            li.className = 'tree-item';
+            li.dataset.id = item.id;
+            li.dataset.type = item.type;
+            li.setAttribute('draggable', true);
+
+            let inputs = (item.type === 'card')
+                ? `<input class="item-name" value="${item.name || ''}" placeholder="卡片名称">
+                   <input class="item-url" value="${item.url || ''}" placeholder="URL">
+                   <input class="item-icon" value="${item.icon || ''}" placeholder="图标 (可选)">`
+                : `<input class="item-name" value="${item.name || ''}" placeholder="菜单名称">`;
+            
+            let controls = '';
+            if (item.type === 'menu') {
+                controls = `<button class="add-btn" onclick="addItem('${item.id}', 'submenu')">＋二级菜单</button>
+                            <button class="add-btn" onclick="addItem('${item.id}', 'card')">＋卡片</button>`;
+            } else if (item.type === 'submenu') {
+                controls = `<button class="add-btn" onclick="addItem('${item.id}', 'card')">＋卡片</button>`;
+            }
+            
+            li.innerHTML = `
+                <div class="tree-item-content">
+                    <span class="handle">☰</span>
+                    <div class="tree-item-inputs">${inputs}</div>
+                    <div class="item-controls">
+                        ${controls}
+                        <button class="delete-btn" onclick="deleteItem('${item.id}')">X</button>
+                    </div>
+                </div>
+            `;
+
+            if (item.children && item.children.length > 0) {
+                const childrenUl = document.createElement('ul');
+                item.children.forEach(child => childrenUl.appendChild(createTreeItem(child)));
+                li.appendChild(childrenUl);
+            }
+            return li;
+        }
 
         // --- Tree Manipulation ---
-        function findItem(data, id) { /* ... same as before ... */ }
+        function findItem(data, id) {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].id === id) return { item: data[i] };
+                if (data[i].children) {
+                    const found = findItem(data[i].children, id);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
 
         function addItem(parentId, type) {
             syncDataFromDOM();
@@ -197,12 +282,11 @@
                 }
                 return items;
             }
-            // 修复：检查 rootUl 是否存在
             const rootUl = treeContainer.querySelector('ul');
             if (rootUl) {
                 navigationData = buildData(rootUl);
             } else {
-                navigationData = []; // 如果UI为空，则重置数据
+                navigationData = [];
             }
         }
 
@@ -214,62 +298,8 @@
             } catch (error) { showToast(error.message, false); }
         });
 
-        // --- Drag & Drop ---
-        // ... (Full implementation from previous version) ...
-
         // Functions exposed to global scope for onclick attributes
         Object.assign(window, { addItem, deleteItem });
-        
-        // Stubs for brevity
-        function createTreeItem(item) {
-            const li = document.createElement('li');
-            li.className = 'tree-item';
-            li.dataset.id = item.id;
-            li.dataset.type = item.type;
-            li.setAttribute('draggable', true);
-
-            let inputs = (item.type === 'card')
-                ? `<input class="item-name" value="${item.name || ''}" placeholder="卡片名称">
-                   <input class="item-url" value="${item.url || ''}" placeholder="URL">
-                   <input class="item-icon" value="${item.icon || ''}" placeholder="图标 (可选)">`
-                : `<input class="item-name" value="${item.name || ''}" placeholder="菜单名称">`;
-            
-            let controls = '';
-            if (item.type === 'menu') {
-                controls = `<button class="add-btn" onclick="addItem('${item.id}', 'submenu')">＋二级菜单</button>
-                            <button class="add-btn" onclick="addItem('${item.id}', 'card')">＋卡片</button>`;
-            } else if (item.type === 'submenu') {
-                controls = `<button class="add-btn" onclick="addItem('${item.id}', 'card')">＋卡片</button>`;
-            }
-            
-            li.innerHTML = `
-                <div class="tree-item-content">
-                    <span class="handle">☰</span>
-                    <div class="tree-item-inputs">${inputs}</div>
-                    <div class="item-controls">
-                        ${controls}
-                        <button class="delete-btn" onclick="deleteItem('${item.id}')">X</button>
-                    </div>
-                </div>
-            `;
-
-            if (item.children && item.children.length > 0) {
-                const childrenUl = document.createElement('ul');
-                item.children.forEach(child => childrenUl.appendChild(createTreeItem(child)));
-                li.appendChild(childrenUl);
-            }
-            return li;
-        }
-        function findItem(data, id) {
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].id === id) return { item: data[i] };
-                if (data[i].children) {
-                    const found = findItem(data[i].children, id);
-                    if (found) return found;
-                }
-            }
-            return null;
-        }
 
     </script>
 </body>
