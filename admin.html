@@ -14,12 +14,11 @@
             --border-color: #333;
             --input-bg-color: #333;
             --input-border-color: #444;
-            --link-item-bg: #2a2a2a;
+            --item-bg-color: #2a2a2a;
             --error-color: #cf6679;
             --success-color: #03dac6;
             --drag-over-bg: rgba(187, 134, 252, 0.2);
         }
-
         body.light-mode {
             --bg-color: #f0f2f5;
             --surface-color: #ffffff;
@@ -28,241 +27,43 @@
             --border-color: #e0e0e0;
             --input-bg-color: #f5f5f5;
             --input-border-color: #ccc;
-            --link-item-bg: #eeeeee;
+            --item-bg-color: #eeeeee;
             --drag-over-bg: rgba(98, 0, 238, 0.1);
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: auto;
-        }
-        
-        h1, h2 {
-            color: var(--primary-color);
-        }
-
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #password-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 80vh;
-        }
-        
-        #password-container input {
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 1rem;
-            width: 250px;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        #password-container button {
-            background-color: var(--primary-color);
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        #admin-panel {
-            display: none;
-        }
-
-        .group-item {
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            transition: background-color 0.3s, box-shadow 0.2s;
-            cursor: grab;
-        }
-        .group-item.dragging {
-            opacity: 0.5;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-        .group-item.drag-over {
-            background-color: var(--drag-over-bg);
-        }
-
-
-        .group-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .group-header input {
-            flex-grow: 1;
-            margin-right: 15px;
-        }
-
-        .link-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            background-color: var(--link-item-bg);
-            transition: background-color 0.3s, opacity 0.2s;
-            cursor: grab;
-        }
-        .link-item.dragging {
-            opacity: 0.5;
-        }
-        .link-item.drag-over {
-            background-color: var(--drag-over-bg);
-        }
-
-        .link-inputs {
-            flex-grow: 1;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
-        }
-
-        .link-item input, .group-header input {
-            background-color: var(--input-bg-color);
-            border: 1px solid var(--input-border-color);
-            color: var(--text-color);
-            border-radius: 5px;
-            padding: 8px;
-            font-size: 0.9rem;
-            width: 100%;
-            box-sizing: border-box;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-
-        button {
-            background-color: var(--primary-color);
-            color: #000;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: opacity 0.2s, background-color 0.3s;
-        }
-
-        button:hover {
-            opacity: 0.8;
-        }
-
-        .delete-btn {
-            background-color: transparent;
-            color: var(--error-color);
-            border: 1px solid var(--error-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6px;
-            width: 32px;
-            height: 32px;
-        }
-        
-        .add-btn {
-            background-color: transparent;
-            color: var(--success-color);
-            border: 1px solid var(--success-color);
-        }
-
-        #save-all-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            font-size: 1rem;
-            z-index: 100;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        }
-
-        #toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 25px;
-            border-radius: 8px;
-            color: #000;
-            font-weight: bold;
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.5s, visibility 0.5s;
-            z-index: 101;
-        }
-        #toast.show {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        .theme-switcher {
-            display: flex;
-            align-items: center;
-        }
-        .theme-switcher label {
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .theme-switcher svg {
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            stroke: var(--text-color);
-        }
-        .theme-switcher .sun-icon {
-            opacity: 0;
-            transform: rotate(-90deg);
-        }
-        .theme-switcher .moon-icon {
-            opacity: 1;
-            transform: rotate(0deg);
-        }
-        .theme-switcher input {
-            display: none;
-        }
-        .theme-switcher input:checked + label .sun-icon {
-            opacity: 1;
-            transform: rotate(0deg);
-        }
-        .theme-switcher input:checked + label .moon-icon {
-            opacity: 0;
-            transform: rotate(90deg);
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; line-height: 1.6; transition: background-color 0.3s, color 0.3s; }
+        .container { max-width: 1200px; margin: auto; }
+        h1, h2, h3 { color: var(--primary-color); }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; }
+        #password-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
+        #password-container input { background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 8px; padding: 10px; font-size: 1rem; width: 250px; text-align: center; margin-bottom: 1rem; }
+        #password-container button { background-color: var(--primary-color); color: #000; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #admin-panel { display: none; }
+        .section { background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        button { background-color: var(--primary-color); color: #000; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: opacity 0.2s, background-color 0.3s; }
+        button:hover { opacity: 0.8; }
+        .delete-btn { background-color: transparent; color: var(--error-color); border: 1px solid var(--error-color); display: flex; align-items: center; justify-content: center; padding: 6px; width: 32px; height: 32px; }
+        .add-btn { background-color: transparent; color: var(--success-color); border: 1px solid var(--success-color); }
+        #save-all-btn { position: fixed; bottom: 20px; right: 20px; padding: 15px 25px; font-size: 1rem; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 25px; border-radius: 8px; color: #000; font-weight: bold; visibility: hidden; opacity: 0; transition: opacity 0.5s, visibility 0.5s; z-index: 101; }
+        #toast.show { visibility: visible; opacity: 1; }
+        .theme-switcher { display: flex; align-items: center; }
+        .theme-switcher label { width: 30px; height: 30px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
+        .theme-switcher svg { position: absolute; width: 24px; height: 24px; transition: opacity 0.3s ease, transform 0.3s ease; stroke: var(--text-color); }
+        .theme-switcher .sun-icon { opacity: 0; transform: rotate(-90deg); }
+        .theme-switcher .moon-icon { opacity: 1; transform: rotate(0deg); }
+        .theme-switcher input { display: none; }
+        .theme-switcher input:checked + label .sun-icon { opacity: 1; transform: rotate(0deg); }
+        .theme-switcher input:checked + label .moon-icon { opacity: 0; transform: rotate(90deg); }
+        .draggable-item { cursor: grab; background-color: var(--item-bg-color); margin-bottom: 10px; padding: 10px; border-radius: 6px; display: flex; align-items: center; gap: 10px; }
+        .draggable-item.dragging { opacity: 0.5; }
+        .draggable-item.drag-over { background-color: var(--drag-over-bg); }
+        .item-inputs { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+        .item-inputs input { background-color: var(--input-bg-color); border: 1px solid var(--input-border-color); color: var(--text-color); border-radius: 5px; padding: 8px; font-size: 0.9rem; width: 100%; box-sizing: border-box; }
+        #category-selector { background-color: var(--input-bg-color); border: 1px solid var(--input-border-color); color: var(--text-color); border-radius: 5px; padding: 8px; font-size: 1rem; margin-left: 10px; }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div id="password-container">
             <h1>后台管理</h1>
@@ -281,13 +82,27 @@
                     </label>
                 </div>
             </div>
-            <div id="groups-container"></div>
-            <button class="add-btn" id="add-group-btn">添加新分组</button>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>主菜单管理</h2>
+                    <button class="add-btn" id="add-nav-item-btn">添加菜单项</button>
+                </div>
+                <div id="nav-items-container"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>分类链接管理: 
+                        <select id="category-selector"></select>
+                    </h2>
+                </div>
+                <div id="category-content-editor"></div>
+            </div>
         </div>
     </div>
     
-    <button id="save-all-btn" style="display: none;">保存所有更改</button>
-
+    <button id="save-all-btn" style="display: none;">全部保存</button>
     <div id="toast"></div>
 
     <script>
@@ -295,260 +110,269 @@
         const adminPanel = document.getElementById('admin-panel');
         const loginBtn = document.getElementById('login-btn');
         const passwordInput = document.getElementById('password');
-        const groupsContainer = document.getElementById('groups-container');
-        const addGroupBtn = document.getElementById('add-group-btn');
         const saveAllBtn = document.getElementById('save-all-btn');
         const toast = document.getElementById('toast');
         const themeToggle = document.getElementById('theme-toggle');
-        let currentData = [];
+        const navItemsContainer = document.getElementById('nav-items-container');
+        const addNavItemBtn = document.getElementById('add-nav-item-btn');
+        const categorySelector = document.getElementById('category-selector');
+        const categoryContentEditor = document.getElementById('category-content-editor');
 
-        // --- Theme Switcher Logic ---
+        let mainNavData = [];
+        let categoryDataCache = {};
+        let currentEditingCategoryKey = null;
+
+        // --- Theme ---
         function applyTheme(theme) {
-            if (theme === 'light') {
-                document.body.classList.add('light-mode');
-                themeToggle.checked = true;
-            } else {
-                document.body.classList.remove('light-mode');
-                themeToggle.checked = false;
-            }
+            document.body.classList.toggle('light-mode', theme === 'light');
+            themeToggle.checked = theme === 'light';
         }
         themeToggle.addEventListener('change', () => {
-            if (themeToggle.checked) {
-                localStorage.setItem('theme', 'light');
-                applyTheme('light');
-            } else {
-                localStorage.setItem('theme', 'dark');
-                applyTheme('dark');
-            }
+            const theme = themeToggle.checked ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+            applyTheme(theme);
         });
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        applyTheme(savedTheme);
+        applyTheme(localStorage.getItem('theme') || 'dark');
 
+        // --- Toast ---
         function showToast(message, isSuccess = true) {
             toast.textContent = message;
             toast.style.backgroundColor = isSuccess ? 'var(--success-color)' : 'var(--error-color)';
             toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        async function handleLogin() {
+        // --- API Helpers ---
+        async function apiCall(action, key, data = null) {
             const password = passwordInput.value;
-            if (!password) {
-                showToast('请输入密码', false);
-                return;
+            const body = { password, action, key };
+            if (data !== null) {
+                body.data = data;
             }
+            const response = await fetch('/api/admin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+
+            if (response.status === 401) throw new Error('密码错误');
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || `${action} action failed for key: ${key}`);
+            }
+            if (action === 'GET') {
+                return response.json();
+            }
+        }
+
+        // --- Login ---
+        async function handleLogin() {
             try {
-                const response = await fetch('/api/admin', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password, action: 'GET' })
-                });
-                if (response.status === 401) {
-                    showToast('密码错误', false);
-                    return;
-                }
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(errorText || '获取数据失败');
-                }
-                currentData = await response.json();
+                mainNavData = await apiCall('GET', 'main_nav_config');
                 passwordContainer.style.display = 'none';
                 adminPanel.style.display = 'block';
                 saveAllBtn.style.display = 'block';
-                render();
+                renderMainNavEditor();
+                if (mainNavData.length > 0) {
+                    await loadCategoryForEditor(mainNavData[0].key);
+                } else {
+                    categoryContentEditor.innerHTML = '<p>请先添加一个主菜单项。</p>';
+                }
             } catch (error) {
                 showToast(error.message, false);
             }
         }
         loginBtn.addEventListener('click', handleLogin);
-        passwordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleLogin();
-        });
+        passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
 
-        function render() {
-            groupsContainer.innerHTML = '';
-            currentData.forEach((group, groupIndex) => {
-                const groupItem = document.createElement('div');
-                groupItem.className = 'group-item';
-                groupItem.setAttribute('draggable', true);
-                groupItem.dataset.groupIndex = groupIndex;
-                groupItem.innerHTML = `
-                    <div class="group-header">
-                        <input type="text" class="group-title-input" value="${group.title || ''}" placeholder="分组标题">
-                        <button class="delete-btn delete-group-btn" data-group-index="${groupIndex}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
-                        </button>
+        // --- Main Nav Editor ---
+        function renderMainNavEditor() {
+            navItemsContainer.innerHTML = '';
+            mainNavData.forEach((item, index) => {
+                const el = document.createElement('div');
+                el.className = 'draggable-item';
+                el.draggable = true;
+                el.dataset.index = index;
+                el.innerHTML = `
+                    <div class="item-inputs">
+                        <input type="text" class="nav-name" value="${item.name}" placeholder="菜单名称">
+                        <input type="text" class="nav-key" value="${item.key}" placeholder="唯一Key (英文)">
                     </div>
-                    <div class="links-container" data-group-index="${groupIndex}"></div>
-                    <button class="add-btn add-link-btn" data-group-index="${groupIndex}">添加链接</button>
+                    <button class="delete-btn" onclick="deleteNavItem(${index})">X</button>
                 `;
-
-                const linksContainer = groupItem.querySelector('.links-container');
-                if (Array.isArray(group.links)) {
-                    group.links.forEach((link, linkIndex) => {
-                        linksContainer.appendChild(createLinkItem(groupIndex, linkIndex, link));
-                    });
-                }
-                groupsContainer.appendChild(groupItem);
+                navItemsContainer.appendChild(el);
             });
+            updateCategorySelector();
         }
 
-        function createLinkItem(groupIndex, linkIndex, link) {
-            const linkItem = document.createElement('div');
-            linkItem.className = 'link-item';
-            linkItem.setAttribute('draggable', true);
-            linkItem.dataset.groupIndex = groupIndex;
-            linkItem.dataset.linkIndex = linkIndex;
-            linkItem.innerHTML = `
-                <div class="link-inputs">
-                    <input type="text" class="link-name" value="${link.name || ''}" placeholder="名称">
-                    <input type="text" class="link-url" value="${link.url || ''}" placeholder="URL">
-                    <input type="text" class="link-icon" value="${link.icon || ''}" placeholder="图标URL (可选)">
-                </div>
-                <button class="delete-btn delete-link-btn" data-group-index="${groupIndex}" data-link-index="${linkIndex}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
-                </button>
-            `;
-            return linkItem;
+        function deleteNavItem(index) {
+            mainNavData.splice(index, 1);
+            renderMainNavEditor();
         }
 
-        function collectDataFromDOM() {
-            const newGroups = [];
-            document.querySelectorAll('.group-item').forEach(groupEl => {
-                const title = groupEl.querySelector('.group-title-input').value.trim();
-                const links = [];
-                groupEl.querySelectorAll('.link-item').forEach(linkEl => {
-                    const name = linkEl.querySelector('.link-name').value.trim();
-                    const url = linkEl.querySelector('.link-url').value.trim();
-                    const icon = linkEl.querySelector('.link-icon').value.trim();
-                    if (name && url) {
-                        const linkData = { name, url };
-                        if (icon) linkData.icon = icon;
-                        links.push(linkData);
-                    }
-                });
-                if (title) {
-                    newGroups.push({ title, links });
-                }
+        addNavItemBtn.addEventListener('click', () => {
+            mainNavData.push({ name: '新菜单', key: `new_${Date.now()}` });
+            renderMainNavEditor();
+        });
+        
+        // --- Category Selector ---
+        function updateCategorySelector() {
+            const selectedValue = categorySelector.value;
+            categorySelector.innerHTML = '';
+            mainNavData.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.key;
+                option.textContent = item.name;
+                categorySelector.appendChild(option);
             });
-            return newGroups;
-        }
-
-        groupsContainer.addEventListener('click', (e) => {
-            const target = e.target.closest('button');
-            if (!target) return;
-            currentData = collectDataFromDOM();
-            if (target.classList.contains('delete-group-btn')) {
-                const groupIndex = parseInt(target.dataset.groupIndex);
-                currentData.splice(groupIndex, 1);
-            } else if (target.classList.contains('delete-link-btn')) {
-                const groupIndex = parseInt(target.dataset.groupIndex);
-                const linkIndex = parseInt(target.dataset.linkIndex);
-                currentData[groupIndex].links.splice(linkIndex, 1);
-            } else if (target.classList.contains('add-link-btn')) {
-                const groupIndex = parseInt(target.dataset.groupIndex);
-                if (!currentData[groupIndex].links) currentData[groupIndex].links = [];
-                currentData[groupIndex].links.push({ name: '', url: '', icon: '' });
+            if (selectedValue && mainNavData.some(item => item.key === selectedValue)) {
+                categorySelector.value = selectedValue;
             }
-            render();
-        });
+        }
 
-        addGroupBtn.addEventListener('click', () => {
-            currentData = collectDataFromDOM();
-            currentData.push({ title: '新分组', links: [] });
-            render();
-        });
+        categorySelector.addEventListener('change', (e) => loadCategoryForEditor(e.target.value));
 
-        saveAllBtn.addEventListener('click', async () => {
-            const newData = collectDataFromDOM();
-            try {
-                const response = await fetch('/api/admin', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: passwordInput.value, action: 'SET', data: newData })
-                });
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(errorText || '保存失败');
+        // --- Category Content Editor ---
+        async function loadCategoryForEditor(key) {
+            if (!key) {
+                categoryContentEditor.innerHTML = '';
+                currentEditingCategoryKey = null;
+                return;
+            }
+            currentEditingCategoryKey = key;
+            if (!categoryDataCache[key]) {
+                 try {
+                    categoryDataCache[key] = await apiCall('GET', key);
+                } catch (e) {
+                    const navItem = mainNavData.find(i => i.key === key);
+                    categoryDataCache[key] = { title: navItem ? navItem.name : '新分类', groups: [] };
                 }
-                currentData = newData;
-                showToast('保存成功！');
+            }
+            renderCategoryContentEditor();
+        }
+
+        function renderCategoryContentEditor() {
+            const key = currentEditingCategoryKey;
+            const data = categoryDataCache[key];
+            if (!data) return;
+
+            categoryContentEditor.innerHTML = `
+                <div class="item-inputs" style="margin-bottom: 20px;">
+                    <input type="text" id="category-title-input" value="${data.title}" placeholder="分类页标题">
+                </div>
+                <div id="groups-container-editor"></div>
+                <button class="add-btn" onclick="addGroup('${key}')">添加分组</button>
+            `;
+
+            const container = document.getElementById('groups-container-editor');
+            (data.groups || []).forEach((group, groupIndex) => {
+                container.appendChild(createGroupEditor(key, groupIndex, group));
+            });
+        }
+        
+        function createGroupEditor(key, groupIndex, group) {
+            const groupEl = document.createElement('div');
+            groupEl.className = 'section draggable-item';
+            groupEl.draggable = true;
+            groupEl.dataset.groupIndex = groupIndex;
+            groupEl.innerHTML = `
+                <div class="item-inputs">
+                    <input type="text" class="group-title-input" value="${group.title}" placeholder="分组标题">
+                </div>
+                <button class="delete-btn" onclick="deleteGroup('${key}', ${groupIndex})">X</button>
+                <div class="links-container-editor" data-group-index="${groupIndex}"></div>
+                <button class="add-btn" onclick="addLink('${key}', ${groupIndex})">添加链接</button>
+            `;
+            const linksContainer = groupEl.querySelector('.links-container-editor');
+            (group.links || []).forEach((link, linkIndex) => {
+                linksContainer.appendChild(createLinkEditor(key, groupIndex, linkIndex, link));
+            });
+            return groupEl;
+        }
+
+        function createLinkEditor(key, groupIndex, linkIndex, link) {
+            const linkEl = document.createElement('div');
+            linkEl.className = 'draggable-item';
+            linkEl.draggable = true;
+            linkEl.dataset.groupIndex = groupIndex;
+            linkEl.dataset.linkIndex = linkIndex;
+            linkEl.innerHTML = `
+                <div class="item-inputs">
+                    <input type="text" class="link-name" value="${link.name}" placeholder="名称">
+                    <input type="text" class="link-url" value="${link.url}" placeholder="URL">
+                    <input type="text" class="link-icon" value="${link.icon || ''}" placeholder="图标 (可选)">
+                </div>
+                <button class="delete-btn" onclick="deleteLink('${key}', ${groupIndex}, ${linkIndex})">X</button>
+            `;
+            return linkEl;
+        }
+
+        function addGroup(key) {
+            if (!categoryDataCache[key].groups) categoryDataCache[key].groups = [];
+            categoryDataCache[key].groups.push({ title: '新分组', links: [] });
+            renderCategoryContentEditor();
+        }
+        function deleteGroup(key, groupIndex) {
+            categoryDataCache[key].groups.splice(groupIndex, 1);
+            renderCategoryContentEditor();
+        }
+        function addLink(key, groupIndex) {
+            if (!categoryDataCache[key].groups[groupIndex].links) categoryDataCache[key].groups[groupIndex].links = [];
+            categoryDataCache[key].groups[groupIndex].links.push({ name: '', url: '' });
+            renderCategoryContentEditor();
+        }
+        function deleteLink(key, groupIndex, linkIndex) {
+            categoryDataCache[key].groups[groupIndex].links.splice(linkIndex, 1);
+            renderCategoryContentEditor();
+        }
+
+
+        // --- Save All ---
+        saveAllBtn.addEventListener('click', async () => {
+            try {
+                // Collect and save main nav
+                const newMainNavData = [];
+                document.querySelectorAll('#nav-items-container .draggable-item').forEach(el => {
+                    const name = el.querySelector('.nav-name').value.trim();
+                    const key = el.querySelector('.nav-key').value.trim();
+                    if (name && key) newMainNavData.push({ name, key });
+                });
+                await apiCall('SET', 'main_nav_config', newMainNavData);
+                mainNavData = newMainNavData;
+
+                // Collect and save current category
+                if (currentEditingCategoryKey) {
+                    const key = currentEditingCategoryKey;
+                    const newCategoryData = { title: '', groups: [] };
+                    newCategoryData.title = document.getElementById('category-title-input').value.trim();
+                    document.querySelectorAll('#groups-container-editor .draggable-item').forEach(groupEl => {
+                        const groupTitle = groupEl.querySelector('.group-title-input').value.trim();
+                        const links = [];
+                        groupEl.querySelectorAll('.draggable-item').forEach(linkEl => {
+                            const name = linkEl.querySelector('.link-name').value.trim();
+                            const url = linkEl.querySelector('.link-url').value.trim();
+                            const icon = linkEl.querySelector('.link-icon').value.trim();
+                            if(name && url) {
+                                const linkData = {name, url};
+                                if(icon) linkData.icon = icon;
+                                links.push(linkData);
+                            }
+                        });
+                        if (groupTitle) {
+                           newCategoryData.groups.push({title: groupTitle, links});
+                        }
+                    });
+                    await apiCall('SET', key, newCategoryData);
+                    categoryDataCache[key] = newCategoryData;
+                }
+                
+                showToast('全部保存成功!');
+                renderMainNavEditor();
             } catch (error) {
                 showToast(error.message, false);
             }
         });
 
-        // --- Drag and Drop Logic ---
-        let draggedItem = null;
-
-        groupsContainer.addEventListener('dragstart', (e) => {
-            draggedItem = e.target;
-            setTimeout(() => e.target.classList.add('dragging'), 0);
-        });
-
-        groupsContainer.addEventListener('dragend', (e) => {
-            e.target.classList.remove('dragging');
-            draggedItem = null;
-        });
-
-        groupsContainer.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            const target = e.target.closest('.group-item, .link-item');
-            if (target && target !== draggedItem) {
-                document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
-                target.classList.add('drag-over');
-            }
-        });
-
-        groupsContainer.addEventListener('dragleave', (e) => {
-            e.target.closest('.group-item, .link-item')?.classList.remove('drag-over');
-        });
-
-        groupsContainer.addEventListener('drop', (e) => {
-            e.preventDefault();
-            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
-            const dropTarget = e.target.closest('.group-item, .link-item');
-            if (!dropTarget || !draggedItem || dropTarget === draggedItem) {
-                return;
-            }
-
-            currentData = collectDataFromDOM();
-
-            if (draggedItem.classList.contains('group-item') && dropTarget.classList.contains('group-item')) {
-                const fromIndex = Array.from(groupsContainer.children).indexOf(draggedItem);
-                const toIndex = Array.from(groupsContainer.children).indexOf(dropTarget);
-                if (fromIndex > -1 && toIndex > -1) {
-                    const [movedGroup] = currentData.splice(fromIndex, 1);
-                    currentData.splice(toIndex, 0, movedGroup);
-                }
-            } else if (draggedItem.classList.contains('link-item')) {
-                const fromGroupEl = draggedItem.closest('.group-item');
-                const fromGroupIndex = Array.from(groupsContainer.children).indexOf(fromGroupEl);
-                const fromLinkIndex = Array.from(draggedItem.parentNode.children).indexOf(draggedItem);
-
-                const [movedLink] = currentData[fromGroupIndex].links.splice(fromLinkIndex, 1);
-
-                const targetGroupEl = dropTarget.closest('.group-item');
-                const toGroupIndex = Array.from(groupsContainer.children).indexOf(targetGroupEl);
-
-                let toLinkIndex;
-                if (dropTarget.classList.contains('link-item')) {
-                    toLinkIndex = Array.from(dropTarget.parentNode.children).indexOf(dropTarget);
-                } else {
-                    toLinkIndex = currentData[toGroupIndex].links.length;
-                }
-                
-                if (!currentData[toGroupIndex].links) {
-                    currentData[toGroupIndex].links = [];
-                }
-                currentData[toGroupIndex].links.splice(toLinkIndex, 0, movedLink);
-            }
-            
-            render();
-            draggedItem = null;
-        });
     </script>
 </body>
 </html>
