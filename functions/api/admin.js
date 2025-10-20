@@ -1,4 +1,4 @@
-// 这个API现在只负责GET和SET完整的导航数据
+// 这个API现在只负责GET和SET统一的'app_data'
 export async function onRequest({ request, env }) {
   if (request.method !== 'POST') {
     return new Response('请求方法必须是 POST', { status: 405 });
@@ -20,19 +20,17 @@ export async function onRequest({ request, env }) {
         return new Response("服务器错误：未绑定 KV 命名空间。", { status: 500 });
     }
     
-    // key 现在被硬编码为 'navigation_data'
-    const key = 'navigation_data';
+    const key = 'app_data';
 
     if (action === 'GET') {
       const dataJson = await kv.get(key);
-      // 如果没有数据，则返回一个空数组
-      return new Response(dataJson || JSON.stringify([]), {
+      // 如果没有数据，返回默认空结构
+      return new Response(dataJson || JSON.stringify({ navigation: [], search_engines: [] }), {
         headers: { 'Content-Type': 'application/json' },
       });
     } 
     
     else if (action === 'SET') {
-      // 将整个导航结构保存为一个JSON字符串
       await kv.put(key, JSON.stringify(data, null, 2));
       return new Response("数据保存成功", { status: 200 });
     } 
