@@ -170,8 +170,8 @@ h1 {
     padding: 0;
     margin: 0;
     display: grid;
-    /* 调整：减小最小宽度以在手机上容纳3列 */
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+    /* 调整：增加卡片最小宽度 */
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
     gap: 15px;
 }
 
@@ -183,13 +183,13 @@ h1 {
     text-decoration: none;
     color: var(--card-text-color);
     border-radius: 12px;
-    padding: 10px; /* 调整：减小内边距 */
-    height: 90px; /* 调整：减小卡片高度 */
+    padding: 10px;
+    height: 100px; /* 调整：恢复卡片高度 */
     box-sizing: border-box;
     text-align: center;
     
     background: var(--card-bg-color);
-    backdrop-filter: blur(8px); /* 更新：增强模糊效果 */
+    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--card-border-color);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -201,12 +201,10 @@ h1 {
     opacity: 0;
     animation: card-pop-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 
-    /* 新增：为流光效果做准备 */
     position: relative;
     overflow: hidden;
 }
 
-/* 新增：卡片弹出动画 */
 @keyframes card-pop-in {
     from {
         opacity: 0;
@@ -218,7 +216,6 @@ h1 {
     }
 }
 
-/* 新增：为卡片设置错落的动画延迟 */
 .link-group li:nth-child(1) a { animation-delay: 0.05s; }
 .link-group li:nth-child(2) a { animation-delay: 0.1s; }
 .link-group li:nth-child(3) a { animation-delay: 0.15s; }
@@ -237,7 +234,6 @@ h1 {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* 新增：流光效果 */
 .link-group a::before {
     content: '';
     position: absolute;
@@ -261,9 +257,9 @@ h1 {
 
 
 .card-icon {
-    width: 30px; /* 调整：减小图标尺寸 */
-    height: 30px; /* 调整：减小图标尺寸 */
-    margin-bottom: 8px; /* 调整：减小间距 */
+    width: 30px;
+    height: 30px;
+    margin-bottom: 8px;
     border-radius: 50%;
     background-color: transparent;
     background-size: cover;
@@ -274,7 +270,7 @@ h1 {
 
 .card-name {
     font-weight: 500;
-    font-size: 0.8rem; /* 调整：减小文字大小 */
+    font-size: 0.8rem;
     line-height: 1.2;
     word-break: break-word;
     text-shadow: var(--card-text-shadow);
