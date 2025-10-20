@@ -122,7 +122,12 @@ h1 {
 
 /* Dropdown Styles */
 .dropdown-content {
-    display: none;
+    /* display: none; 改为使用透明度和可见性来控制 */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    
     position: absolute;
     background-color: var(--surface-color);
     min-width: 160px;
@@ -136,7 +141,10 @@ h1 {
     border-top: none;
 }
 .dropdown-content.show {
-    display: block;
+    /* display: block; 改为使用透明度和可见性来控制 */
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 .dropdown-content a {
     padding: 12px 16px;
