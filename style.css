@@ -347,6 +347,8 @@ h1 {
     }
 
     .link-group ul {
+        /* 修复：专门为手机设置较小的卡片宽度以显示3列 */
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 10px;
     }
 
