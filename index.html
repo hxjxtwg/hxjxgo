@@ -75,27 +75,26 @@
         /**
          * 加载并渲染指定分类的链接
          */
-        function loadCategory(menuItem) {
+        function loadCategory(itemToLoad) {
             linksContainer.innerHTML = '';
-            mainTitle.textContent = menuItem.name;
-            document.title = `${menuItem.name} - 个人导航`;
+            mainTitle.textContent = itemToLoad.name;
+            document.title = `${itemToLoad.name} - 个人导航`;
 
+            // Update active state for main nav and dropdowns
             document.querySelectorAll('.main-nav a').forEach(a => {
-                a.classList.toggle('active', a.dataset.id === menuItem.id);
+                a.classList.toggle('active', a.dataset.id === itemToLoad.id);
+                // Also check parent for dropdown active state
+                const parentLi = a.closest('li.dropdown');
+                if(parentLi && a.classList.contains('active')) {
+                     parentLi.querySelector('.nav-link').classList.add('active');
+                }
             });
 
             const allCards = [];
-            (menuItem.children || []).forEach(child => {
-                if (child.type === 'card') {
-                    allCards.push(child);
-                } else if (child.type === 'submenu') {
-                    (child.children || []).forEach(card => {
-                        if (card.type === 'card') {
-                            allCards.push(card);
-                        }
-                    });
-                }
+            (itemToLoad.children || []).forEach(child => {
+                 if (child.type === 'card') allCards.push(child);
             });
+
 
             if (allCards.length === 0) {
                 linksContainer.innerHTML = '<p class="placeholder">该分类下暂无内容。</p>';
@@ -142,18 +141,74 @@
                 a.href = '#';
                 a.textContent = item.name;
                 a.dataset.id = item.id;
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    loadCategory(item);
-                });
-                li.appendChild(a);
+                a.className = 'nav-link';
+                
+                const submenus = (item.children || []).filter(child => child.type === 'submenu');
+                const directCards = (item.children || []).filter(child => child.type === 'card');
+
+                if (submenus.length > 0) {
+                    li.classList.add('dropdown');
+                    a.innerHTML += ' &#9662;'; // Down arrow
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.currentTarget.nextElementSibling.classList.toggle('show');
+                    });
+                    
+                    const dropdownContent = document.createElement('ul');
+                    dropdownContent.className = 'dropdown-content';
+
+                    // Add direct cards link if they exist alongside submenus
+                    if (directCards.length > 0) {
+                         const directLi = document.createElement('li');
+                         const directA = document.createElement('a');
+                         directA.href = '#';
+                         directA.textContent = "快捷访问";
+                         directA.dataset.id = item.id; // It loads the parent item
+                         directA.addEventListener('click', (e) => {
+                             e.preventDefault();
+                             loadCategory(item);
+                         });
+                         directLi.appendChild(directA);
+                         dropdownContent.appendChild(directLi);
+                    }
+
+                    submenus.forEach(submenu => {
+                        const submenuLi = document.createElement('li');
+                        const submenuA = document.createElement('a');
+                        submenuA.href = '#';
+                        submenuA.textContent = submenu.name;
+                        submenuA.dataset.id = submenu.id;
+                        submenuA.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            loadCategory(submenu);
+                        });
+                        submenuLi.appendChild(submenuA);
+                        dropdownContent.appendChild(submenuLi);
+                    });
+                    li.appendChild(a);
+                    li.appendChild(dropdownContent);
+
+                } else {
+                    // No submenus, just a direct link
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        loadCategory(item);
+                    });
+                    li.appendChild(a);
+                }
                 mainNavUl.appendChild(li);
             });
         }
         
-        /**
-         * 初始加载函数
-         */
+        // Close dropdown if clicked outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.nav-link')) {
+                document.querySelectorAll('.dropdown-content.show').forEach(openDropdown => {
+                    openDropdown.classList.remove('show');
+                });
+            }
+        }
+        
         async function initialize() {
             try {
                 const response = await fetch('/api/links');
