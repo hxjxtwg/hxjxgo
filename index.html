@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人导航</title>
-    <link rel="icon" href="/logo.svg">
+    <title>导航中心</title>
+    <link rel="icon" href="/my-logo.svg">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
             <div class="header-content">
                 <div class="logo-title">
                     <div class="header-logo"></div>
-                    <h1>我的导航</h1>
+                    <h1>导航中心</h1>
                 </div>
                 <div class="theme-switcher">
                     <input type="checkbox" id="theme-toggle">
@@ -23,25 +23,29 @@
                     </label>
                 </div>
             </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="https://hxjx.webn.cc">首页</a></li>
-                    <li><a href="https://bg.363689.xyz">博客</a></li>
-                    <li><a href="#">项目</a></li>
-                    <li><a href="#">关于我</a></li>
-                </ul>
-            </nav>
         </header>
-        <main id="links-container">
-            <!-- 链接将由JS动态加载 -->
+        <main>
+            <div class="menu-grid">
+                <!-- 示例菜单项 -->
+                <a href="/category.html?cat=tech" class="menu-card">
+                    <h2>技术工具</h2>
+                    <p>开发和学习中常用的技术站点</p>
+                </a>
+                <a href="/category.html?cat=design" class="menu-card">
+                    <h2>设计资源</h2>
+                    <p>寻找灵感和素材的设计网站</p>
+                </a>
+                <a href="/category.html?cat=life" class="menu-card">
+                    <h2>生活娱乐</h2>
+                    <p>常用的影音、购物和资讯平台</p>
+                </a>
+                <!-- 您可以在这里添加更多菜单项 -->
+            </div>
         </main>
     </div>
 
     <script>
-        const linksContainer = document.getElementById('links-container');
         const themeToggle = document.getElementById('theme-toggle');
-
-        // --- Theme Switcher Logic ---
         function applyTheme(theme) {
             if (theme === 'light') {
                 document.body.classList.add('light-mode');
@@ -51,103 +55,13 @@
                 themeToggle.checked = false;
             }
         }
-
         themeToggle.addEventListener('change', () => {
-            if (themeToggle.checked) {
-                localStorage.setItem('theme', 'light');
-                applyTheme('light');
-            } else {
-                localStorage.setItem('theme', 'dark');
-                applyTheme('dark');
-            }
+            const theme = themeToggle.checked ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+            applyTheme(theme);
         });
-
         const savedTheme = localStorage.getItem('theme') || 'dark';
         applyTheme(savedTheme);
-        // --- End of Theme Switcher Logic ---
-        
-        // --- 3D Tilt Effect Logic ---
-        function applyTiltEffect() {
-            const cards = document.querySelectorAll('.link-group a');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    const rotateX = (centerY - y) / 10;
-                    const rotateY = (x - centerX) / 10;
-                    
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-                });
-            });
-        }
-
-        async function loadLinks() {
-            try {
-                const response = await fetch('/api/links');
-                if (!response.ok) {
-                    throw new Error('网络响应错误');
-                }
-                const linkGroups = await response.json();
-
-                if (!linkGroups || linkGroups.length === 0) {
-                    linksContainer.innerHTML = '<p class="placeholder">暂无数据，请先前往后台添加。</p>';
-                    return;
-                }
-
-                linksContainer.innerHTML = ''; 
-
-                linkGroups.forEach(group => {
-                    const groupDiv = document.createElement('div');
-                    groupDiv.className = 'link-group';
-
-                    const title = document.createElement('h2');
-                    title.className = 'card-group-title';
-                    title.textContent = group.title;
-                    groupDiv.appendChild(title);
-
-                    const cardList = document.createElement('ul');
-                    
-                    if(Array.isArray(group.links)) {
-                        group.links.forEach(link => {
-                            const cardItem = document.createElement('li');
-                            const linkElement = document.createElement('a');
-                            linkElement.href = link.url;
-                            linkElement.target = '_blank';
-                            linkElement.rel = 'noopener noreferrer';
-                            
-                            const iconUrl = link.icon || `https://www.google.com/s2/favicons?domain=${new URL(link.url).hostname}&sz=32`;
-                            
-                            linkElement.innerHTML = `
-                                <div class="card-icon" style="background-image: url('${iconUrl}')"></div>
-                                <span class="card-name">${link.name}</span>
-                            `;
-                            
-                            cardItem.appendChild(linkElement);
-                            cardList.appendChild(cardItem);
-                        });
-                    }
-                    
-                    groupDiv.appendChild(cardList);
-                    linksContainer.appendChild(groupDiv);
-                });
-                
-                // 数据加载完成后，应用3D倾斜效果
-                applyTiltEffect();
-
-            } catch (error) {
-                console.error('加载链接失败:', error);
-                linksContainer.innerHTML = '<p class="placeholder error">加载数据失败，请检查网络或后台配置。</p>';
-            }
-        }
-
-        loadLinks();
     </script>
 </body>
 </html>
