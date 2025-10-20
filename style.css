@@ -170,7 +170,8 @@ h1 {
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    /* 调整：减小最小宽度以在手机上容纳3列 */
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
     gap: 15px;
 }
 
@@ -183,7 +184,7 @@ h1 {
     color: var(--card-text-color);
     border-radius: 12px;
     padding: 15px;
-    height: 110px;
+    height: 100px; /* 调整：略微减小卡片高度 */
     box-sizing: border-box;
     text-align: center;
     
@@ -197,9 +198,12 @@ h1 {
     transition: transform 0.1s ease-out;
     will-change: transform;
 
-    /* 新增：为弹出动画做准备 */
     opacity: 0;
     animation: card-pop-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+
+    /* 新增：为流光效果做准备 */
+    position: relative;
+    overflow: hidden;
 }
 
 /* 新增：卡片弹出动画 */
@@ -233,10 +237,33 @@ h1 {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
+/* 新增：流光效果 */
+.link-group a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        100deg,
+        rgba(255, 255, 255, 0) 20%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0) 80%
+    );
+    transform: translateX(-150%) skewX(-20deg);
+    transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.link-group a:hover::before {
+    transform: translateX(150%) skewX(-20deg);
+}
+
+
 .card-icon {
-    width: 36px;
-    height: 36px;
-    margin-bottom: 12px;
+    width: 32px; /* 调整：略微减小图标尺寸 */
+    height: 32px; /* 调整：略微减小图标尺寸 */
+    margin-bottom: 10px; /* 调整：略微减小间距 */
     border-radius: 50%;
     background-color: transparent;
     background-size: cover;
@@ -247,7 +274,7 @@ h1 {
 
 .card-name {
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.9rem; /* 调整：略微减小文字大小 */
     line-height: 1.2;
     word-break: break-word;
     text-shadow: var(--card-text-shadow);
