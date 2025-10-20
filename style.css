@@ -132,10 +132,12 @@ h1 {
 .dropdown-content {
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-10px);
+    /* 更新：增加 scale(0.95) 使其有弹出效果 */
+    transform: translateY(-10px) scale(0.95);
+    transform-origin: top center; /* 确保从顶部中心放大 */
     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
     position: absolute;
-    background-color: var(--card-bg-color);
+    background-color: transparent;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     min-width: 160px;
@@ -151,7 +153,8 @@ h1 {
 .dropdown-content.show {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    /* 更新：恢复到正常大小 */
+    transform: translateY(0) scale(1);
 }
 .dropdown-content a {
     padding: 10px 14px;
