@@ -52,16 +52,18 @@
         .theme-switcher .moon-icon { opacity: 1; } body.light-mode .theme-switcher .moon-icon { opacity: 0; }
         .theme-switcher input { display: none; }
         
+        .draggable-item { cursor: grab; background-color: var(--item-bg-color); margin-bottom: 10px; padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; }
+        .draggable-item.dragging { opacity: 0.4; }
+        .drag-placeholder { height: 50px; background-color: rgba(187, 134, 252, 0.2); border: 2px dashed var(--primary-color); border-radius: 8px; margin: 10px 0; }
+        .item-inputs { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+        .item-inputs input { background-color: var(--input-bg-color); border: 1px solid var(--input-border-color); color: var(--text-color); border-radius: 5px; padding: 8px; font-size: 0.9rem; width: 100%; box-sizing: border-box; }
+        .handle { cursor: grab; padding: 0 10px; color: var(--text-secondary-color); font-size: 1.2rem; }
+        
         .tree ul { list-style: none; padding-left: 25px; }
         .tree-item { padding: 10px; margin-bottom: 8px; border-radius: 8px; background-color: var(--item-bg-color); border: 1px solid var(--border-color); }
         .tree-item-content { display: flex; align-items: center; gap: 10px; }
-        .tree-item-inputs { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-        .tree-item-inputs input { background-color: var(--input-bg-color); border: 1px solid var(--input-border-color); color: var(--text-color); border-radius: 5px; padding: 8px; font-size: 0.9rem; width: 100%; box-sizing: border-box; }
         .item-controls { display: flex; gap: 5px; }
         .item-controls button { padding: 4px 8px; font-size: 0.8rem; }
-        .handle { cursor: grab; padding: 0 10px; color: var(--text-secondary-color); font-size: 1.2rem; }
-        .tree-item.dragging { opacity: 0.4; }
-        .drag-placeholder { height: 50px; background-color: rgba(187, 134, 252, 0.2); border: 2px dashed var(--primary-color); border-radius: 8px; margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -85,6 +87,11 @@
             </div>
 
             <div class="section">
+                <div class="section-header"><h2>搜索引擎管理</h2><button class="add-btn" id="add-engine-btn">添加引擎</button></div>
+                <div id="search-engines-container"></div>
+            </div>
+
+            <div class="section">
                 <div class="section-header"><h2>结构编辑器</h2><button class="add-btn" id="add-menu-btn">添加主菜单</button></div>
                 <div id="tree-container" class="tree"></div>
             </div>
@@ -102,10 +109,12 @@
         const saveAllBtn = document.getElementById('save-all-btn');
         const toast = document.getElementById('toast');
         const themeToggle = document.getElementById('theme-toggle');
+        const searchEnginesContainer = document.getElementById('search-engines-container');
+        const addEngineBtn = document.getElementById('add-engine-btn');
         const treeContainer = document.getElementById('tree-container');
         const addMenuBtn = document.getElementById('add-menu-btn');
         
-        let navigationData = [];
+        let appData = { navigation: [], search_engines: [] };
 
         // --- Theme ---
         function applyTheme(theme) {
@@ -129,7 +138,7 @@
         
         async function apiCall(action, data = null) {
             const password = passwordInput.value;
-            const body = { password, action, key: 'navigation_data', data }; // Simplified key
+            const body = { password, action, key: 'app_data', data };
             if (data === null) delete body.data;
 
             const response = await fetch('/api/admin', {
@@ -148,22 +157,46 @@
         // --- Login ---
         async function handleLogin() {
             try {
-                navigationData = await apiCall('GET');
+                appData = await apiCall('GET');
+                if (!appData.navigation) appData.navigation = [];
+                if (!appData.search_engines) appData.search_engines = [];
                 passwordContainer.style.display = 'none';
                 adminPanel.style.display = 'block';
                 saveAllBtn.style.display = 'block';
+                renderSearchEngines();
                 renderTree();
             } catch (error) { showToast(error.message, false); }
         }
         loginBtn.addEventListener('click', handleLogin);
         passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
         
-        // --- Tree Rendering ---
+        // --- Renderers ---
+        function renderSearchEngines() {
+            searchEnginesContainer.innerHTML = '';
+            appData.search_engines.forEach((engine, index) => {
+                const el = document.createElement('div');
+                el.className = 'draggable-item';
+                el.draggable = true;
+                el.dataset.index = index;
+                el.innerHTML = `
+                    <span class="handle">☰</span>
+                    <div class="item-inputs">
+                        <input class="engine-name" value="${engine.name}" placeholder="引擎名称">
+                        <input class="engine-key" value="${engine.key}" placeholder="唯一Key">
+                        <input class="engine-icon" value="${engine.icon}" placeholder="图标URL">
+                        <input class="engine-url" value="${engine.url}" placeholder="搜索URL (用{query})">
+                    </div>
+                    <button class="delete-btn" onclick="deleteEngine(${index})">X</button>
+                `;
+                searchEnginesContainer.appendChild(el);
+            });
+        }
+
         function renderTree() {
             treeContainer.innerHTML = '';
             const rootUl = document.createElement('ul');
             rootUl.style.paddingLeft = '0';
-            navigationData.forEach(item => rootUl.appendChild(createTreeItem(item)));
+            (appData.navigation || []).forEach(item => rootUl.appendChild(createTreeItem(item)));
             treeContainer.appendChild(rootUl);
         }
 
@@ -207,58 +240,22 @@
             return li;
         }
 
-        // --- Tree Manipulation ---
-        function findItem(data, id) {
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].id === id) return { item: data[i] };
-                if (data[i].children) {
-                    const found = findItem(data[i].children, id);
-                    if (found) return found;
-                }
-            }
-            return null;
-        }
-
-        function addItem(parentId, type) {
-            syncDataFromDOM();
-            const parent = findItem(navigationData, parentId)?.item;
-            if (parent) {
-                if (!parent.children) parent.children = [];
-                const newItem = { id: `item_${Date.now()}`, type };
-                if (type === 'card') {
-                    newItem.name = "新卡片";
-                    newItem.url = "https://";
-                } else {
-                    newItem.name = "新二级菜单";
-                }
-                parent.children.push(newItem);
-                renderTree();
-            }
-        }
-        
-        addMenuBtn.addEventListener('click', () => {
-            syncDataFromDOM();
-            navigationData.push({ id: `item_${Date.now()}`, type: 'menu', name: '新主菜单', children: [] });
-            renderTree();
-        });
-
-        function deleteItem(id) {
-            syncDataFromDOM();
-            function filterRecursive(items) {
-                return items.filter(item => {
-                    if (item.id === id) return false;
-                    if (item.children) item.children = filterRecursive(item.children);
-                    return true;
-                });
-            }
-            navigationData = filterRecursive(navigationData);
-            renderTree();
-        }
-
-        // --- Save ---
+        // --- Data Sync ---
         function syncDataFromDOM() {
-            function buildData(element) {
-                const items = [];
+            // Sync Search Engines
+            const newSearchEngines = [];
+            document.querySelectorAll('#search-engines-container .draggable-item').forEach(el => {
+                const name = el.querySelector('.engine-name').value.trim();
+                const key = el.querySelector('.engine-key').value.trim();
+                const icon = el.querySelector('.engine-icon').value.trim();
+                const url = el.querySelector('.engine-url').value.trim();
+                if(name && key && icon && url) newSearchEngines.push({ name, key, icon, url });
+            });
+            appData.search_engines = newSearchEngines;
+
+            // Sync Navigation Tree
+            function buildTree(element) {
+                 const items = [];
                 const children = element.children;
                 for (let i = 0; i < children.length; i++) {
                     const li = children[i];
@@ -275,31 +272,88 @@
                     }
                     
                     const childrenUl = li.querySelector('ul');
-                    if (childrenUl) {
-                        itemData.children = buildData(childrenUl);
-                    }
+                    if (childrenUl) itemData.children = buildTree(childrenUl);
                     items.push(itemData);
                 }
                 return items;
             }
             const rootUl = treeContainer.querySelector('ul');
             if (rootUl) {
-                navigationData = buildData(rootUl);
+                appData.navigation = buildTree(rootUl);
             } else {
-                navigationData = [];
+                appData.navigation = [];
             }
         }
+        
+        // --- Manipulators ---
+        addEngineBtn.addEventListener('click', () => {
+            syncDataFromDOM();
+            appData.search_engines.push({ name: '新引擎', key: `se_${Date.now()}`, icon: '', url: 'https://www.google.com/search?q={query}' });
+            renderSearchEngines();
+        });
 
+        function deleteEngine(index) {
+            syncDataFromDOM();
+            appData.search_engines.splice(index, 1);
+            renderSearchEngines();
+        }
+
+        function findItem(data, id) {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].id === id) return { item: data[i] };
+                if (data[i].children) {
+                    const found = findItem(data[i].children, id);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        function addItem(parentId, type) {
+            syncDataFromDOM();
+            const parent = findItem(appData.navigation, parentId)?.item;
+            if (parent) {
+                if (!parent.children) parent.children = [];
+                const newItem = { id: `item_${Date.now()}`, type };
+                if (type === 'card') {
+                    newItem.name = "新卡片"; newItem.url = "https://";
+                } else {
+                    newItem.name = "新二级菜单";
+                }
+                parent.children.push(newItem);
+                renderTree();
+            }
+        }
+        
+        addMenuBtn.addEventListener('click', () => {
+            syncDataFromDOM();
+            appData.navigation.push({ id: `item_${Date.now()}`, type: 'menu', name: '新主菜单', children: [] });
+            renderTree();
+        });
+
+        function deleteItem(id) {
+            syncDataFromDOM();
+            function filterRecursive(items) {
+                return items.filter(item => {
+                    if (item.id === id) return false;
+                    if (item.children) item.children = filterRecursive(item.children);
+                    return true;
+                });
+            }
+            appData.navigation = filterRecursive(appData.navigation);
+            renderTree();
+        }
+
+        // --- Save ---
         saveAllBtn.addEventListener('click', async () => {
             syncDataFromDOM();
             try {
-                await apiCall('SET', navigationData);
+                await apiCall('SET', appData);
                 showToast('保存成功!');
             } catch (error) { showToast(error.message, false); }
         });
-
-        // Functions exposed to global scope for onclick attributes
-        Object.assign(window, { addItem, deleteItem });
+        
+        Object.assign(window, { deleteEngine, addItem, deleteItem });
 
     </script>
 </body>
