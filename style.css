@@ -68,31 +68,42 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 20px; /* 增加间距以容纳小圆点 */
     flex-wrap: wrap;
 }
 .search-tab {
+    position: relative; /* 为小圆点定位 */
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
     border-radius: 8px;
     cursor: pointer;
-    background: transparent; /* 改动：背景完全透明 */
+    background: transparent;
     border: 1px solid transparent;
-    transition: background-color 0.2s, border-color 0.2s;
+    transition: background-color 0.2s;
 }
 .search-tab:hover {
     background: rgba(255,255,255,0.1);
 }
 .search-tab.active {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 10px var(--primary-color);
+    border-color: transparent; /* 移除边框 */
+    box-shadow: none; /* 移除阴影 */
+}
+/* 新增：选中状态的小圆点 */
+.search-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
 }
 .search-tab img {
-    width: 20px;
-    height: 20px;
-    display: none; /* 改动：隐藏图标 */
+    display: none;
 }
 .search-tab span {
     color: var(--text-secondary-color);
@@ -109,7 +120,6 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 }
 .search-input {
     width: 100%;
-    /* 改动：使用更透明的背景色 */
     background: rgba(0, 0, 0, 0.25);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -130,7 +140,7 @@ body.light-mode .search-input {
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    background: var(--primary-color);
+    background: transparent; /* 改动：背景透明 */
     border: none;
     border-radius: 8px;
     width: 40px;
@@ -141,7 +151,11 @@ body.light-mode .search-input {
     justify-content: center;
 }
 .search-button svg {
-    stroke: #000;
+    stroke: var(--text-secondary-color); /* 改动：图标颜色 */
+    transition: stroke 0.2s;
+}
+.search-button:hover svg {
+    stroke: var(--primary-color); /* 新增：悬浮时图标颜色 */
 }
 
 /* --- 卡片样式 --- */
@@ -157,6 +171,50 @@ body.light-mode .search-input {
 .card-name { font-weight: 500; font-size: 1rem; line-height: 1.2; word-break: break-word; text-shadow: var(--card-text-shadow); }
 .placeholder { text-align: center; font-size: 1.2rem; color: var(--text-secondary-color); padding: 4rem; }
 .placeholder.error { color: var(--error-color); }
+
+.theme-switcher {
+    display: flex;
+    align-items: center;
+}
+.theme-switcher label {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.theme-switcher svg {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    stroke: var(--text-color);
+}
+.theme-switcher .sun-icon {
+    opacity: 0;
+    transform: rotate(-90deg);
+}
+.theme-switcher .moon-icon {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+.theme-switcher input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.theme-switcher input:checked + label .sun-icon {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+.theme-switcher input:checked + label .moon-icon {
+    opacity: 0;
+    transform: rotate(90deg);
+}
+
 
 /* --- 响应式设计 --- */
 @media (max-width: 768px) {
