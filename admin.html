@@ -55,7 +55,7 @@
         .draggable-item { cursor: grab; background-color: var(--item-bg-color); margin-bottom: 10px; padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; }
         .draggable-item.dragging { opacity: 0.4; }
         .drag-placeholder { height: 50px; background-color: rgba(187, 134, 252, 0.2); border: 2px dashed var(--primary-color); border-radius: 8px; margin: 10px 0; }
-        .item-inputs { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+        .item-inputs { flex-grow: 1; display: grid; gap: 10px; }
         .item-inputs input { background-color: var(--input-bg-color); border: 1px solid var(--input-border-color); color: var(--text-color); border-radius: 5px; padding: 8px; font-size: 0.9rem; width: 100%; box-sizing: border-box; }
         .handle { cursor: grab; padding: 0 10px; color: var(--text-secondary-color); font-size: 1.2rem; }
         
@@ -65,9 +65,16 @@
         .item-controls { display: flex; gap: 5px; }
         .item-controls button { padding: 4px 8px; font-size: 0.8rem; }
 
-        /* 改动：为卡片输入框设置特定的网格布局 */
+        /* 更新：为不同类型的条目设置特定的网格布局 */
+        #search-engines-container .item-inputs {
+            grid-template-columns: 2fr 1fr 3fr 4fr; /* 名称:Key:图标:URL */
+        }
+        .tree-item[data-type="menu"] .tree-item-inputs,
+        .tree-item[data-type="submenu"] .tree-item-inputs {
+            grid-template-columns: 1fr; /* 菜单和二级菜单只有1个输入框 */
+        }
         .tree-item[data-type="card"] .tree-item-inputs {
-            grid-template-columns: 2fr 3fr 3fr; /* 名称:URL:图标 的比例 */
+            grid-template-columns: 2fr 4fr 4fr; /* 名称:URL:图标 的比例 (2:4:4) */
         }
     </style>
 </head>
