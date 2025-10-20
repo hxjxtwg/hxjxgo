@@ -115,6 +115,7 @@
         const addMenuBtn = document.getElementById('add-menu-btn');
         
         let appData = { navigation: [], search_engines: [] };
+        let draggedElement = null;
 
         // --- Theme ---
         function applyTheme(theme) {
@@ -140,7 +141,6 @@
             const password = passwordInput.value;
             const body = { password, action, key: 'app_data', data };
             if (data === null) delete body.data;
-
             const response = await fetch('/api/admin', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -173,7 +173,7 @@
         // --- Renderers ---
         function renderSearchEngines() {
             searchEnginesContainer.innerHTML = '';
-            appData.search_engines.forEach((engine, index) => {
+            (appData.search_engines || []).forEach((engine, index) => {
                 const el = document.createElement('div');
                 el.className = 'draggable-item';
                 el.draggable = true;
@@ -181,10 +181,10 @@
                 el.innerHTML = `
                     <span class="handle">☰</span>
                     <div class="item-inputs">
-                        <input class="engine-name" value="${engine.name}" placeholder="引擎名称">
-                        <input class="engine-key" value="${engine.key}" placeholder="唯一Key">
-                        <input class="engine-icon" value="${engine.icon}" placeholder="图标URL">
-                        <input class="engine-url" value="${engine.url}" placeholder="搜索URL (用{query})">
+                        <input class="engine-name" value="${engine.name || ''}" placeholder="引擎名称">
+                        <input class="engine-key" value="${engine.key || ''}" placeholder="唯一Key">
+                        <input class="engine-icon" value="${engine.icon || ''}" placeholder="图标URL">
+                        <input class="engine-url" value="${engine.url || ''}" placeholder="搜索URL (用{query})">
                     </div>
                     <button class="delete-btn" onclick="deleteEngine(${index})">X</button>
                 `;
@@ -327,6 +327,7 @@
         
         addMenuBtn.addEventListener('click', () => {
             syncDataFromDOM();
+            if (!appData.navigation) appData.navigation = [];
             appData.navigation.push({ id: `item_${Date.now()}`, type: 'menu', name: '新主菜单', children: [] });
             renderTree();
         });
@@ -354,6 +355,84 @@
         });
         
         Object.assign(window, { deleteEngine, addItem, deleteItem });
+
+        // --- Drag & Drop ---
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => draggedElement.classList.add('dragging'), 0);
+        }
+
+        function handleDragEnd(e) {
+            if (draggedElement) {
+                draggedElement.classList.remove('dragging');
+            }
+            document.querySelectorAll('.drag-placeholder').forEach(p => p.remove());
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            const placeholder = document.querySelector('.drag-placeholder') || createPlaceholder();
+            const target = e.target.closest('.draggable-item, .tree-item');
+            
+            if (!target || target === draggedElement) return;
+
+            const rect = target.getBoundingClientRect();
+            const offsetY = e.clientY - rect.top;
+            const parent = target.parentElement;
+            
+            if (offsetY < rect.height / 2) {
+                parent.insertBefore(placeholder, target);
+            } else {
+                parent.insertBefore(placeholder, target.nextSibling);
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const placeholder = document.querySelector('.drag-placeholder');
+            if (placeholder) {
+                placeholder.parentNode.replaceChild(draggedElement, placeholder);
+            }
+            draggedElement = null;
+        }
+
+        function createPlaceholder() {
+            const el = document.createElement('div');
+            el.className = 'drag-placeholder';
+            return el;
+        }
+
+        searchEnginesContainer.addEventListener('dragstart', handleDragStart);
+        searchEnginesContainer.addEventListener('dragend', handleDragEnd);
+        searchEnginesContainer.addEventListener('dragover', handleDragOver);
+        searchEnginesContainer.addEventListener('drop', handleDrop);
+
+        treeContainer.addEventListener('dragstart', handleDragStart);
+        treeContainer.addEventListener('dragend', handleDragEnd);
+        treeContainer.addEventListener('dragover', (e) => {
+             e.preventDefault();
+             // A simplified logic for tree dragover. A full library would be better.
+             const target = e.target.closest('li.tree-item');
+             if (target) {
+                 const rect = target.getBoundingClientRect();
+                 const offsetY = e.clientY - rect.top;
+                 const placeholder = document.querySelector('.drag-placeholder') || createPlaceholder();
+                 
+                 // Basic placeholder logic
+                 if (offsetY < rect.height / 2) {
+                     target.parentNode.insertBefore(placeholder, target);
+                 } else {
+                     let childrenUl = target.querySelector('ul');
+                     if (!childrenUl) {
+                         childrenUl = document.createElement('ul');
+                         target.appendChild(childrenUl);
+                     }
+                     childrenUl.prepend(placeholder);
+                 }
+             }
+        });
+        treeContainer.addEventListener('drop', handleDrop);
 
     </script>
 </body>
