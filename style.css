@@ -7,7 +7,7 @@
     --border-color: #333;
     --card-text-color: #ffffff;
     --card-border-color: rgba(255, 255, 255, 0.18);
-    --card-bg-color: rgba(0, 0, 0, 0.45);
+    --card-bg-color: rgba(0, 0, 0, 0.3); /* 调整透明度 */
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
@@ -20,7 +20,7 @@ body.light-mode {
     --border-color: #e0e0e0;
     --card-text-color: #000000;
     --card-border-color: rgba(0, 0, 0, 0.1);
-    --card-bg-color: rgba(255, 255, 255, 0.55);
+    --card-bg-color: rgba(255, 255, 255, 0.4); /* 调整透明度 */
     --card-text-shadow: none;
 }
 
@@ -122,33 +122,39 @@ h1 {
 
 /* Dropdown Styles */
 .dropdown-content {
-    /* display: none; 改为使用透明度和可见性来控制 */
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
     
     position: absolute;
-    background-color: var(--surface-color);
+    /* 更新：应用磨砂玻璃效果 */
+    background-color: var(--card-bg-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     list-style: none;
-    padding: 0;
+    padding: 5px;
     margin-top: -2px;
     border-radius: 0 0 8px 8px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--card-border-color);
     border-top: none;
 }
 .dropdown-content.show {
-    /* display: block; 改为使用透明度和可见性来控制 */
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
 }
 .dropdown-content a {
-    padding: 12px 16px;
+    padding: 10px 14px;
     border-bottom: none !important;
+    border-radius: 6px;
+}
+.dropdown-content a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 .dropdown-content a.active {
     color: var(--primary-color);
@@ -182,15 +188,46 @@ h1 {
     text-align: center;
     
     background: var(--card-bg-color);
-    backdrop-filter: blur(1px);
-    -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(8px); /* 更新：增强模糊效果 */
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--card-border-color);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 
     transform-style: preserve-3d;
     transition: transform 0.1s ease-out;
     will-change: transform;
+
+    /* 新增：为弹出动画做准备 */
+    opacity: 0;
+    animation: card-pop-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
+
+/* 新增：卡片弹出动画 */
+@keyframes card-pop-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* 新增：为卡片设置错落的动画延迟 */
+.link-group li:nth-child(1) a { animation-delay: 0.05s; }
+.link-group li:nth-child(2) a { animation-delay: 0.1s; }
+.link-group li:nth-child(3) a { animation-delay: 0.15s; }
+.link-group li:nth-child(4) a { animation-delay: 0.2s; }
+.link-group li:nth-child(5) a { animation-delay: 0.25s; }
+.link-group li:nth-child(6) a { animation-delay: 0.3s; }
+.link-group li:nth-child(7) a { animation-delay: 0.35s; }
+.link-group li:nth-child(8) a { animation-delay: 0.4s; }
+.link-group li:nth-child(9) a { animation-delay: 0.45s; }
+.link-group li:nth-child(10) a { animation-delay: 0.5s; }
+.link-group li:nth-child(11) a { animation-delay: 0.55s; }
+.link-group li:nth-child(12) a { animation-delay: 0.6s; }
+
 
 .link-group a:hover {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
