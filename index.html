@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人导航</title>
-    <link rel="icon" href="/my-logo.svg">
+    <link rel="icon" href="/logo.svg">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -76,7 +76,7 @@
          * 加载并渲染指定分类的链接
          */
         function loadCategory(menuItem) {
-            linksContainer.innerHTML = '<p class="placeholder">正在加载...</p>';
+            linksContainer.innerHTML = '';
             mainTitle.textContent = menuItem.name;
             document.title = `${menuItem.name} - 个人导航`;
 
@@ -84,42 +84,34 @@
                 a.classList.toggle('active', a.dataset.id === menuItem.id);
             });
 
-            linksContainer.innerHTML = '';
-            
+            const allCards = [];
             (menuItem.children || []).forEach(child => {
-                let group;
-                if(child.type === 'submenu') {
-                    group = { title: child.name, links: child.children || [] };
-                } else if(child.type === 'card') {
-                    // 将直属卡片放入一个默认分组
-                    group = { title: '快捷访问', links: [child] };
-                }
-
-                const existingGroupDiv = linksContainer.querySelector(`.link-group[data-group-title="${group.title}"]`);
-
-                if (existingGroupDiv) {
-                     const cardList = existingGroupDiv.querySelector('ul');
-                     (group.links || []).filter(link => link.type === 'card').forEach(link => cardList.appendChild(createCardElement(link)));
-                } else {
-                    const groupDiv = document.createElement('div');
-                    groupDiv.className = 'link-group';
-                    groupDiv.dataset.groupTitle = group.title;
-
-                    const titleEl = document.createElement('h2');
-                    titleEl.className = 'card-group-title';
-                    titleEl.textContent = group.title;
-                    groupDiv.appendChild(titleEl);
-
-                    const cardList = document.createElement('ul');
-                    (group.links || []).filter(link => link.type === 'card').forEach(link => cardList.appendChild(createCardElement(link)));
-                    groupDiv.appendChild(cardList);
-                    linksContainer.appendChild(groupDiv);
+                if (child.type === 'card') {
+                    allCards.push(child);
+                } else if (child.type === 'submenu') {
+                    (child.children || []).forEach(card => {
+                        if (card.type === 'card') {
+                            allCards.push(card);
+                        }
+                    });
                 }
             });
 
-            if (linksContainer.innerHTML === '') {
+            if (allCards.length === 0) {
                 linksContainer.innerHTML = '<p class="placeholder">该分类下暂无内容。</p>';
+                return;
             }
+
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'link-group';
+            const cardList = document.createElement('ul');
+
+            allCards.forEach(link => {
+                cardList.appendChild(createCardElement(link));
+            });
+
+            groupDiv.appendChild(cardList);
+            linksContainer.appendChild(groupDiv);
             
             applyTiltEffect();
         }
@@ -145,7 +137,6 @@
         function renderMainNav() {
             mainNavUl.innerHTML = '';
             navigationData.forEach(item => {
-                if (item.type !== 'menu') return;
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 a.href = '#';
