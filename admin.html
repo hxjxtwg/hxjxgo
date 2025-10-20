@@ -57,7 +57,7 @@
         .theme-switcher input:checked + label .moon-icon { opacity: 0; transform: rotate(90deg); }
         .draggable-item { cursor: grab; background-color: var(--item-bg-color); margin-bottom: 10px; padding: 10px; border-radius: 6px; display: flex; align-items: center; gap: 10px; transition: background-color 0.3s, opacity 0.2s; }
         .draggable-item.dragging { opacity: 0.5; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        .draggable-item.drag-over { background-color: var(--drag-over-bg); }
+        .drag-over { border-top: 2px solid var(--primary-color); }
         .item-inputs { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
         .item-inputs input { background-color: var(--input-bg-color); border: 1px solid var(--input-border-color); color: var(--text-color); border-radius: 5px; padding: 8px; font-size: 0.9rem; width: 100%; box-sizing: border-box; }
         #category-selector { background-color: var(--input-bg-color); border: 1px solid var(--input-border-color); color: var(--text-color); border-radius: 5px; padding: 8px; font-size: 1rem; margin-left: 10px; }
@@ -149,13 +149,11 @@
             const password = passwordInput.value;
             const body = { password, action, key };
             if (data !== null) body.data = data;
-            
             const response = await fetch('/api/admin', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
-
             if (response.status === 401) throw new Error('密码错误');
             if (!response.ok) {
                 const errorText = await response.text();
@@ -173,7 +171,6 @@
                 saveAllBtn.style.display = 'block';
                 renderMainNavEditor();
                 if (mainNavData.length > 0) {
-                    categorySelector.value = mainNavData[0].key;
                     await loadCategoryForEditor(mainNavData[0].key);
                 } else {
                     categoryContentEditor.innerHTML = '<p>请先在“主菜单管理”中添加一个菜单项。</p>';
@@ -184,6 +181,41 @@
         }
         loginBtn.addEventListener('click', handleLogin);
         passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
+
+        // --- Data Sync ---
+        function syncMainNavFromDOM() {
+            const newMainNavData = [];
+            document.querySelectorAll('#nav-items-container .draggable-item').forEach(el => {
+                const name = el.querySelector('.nav-name').value.trim();
+                const key = el.querySelector('.nav-key').value.trim();
+                if (name && key) newMainNavData.push({ name, key });
+            });
+            mainNavData = newMainNavData;
+        }
+
+        function syncCurrentCategoryFromDOM() {
+            const key = currentEditingCategoryKey;
+            if (!key) return;
+            const newCategoryData = { title: '', groups: [] };
+            const titleInput = document.getElementById('category-title-input');
+            if(titleInput) newCategoryData.title = titleInput.value.trim();
+            document.querySelectorAll('#groups-container-editor .group-editor').forEach(groupEl => {
+                const groupTitle = groupEl.querySelector('.group-title-input').value.trim();
+                const links = [];
+                groupEl.querySelectorAll('.links-container-editor .draggable-item').forEach(linkEl => {
+                    const name = linkEl.querySelector('.link-name').value.trim();
+                    const url = linkEl.querySelector('.link-url').value.trim();
+                    const icon = linkEl.querySelector('.link-icon').value.trim();
+                    if (name && url) {
+                        const linkData = { name, url };
+                        if (icon) linkData.icon = icon;
+                        links.push(linkData);
+                    }
+                });
+                if (groupTitle) newCategoryData.groups.push({ title: groupTitle, links });
+            });
+            categoryDataCache[key] = newCategoryData;
+        }
 
         // --- Main Nav Editor ---
         function renderMainNavEditor() {
@@ -198,30 +230,38 @@
                         <input type="text" class="nav-name" value="${item.name}" placeholder="菜单名称">
                         <input type="text" class="nav-key" value="${item.key}" placeholder="唯一Key (英文)">
                     </div>
-                    <button class="delete-btn" onclick="deleteNavItem(${index})">X</button>
+                    <button class="delete-btn" data-index="${index}">X</button>
                 `;
                 navItemsContainer.appendChild(el);
             });
             updateCategorySelector();
         }
-        function deleteNavItem(index) {
-            const keyToDelete = mainNavData[index].key;
-            mainNavData.splice(index, 1);
-            delete categoryDataCache[keyToDelete];
-            renderMainNavEditor();
-            if(mainNavData.length > 0) {
-                loadCategoryForEditor(mainNavData[0].key);
-            } else {
-                categoryContentEditor.innerHTML = '';
-            }
-        }
+
         addNavItemBtn.addEventListener('click', () => {
+            syncMainNavFromDOM();
             const newKey = `new_${Date.now()}`;
             mainNavData.push({ name: '新菜单', key: newKey });
             categoryDataCache[newKey] = { title: '新菜单', groups: [] };
             renderMainNavEditor();
             categorySelector.value = newKey;
             loadCategoryForEditor(newKey);
+        });
+
+        navItemsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-btn')) {
+                syncMainNavFromDOM();
+                const index = parseInt(e.target.dataset.index);
+                const keyToDelete = mainNavData[index].key;
+                mainNavData.splice(index, 1);
+                delete categoryDataCache[keyToDelete];
+                renderMainNavEditor();
+                if (mainNavData.length > 0) {
+                    loadCategoryForEditor(mainNavData[0].key);
+                } else {
+                    categoryContentEditor.innerHTML = '';
+                    currentEditingCategoryKey = null;
+                }
+            }
         });
         
         // --- Category Selector ---
@@ -234,9 +274,14 @@
                 option.textContent = item.name;
                 categorySelector.appendChild(option);
             });
-            if (selectedKey) categorySelector.value = selectedKey;
+            if (selectedKey && mainNavData.some(item => item.key === selectedKey)) {
+                categorySelector.value = selectedKey;
+            }
         }
-        categorySelector.addEventListener('change', (e) => loadCategoryForEditor(e.target.value));
+        categorySelector.addEventListener('change', (e) => {
+            syncCurrentCategoryFromDOM(); // Save current before switching
+            loadCategoryForEditor(e.target.value);
+        });
 
         // --- Category Content Editor ---
         async function loadCategoryForEditor(key) {
@@ -247,7 +292,7 @@
             }
             currentEditingCategoryKey = key;
             if (!categoryDataCache[key]) {
-                 try {
+                try {
                     categoryDataCache[key] = await apiCall('GET', key);
                 } catch (e) {
                     const navItem = mainNavData.find(i => i.key === key);
@@ -261,31 +306,30 @@
             const key = currentEditingCategoryKey;
             const data = categoryDataCache[key];
             if (!data) return;
-
             categoryContentEditor.innerHTML = `
                 <div class="item-inputs" style="margin-bottom: 20px;">
                     <input type="text" id="category-title-input" value="${data.title}" placeholder="分类页标题 (用于浏览器标签)">
                 </div>
                 <div id="groups-container-editor"></div>
-                <button class="add-btn" onclick="addGroup()">添加分组</button>
+                <button class="add-btn" id="add-group-btn">添加分组</button>
             `;
-
             const container = document.getElementById('groups-container-editor');
             (data.groups || []).forEach((group, groupIndex) => {
                 container.appendChild(createGroupEditor(groupIndex, group));
             });
+            document.getElementById('add-group-btn').onclick = addGroup;
         }
         
         function createGroupEditor(groupIndex, group) {
             const groupEl = document.createElement('div');
             groupEl.className = 'group-editor draggable-item';
             groupEl.draggable = true;
-            groupEl.dataset.groupIndex = groupIndex;
+            groupEl.dataset.index = groupIndex;
             groupEl.innerHTML = `
                 <div class="item-inputs">
                     <input type="text" class="group-title-input" value="${group.title}" placeholder="分组标题">
                 </div>
-                <button class="delete-btn" onclick="deleteGroup(${groupIndex})">X</button>
+                <button class="delete-btn" data-index="${groupIndex}">X</button>
             `;
             const linksContainer = document.createElement('div');
             linksContainer.className = 'links-container-editor';
@@ -294,14 +338,12 @@
                 linksContainer.appendChild(createLinkEditor(groupIndex, linkIndex, link));
             });
             groupEl.appendChild(linksContainer);
-            
             const addLinkBtn = document.createElement('button');
             addLinkBtn.className = 'add-btn';
             addLinkBtn.textContent = '添加链接';
-            addLinkBtn.onclick = () => addLink(groupIndex);
+            addLinkBtn.dataset.groupIndex = groupIndex;
             addLinkBtn.style.marginTop = '10px';
             groupEl.appendChild(addLinkBtn);
-
             return groupEl;
         }
 
@@ -310,86 +352,53 @@
             linkEl.className = 'draggable-item';
             linkEl.draggable = true;
             linkEl.dataset.groupIndex = groupIndex;
-            linkEl.dataset.linkIndex = linkIndex;
+            linkEl.dataset.index = linkIndex;
             linkEl.innerHTML = `
                 <div class="item-inputs">
                     <input type="text" class="link-name" value="${link.name}" placeholder="名称">
                     <input type="text" class="link-url" value="${link.url}" placeholder="URL">
                     <input type="text" class="link-icon" value="${link.icon || ''}" placeholder="图标 (可选)">
                 </div>
-                <button class="delete-btn" onclick="deleteLink(${groupIndex}, ${linkIndex})">X</button>
+                <button class="delete-btn" data-group-index="${groupIndex}" data-index="${linkIndex}">X</button>
             `;
             return linkEl;
         }
         
-        function collectCurrentCategoryData() {
+        categoryContentEditor.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.tagName !== 'BUTTON') return;
+            syncCurrentCategoryFromDOM();
             const key = currentEditingCategoryKey;
-            const newCategoryData = { title: '', groups: [] };
-            newCategoryData.title = document.getElementById('category-title-input').value.trim();
-            document.querySelectorAll('#groups-container-editor .group-editor').forEach(groupEl => {
-                const groupTitle = groupEl.querySelector('.group-title-input').value.trim();
-                const links = [];
-                groupEl.querySelectorAll('.links-container-editor .draggable-item').forEach(linkEl => {
-                    const name = linkEl.querySelector('.link-name').value.trim();
-                    const url = linkEl.querySelector('.link-url').value.trim();
-                    const icon = linkEl.querySelector('.link-icon').value.trim();
-                    if(name && url) {
-                        const linkData = {name, url};
-                        if(icon) linkData.icon = icon;
-                        links.push(linkData);
-                    }
-                });
-                if (groupTitle) {
-                   newCategoryData.groups.push({title: groupTitle, links});
+            
+            if (target.id === 'add-group-btn') {
+                if (!categoryDataCache[key].groups) categoryDataCache[key].groups = [];
+                categoryDataCache[key].groups.push({ title: '新分组', links: [] });
+            } else if (target.textContent === '添加链接') {
+                const groupIndex = parseInt(target.dataset.groupIndex);
+                if (!categoryDataCache[key].groups[groupIndex].links) categoryDataCache[key].groups[groupIndex].links = [];
+                categoryDataCache[key].groups[groupIndex].links.push({ name: '', url: '' });
+            } else if (target.classList.contains('delete-btn')) {
+                const groupIndex = parseInt(target.dataset.groupIndex ?? e.target.closest('.draggable-item').dataset.groupIndex);
+                const index = parseInt(target.dataset.index);
+                if (target.closest('.group-editor')) {
+                    categoryDataCache[key].groups.splice(index, 1);
+                } else {
+                    categoryDataCache[key].groups[groupIndex].links.splice(index, 1);
                 }
-            });
-            categoryDataCache[key] = newCategoryData;
-        }
-
-        function addGroup() {
-            collectCurrentCategoryData();
-            const key = currentEditingCategoryKey;
-            if (!categoryDataCache[key].groups) categoryDataCache[key].groups = [];
-            categoryDataCache[key].groups.push({ title: '新分组', links: [] });
+            }
             renderCategoryContentEditor();
-        }
-        function deleteGroup(groupIndex) {
-            collectCurrentCategoryData();
-            const key = currentEditingCategoryKey;
-            categoryDataCache[key].groups.splice(groupIndex, 1);
-            renderCategoryContentEditor();
-        }
-        function addLink(groupIndex) {
-            collectCurrentCategoryData();
-            const key = currentEditingCategoryKey;
-            if (!categoryDataCache[key].groups[groupIndex].links) categoryDataCache[key].groups[groupIndex].links = [];
-            categoryDataCache[key].groups[groupIndex].links.push({ name: '', url: '' });
-            renderCategoryContentEditor();
-        }
-        function deleteLink(groupIndex, linkIndex) {
-            collectCurrentCategoryData();
-            const key = currentEditingCategoryKey;
-            categoryDataCache[key].groups[groupIndex].links.splice(linkIndex, 1);
-            renderCategoryContentEditor();
-        }
+        });
         
         // --- Save All ---
         saveAllBtn.addEventListener('click', async () => {
             try {
-                // Collect and save main nav
-                const newMainNavData = [];
-                document.querySelectorAll('#nav-items-container .draggable-item').forEach(el => {
-                    const name = el.querySelector('.nav-name').value.trim();
-                    const key = el.querySelector('.nav-key').value.trim();
-                    if (name && key) newMainNavData.push({ name, key });
-                });
-                await apiCall('SET', 'main_nav_config', newMainNavData);
-                mainNavData = newMainNavData;
+                syncMainNavFromDOM();
+                syncCurrentCategoryFromDOM();
 
-                // Collect and save current category
-                if (currentEditingCategoryKey) {
-                   collectCurrentCategoryData();
-                   await apiCall('SET', currentEditingCategoryKey, categoryDataCache[currentEditingCategoryKey]);
+                await apiCall('SET', 'main_nav_config', mainNavData);
+
+                for (const key in categoryDataCache) {
+                   await apiCall('SET', key, categoryDataCache[key]);
                 }
                 
                 showToast('全部保存成功!');
@@ -398,6 +407,58 @@
                 showToast(error.message, false);
             }
         });
+
+        // --- Drag and Drop ---
+        function handleDragStart(e) {
+            draggedItem = e.target;
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        }
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+        function handleDragOver(e) {
+            e.preventDefault();
+            const container = e.currentTarget;
+            const afterElement = getDragAfterElement(container, e.clientY);
+            const dragging = container.querySelector('.dragging');
+            if (dragging) {
+                 if (afterElement == null) {
+                    container.appendChild(dragging);
+                } else {
+                    container.insertBefore(dragging, afterElement);
+                }
+            }
+        }
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.draggable-item:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        navItemsContainer.addEventListener('dragstart', handleDragStart);
+        navItemsContainer.addEventListener('dragend', handleDragEnd);
+        navItemsContainer.addEventListener('dragover', handleDragOver);
+
+        categoryContentEditor.addEventListener('dragstart', handleDragStart);
+        categoryContentEditor.addEventListener('dragend', handleDragEnd);
+        categoryContentEditor.addEventListener('dragover', (e) => {
+             e.preventDefault();
+             const groupEditor = e.target.closest('.group-editor');
+             if(draggedItem.classList.contains('group-editor') && groupEditor) { // Dragging group
+                handleDragOver(e);
+             } else if (draggedItem.classList.contains('draggable-item') && !draggedItem.classList.contains('group-editor') && groupEditor) { // Dragging link
+                 const linksContainer = groupEditor.querySelector('.links-container-editor');
+                 handleDragOver({currentTarget: linksContainer, clientY: e.clientY});
+             }
+        });
+
     </script>
 </body>
 </html>
