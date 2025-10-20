@@ -132,11 +132,10 @@ h1 {
 .dropdown-content {
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-10px) scale(0.95);
-    transform-origin: top center;
-    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    /* 更新：调整动画起始位置和时长 */
+    transform: translateY(-20px);
+    transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.3s;
     position: absolute;
-    /* 更新：移除背景、模糊、边框和阴影 */
     background-color: transparent;
     min-width: 160px;
     z-index: 1;
@@ -147,13 +146,13 @@ h1 {
 .dropdown-content.show {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0) scale(1);
+    /* 更新：恢复到正常位置 */
+    transform: translateY(0);
 }
 .dropdown-content a {
     padding: 10px 14px;
     border-bottom: none !important;
     border-radius: 6px;
-    /* 新增：增加文字阴影以提高可读性 */
     text-shadow: var(--card-text-shadow);
 }
 .dropdown-content a:hover {
