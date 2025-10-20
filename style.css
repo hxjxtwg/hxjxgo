@@ -132,34 +132,29 @@ h1 {
 .dropdown-content {
     opacity: 0;
     visibility: hidden;
-    /* 更新：增加 scale(0.95) 使其有弹出效果 */
     transform: translateY(-10px) scale(0.95);
-    transform-origin: top center; /* 确保从顶部中心放大 */
+    transform-origin: top center;
     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
     position: absolute;
+    /* 更新：移除背景、模糊、边框和阴影 */
     background-color: transparent;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     list-style: none;
     padding: 5px;
     margin-top: -2px;
-    border-radius: 0 0 8px 8px;
-    border: 1px solid var(--card-border-color);
-    border-top: none;
 }
 .dropdown-content.show {
     opacity: 1;
     visibility: visible;
-    /* 更新：恢复到正常大小 */
     transform: translateY(0) scale(1);
 }
 .dropdown-content a {
     padding: 10px 14px;
     border-bottom: none !important;
     border-radius: 6px;
+    /* 新增：增加文字阴影以提高可读性 */
+    text-shadow: var(--card-text-shadow);
 }
 .dropdown-content a:hover {
     background-color: rgba(255, 255, 255, 0.1);
