@@ -39,17 +39,7 @@
         const themeToggle = document.getElementById('theme-toggle');
         const mainNavUl = document.getElementById('main-nav-ul');
         const mainTitle = document.getElementById('main-title');
-
-        // --- 配置您的主菜单 ---
-        // name: 显示的名称
-        // key: 对应您在KV中设置的Key
-        const mainNavItems = [
-            { name: '首页', key: 'home' },
-            { name: '技术工具', key: 'tech' },
-            { name: '设计资源', key: 'design' },
-            { name: '生活娱乐', key: 'life' }
-        ];
-        const DEFAULT_CATEGORY_KEY = 'home'; // 默认加载的分类
+        let mainNavItems = []; // 将从API获取
 
         // --- Theme Switcher Logic ---
         function applyTheme(theme) {
@@ -97,13 +87,8 @@
             mainTitle.textContent = categoryName;
             document.title = `${categoryName} - 个人导航`;
 
-            // 更新主菜单的激活状态
             document.querySelectorAll('.main-nav a').forEach(a => {
-                if (a.dataset.key === categoryKey) {
-                    a.classList.add('active');
-                } else {
-                    a.classList.remove('active');
-                }
+                a.classList.toggle('active', a.dataset.key === categoryKey);
             });
 
             try {
@@ -174,10 +159,35 @@
             });
         }
         
-        // --- 初始加载 ---
-        renderMainNav();
-        const defaultCategory = mainNavItems.find(item => item.key === DEFAULT_CATEGORY_KEY) || mainNavItems[0];
-        loadCategory(defaultCategory.key, defaultCategory.name);
+        /**
+         * 初始加载函数
+         */
+        async function initialize() {
+            try {
+                // 首先获取主导航配置
+                const response = await fetch('/api/links?cat=main_nav_config');
+                if (!response.ok) throw new Error('获取主导航配置失败');
+                mainNavItems = await response.json();
+                
+                if (mainNavItems.length === 0) {
+                    linksContainer.innerHTML = '<p class="placeholder">导航菜单为空，请先前往后台配置。</p>';
+                    return;
+                }
+
+                // 渲染主导航
+                renderMainNav();
+
+                // 加载默认分类
+                const defaultCategory = mainNavItems[0];
+                loadCategory(defaultCategory.key, defaultCategory.name);
+
+            } catch(error) {
+                console.error('初始化失败:', error);
+                linksContainer.innerHTML = `<p class="placeholder error">${error.message}</p>`;
+            }
+        }
+
+        initialize();
 
     </script>
 </body>
