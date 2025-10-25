@@ -278,8 +278,8 @@ body.light-mode .search-input {
     /* * --- 卡片内图标大小 (电脑端) ---
      * 修改这里的 width 和 height 来调整卡片上图标的大小。
      */
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     margin-bottom: 12px;
     border-radius: 50%;
     background-color: transparent;
