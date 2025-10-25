@@ -320,7 +320,7 @@ body.light-mode .search-input {
          * 修改这里的图片地址来更换手机端的背景。
          */
         background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/IMG_5251.JPG');
-        /* 新增：修复移动端背景闪烁和缩放问题 */
+        /* 修复移动端背景闪烁和缩放问题 */
         background-attachment: scroll; 
     }
 
@@ -331,10 +331,6 @@ body.light-mode .search-input {
     .header-logo {
         width: 36px;
         height: 36px;
-    }
-
-    .card-group-title {
-        font-size: 1rem;
     }
 
     .link-group ul {
@@ -350,7 +346,18 @@ body.light-mode .search-input {
         /* * --- 手机端卡片高度 ---
          * 修改这里的 height 值来调整卡片的高度。
          */
-        height: 80px;
+        height: 90px;
+        /* 新增：在手机端禁用模糊效果以解决闪烁 */
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    /* 新增：在手机端禁用下拉菜单的模糊效果 */
+    .dropdown-content {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        /* 可以选择性地给手机端的下拉菜单加一个不透明背景 */
+        /* background-color: var(--surface-color); */
     }
 
     .main-nav li a {
