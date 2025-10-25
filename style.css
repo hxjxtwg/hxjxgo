@@ -346,7 +346,7 @@ body.light-mode .search-input {
         /* * --- 手机端卡片高度 ---
          * 修改这里的 height 值来调整卡片的高度。
          */
-        height: 90px;
+        height: 70px;
         /* 新增：在手机端禁用模糊效果以解决闪烁 */
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
