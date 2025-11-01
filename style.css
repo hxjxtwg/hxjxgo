@@ -86,9 +86,6 @@ header {
 }
 
 h1 {
-    /* * --- 主标题字体大小 ---
-     * 修改这里的数值来调整“我的导航”的字体大小。
-     */
     font-size: 1.2rem;
     color: var(--text-color);
     margin: 0;
@@ -333,6 +330,10 @@ body.light-mode .search-input {
         height: 36px;
     }
 
+    .card-group-title {
+        font-size: 1rem;
+    }
+
     .link-group ul {
         /* * --- 手机端卡片宽度 ---
          * 修改这里的 minmax() 中的第一个值 (100px) 来调整卡片宽度。
@@ -347,17 +348,23 @@ body.light-mode .search-input {
          * 修改这里的 height 值来调整卡片的高度。
          */
         height: 90px;
-        /* 新增：在手机端禁用模糊效果以解决闪烁 */
+        /* 修复：在手机端禁用模糊效果以解决闪烁 */
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
     }
 
-    /* 新增：在手机端禁用下拉菜单的模糊效果 */
+    /* 修复：在手机端禁用下拉菜单的模糊效果 */
     .dropdown-content {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-        /* 可以选择性地给手机端的下拉菜单加一个不透明背景 */
-        /* background-color: var(--surface-color); */
+        /* 在手机上给下拉菜单一个不透明背景 */
+        background-color: var(--surface-color);
+    }
+    
+    /* 修复：在手机端禁用搜索框的模糊效果 */
+    .search-input {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
     }
 
     .main-nav li a {
