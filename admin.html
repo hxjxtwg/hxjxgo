@@ -72,10 +72,8 @@
         .tree-item[data-type="submenu"] .item-inputs {
             grid-template-columns: 1fr;
         }
-        /* 修复：为卡片输入框设置固定的比例和最小宽度 */
         .tree-item[data-type="card"] .item-inputs {
-            grid-template-columns: 2fr 4fr 4fr; /* 名称:URL:图标 的比例 (2:4:4) */
-            min-width: 500px; /* 强制展开以保证足够长度 */
+            grid-template-columns: 2fr 4fr 4fr;
         }
     </style>
 </head>
@@ -370,89 +368,108 @@
         
         Object.assign(window, { deleteEngine, addItem, deleteItem });
 
-        // --- Drag & Drop ---
+        // --- Drag & Drop (Robust Version) ---
+        let placeholder = document.createElement('div');
+        placeholder.className = 'drag-placeholder';
+
         function handleDragStart(e) {
-            draggedElement = e.target;
+            draggedElement = e.target.closest('.draggable-item, .tree-item');
+            if (!draggedElement) return;
             e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', null); // Fix for Firefox
             setTimeout(() => draggedElement.classList.add('dragging'), 0);
         }
 
-        function handleDragEnd(e) {
+        function handleDragEnd() {
             if (draggedElement) {
                 draggedElement.classList.remove('dragging');
             }
-            document.querySelectorAll('.drag-placeholder').forEach(p => p.remove());
+            placeholder.remove();
+            draggedElement = null;
         }
 
-        function handleDragOver(e) {
-            e.preventDefault();
-            const placeholder = document.querySelector('.drag-placeholder') || createPlaceholder();
-            const target = e.target.closest('.draggable-item, .tree-item');
-            
-            if (!target || target === draggedElement) return;
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.draggable-item:not(.dragging), .tree-item:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
 
-            const rect = target.getBoundingClientRect();
-            const offsetY = e.clientY - rect.top;
-            const parent = target.parentElement;
-            
-            if (offsetY < rect.height / 2) {
-                parent.insertBefore(placeholder, target);
+        function handleFlatDragOver(e) {
+            e.preventDefault();
+            const container = e.currentTarget;
+            const afterElement = getDragAfterElement(container, e.clientY);
+            if (afterElement == null) {
+                container.appendChild(placeholder);
             } else {
-                parent.insertBefore(placeholder, target.nextSibling);
+                container.insertBefore(placeholder, afterElement);
             }
         }
 
         function handleDrop(e) {
             e.preventDefault();
-            const placeholder = document.querySelector('.drag-placeholder');
-            if (placeholder) {
+            if (placeholder.parentNode) {
                 placeholder.parentNode.replaceChild(draggedElement, placeholder);
             }
-            draggedElement = null;
         }
-
-        function createPlaceholder() {
-            const el = document.createElement('div');
-            el.className = 'drag-placeholder';
-            return el;
-        }
-
+        
         searchEnginesContainer.addEventListener('dragstart', handleDragStart);
         searchEnginesContainer.addEventListener('dragend', handleDragEnd);
-        searchEnginesContainer.addEventListener('dragover', handleDragOver);
+        searchEnginesContainer.addEventListener('dragover', handleFlatDragOver);
         searchEnginesContainer.addEventListener('drop', handleDrop);
 
         treeContainer.addEventListener('dragstart', handleDragStart);
         treeContainer.addEventListener('dragend', handleDragEnd);
         treeContainer.addEventListener('dragover', (e) => {
-             e.preventDefault();
-             const target = e.target.closest('li.tree-item, ul');
-             const placeholder = document.querySelector('.drag-placeholder') || createPlaceholder();
-             
-             if(target.tagName === 'UL') {
-                 target.appendChild(placeholder);
-                 return;
-             }
+            e.preventDefault();
+            if (!draggedElement) return;
 
-             if (target) {
-                 const rect = target.getBoundingClientRect();
-                 const offsetY = e.clientY - rect.top;
-                 
-                 if (offsetY < rect.height / 2) {
-                     target.parentNode.insertBefore(placeholder, target);
-                 } else {
-                     let childrenUl = target.querySelector('ul');
-                     if (!childrenUl) {
-                         childrenUl = document.createElement('ul');
-                         target.appendChild(childrenUl);
-                     }
-                     childrenUl.prepend(placeholder);
-                 }
-             }
+            const targetItem = e.target.closest('.tree-item');
+            const targetUl = e.target.closest('ul');
+            const draggedType = draggedElement.dataset.type;
+
+            if (!targetItem && targetUl) { // Dragging over empty UL area
+                targetUl.appendChild(placeholder);
+                return;
+            }
+            
+            if (!targetItem) return;
+
+            const targetType = targetItem.dataset.type;
+            const rect = targetItem.getBoundingClientRect();
+            const offsetY = e.clientY - rect.top;
+
+            // --- Drop Logic ---
+            // 1. Inside
+            if (offsetY > rect.height * 0.25 && offsetY < rect.height * 0.75) {
+                if ( (draggedType === 'submenu' && targetType === 'menu') ||
+                     (draggedType === 'card' && (targetType === 'menu' || targetType === 'submenu')) )
+                {
+                    let childrenUl = targetItem.querySelector('ul');
+                    if (!childrenUl) {
+                        childrenUl = document.createElement('ul');
+                        targetItem.appendChild(childrenUl);
+                    }
+                    childrenUl.prepend(placeholder);
+                }
+            } 
+            // 2. Before
+            else if (offsetY <= rect.height * 0.25) {
+                targetItem.parentNode.insertBefore(placeholder, targetItem);
+            } 
+            // 3. After
+            else {
+                 targetItem.parentNode.insertBefore(placeholder, targetItem.nextSibling);
+            }
         });
         treeContainer.addEventListener('drop', handleDrop);
 
     </script>
 </body>
 </html>
-
