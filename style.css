@@ -351,13 +351,18 @@ body.light-mode .search-input {
         /* 修复：在手机端禁用模糊效果以解决闪烁 */
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
+        
+        /* 修复：在手机端禁用弹出动画 */
+        animation: none;
+        opacity: 1;
+        /* 修复：在手机端禁用3D倾斜（它依赖JS，但CSS部分可以禁用） */
+        transform-style: flat;
     }
 
     /* 修复：在手机端禁用下拉菜单的模糊效果 */
     .dropdown-content {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-        /* 在手机上给下拉菜单一个不透明背景 */
         background-color: var(--surface-color);
     }
     
@@ -388,4 +393,3 @@ body.light-mode .search-input {
     .search-tab { padding: 6px 10px; }
     .search-tab span { font-size: 0.9rem; }
 }
-
