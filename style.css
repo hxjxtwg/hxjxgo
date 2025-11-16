@@ -57,6 +57,7 @@ header {
     box-shadow: none;
     margin-left: 0;
     margin-right: 0;
+    /* 修复：恢复 header 和 nav 之间的间距 */
     margin-bottom: 2rem; 
     margin-top: 1rem;
 }
@@ -83,7 +84,8 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     
-    padding-top: env(safe-area-inset-top);
+    /* PC 修复：移除导致空隙的 padding-top，让它在 PC 上为 0 */
+    padding-top: 0; 
     
     margin-left: -20px;
     margin-right: -20px;
@@ -98,8 +100,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .main-nav li { position: relative; }
 .main-nav li a { 
     display: block; 
-    /* 修复：将菜单栏加高 25px (原 0.8rem + 1.5625rem = 2.3625rem) */
-    padding: 2.3625rem 1rem; 
+    padding: 0.8rem 1rem; /* 恢复 PC 基础高度 */
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
