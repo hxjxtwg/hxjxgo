@@ -28,6 +28,8 @@ body {
     margin: 0;
     color: var(--text-color);
     background-color: var(--bg-color);
+    /* 修复：移除 body 的顶部内边距 */
+    /* padding-top: env(safe-area-inset-top); */
 }
 body::before {
     content: '';
@@ -94,11 +96,32 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     border-bottom: 1px solid var(--border-color);
 }
 
-.main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
-.main-nav li { position: relative; }
+.main-nav ul { 
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+    display: flex; 
+    justify-content: center; 
+    flex-wrap: wrap; 
+    /* 新增：设置 UL 的最小高度，以容纳加高后的 LI */
+    min-height: 5rem; 
+}
+
+.main-nav li { 
+    position: relative; 
+    /* 新增：让 LI 占据全部高度 */
+    display: flex;
+    align-items: stretch;
+}
+
 .main-nav li a { 
-    display: block; 
-    padding: 2.675rem 1rem; /* 菜单栏加高 60px 的核心修改 */
+    display: flex; /* 让 a 内部内容居中 */
+    align-items: center;
+    justify-content: center;
+    /* 核心修复：直接设置固定的垂直内边距 (60px / 2 = 30px)
+     * 1.875rem ≈ 30px。这会比原来的 0.8rem 增加约 30px
+     */
+    padding: 1.875rem 1rem; 
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
@@ -157,7 +180,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 .placeholder.error { color: var(--error-color); }
 .theme-switcher { display: flex; align-items: center; }
 .theme-switcher label { width: 30px; height: 30px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
-.theme-switcher svg { position: absolute; width: 12px; height: 12px; transition: opacity 0.3s ease, transform 0.3s ease; stroke: var(--text-color); }
+.theme-switcher svg { position: absolute; width: 24px; height: 24px; transition: opacity 0.3s ease, transform 0.3s ease; stroke: var(--text-color); }
 .theme-switcher .sun-icon { opacity: 0; transform: rotate(-90deg); }
 .theme-switcher .moon-icon { opacity: 1; transform: rotate(0deg); }
 .theme-switcher input { position: absolute; opacity: 0; width: 0; height: 0; }
@@ -185,9 +208,15 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     }
 
     h1 { font-size: 1.2rem; }
-    .header-logo { width: 24px; height: 24px; }
+    .header-logo { width: 36px; height: 36px; }
     .link-group ul { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-    .main-nav li a { padding: 0.6rem 0.8rem; font-size: 0.9rem; }
+    .main-nav li a { 
+        padding: 0.6rem 0.8rem; /* 原始手机端 padding */
+        font-size: 0.9rem; 
+        /* 核心修复：加高 60px (增量为 3.75rem, 总计 0.6rem + 3.75rem = 4.35rem) */
+        padding-top: 4.35rem; 
+        padding-bottom: 4.35rem; 
+    }
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
     .card-name { font-size: 0.8rem; }
     
