@@ -79,11 +79,11 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     top: 0; 
     z-index: 10;
 
-    /* PC 端默认样式：完全透明 */
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
+    /* 修复：PC 端默认背景完全透明 */
+    background: transparent !important; 
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
     
     padding-top: env(safe-area-inset-top);
     
@@ -100,7 +100,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .main-nav li { position: relative; }
 .main-nav li a { 
     display: block; 
-    padding: 0.8rem 1rem; 
+    padding: 0.8rem 1rem; /* PC 基础高度 */
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
@@ -216,10 +216,11 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
         padding-bottom: 2.1625rem; 
         font-size: 0.9rem;
     }
+    
     .main-nav li a.active::after {
-        /* 修复：将指示点紧贴文字底部 */
-        bottom: 0.2rem;
+        content: none; /* 修复：手机端隐藏点 */
     }
+
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
     .card-name { font-size: 0.8rem; }
     
