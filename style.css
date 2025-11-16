@@ -28,8 +28,6 @@ body {
     margin: 0;
     color: var(--text-color);
     background-color: var(--bg-color);
-    /* 修复：移除 body 的顶部内边距 */
-    /* padding-top: env(safe-area-inset-top); */
 }
 body::before {
     content: '';
@@ -48,7 +46,7 @@ body::before {
     max-width: 1200px; 
     margin: 0 auto; 
     padding: 20px; 
-    padding-top: 0; 
+    padding-top: 20px; 
 }
 
 header {
@@ -59,7 +57,6 @@ header {
     box-shadow: none;
     margin-left: 0;
     margin-right: 0;
-    /* 修复：恢复 header 和 nav 之间的间距 */
     margin-bottom: 2rem; 
     margin-top: 1rem;
 }
@@ -78,14 +75,19 @@ header {
 h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav {
+    /* 核心修复：固定在屏幕最顶端 */
     position: sticky;
-    /* 修复：固定在屏幕最顶部 */
     top: 0; 
     z-index: 10;
-    background: var(--card-bg-color);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    /* 修复：完全透明的背景，但保持 sticky */
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    
+    /* 修复：将安全区内边距应用到菜单栏自身 */
+    padding-top: env(safe-area-inset-top);
     
     margin-left: -20px;
     margin-right: -20px;
@@ -94,14 +96,11 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     
     margin-top: 0; 
     border-bottom: 1px solid var(--border-color);
-
-    /* 修复：将安全区内边距应用到菜单栏自身 */
-    padding-top: env(safe-area-inset-top);
 }
 
 .main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
 .main-nav li { position: relative; }
-.main-nav li a { display: block; padding: 3.8rem 6rem; text-decoration: none; color: var(--text-secondary-color); font-weight: 500; transition: color 0.2s, border-bottom-color 0.2s; border-bottom: 2px solid transparent; cursor: pointer; }
+.main-nav li a { display: block; padding: 0.8rem 1rem; text-decoration: none; color: var(--text-secondary-color); font-weight: 500; transition: color 0.2s, border-bottom-color 0.2s; border-bottom: 2px solid transparent; cursor: pointer; }
 .main-nav li a:hover { color: var(--primary-color); }
 .main-nav li a.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 .dropdown-content { opacity: 0; visibility: hidden; transform: translateY(-10px); transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s; position: absolute; background-color: transparent; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; list-style: none; padding: 5px; margin-top: -2px; }
