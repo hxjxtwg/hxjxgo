@@ -28,6 +28,8 @@ body {
     margin: 0;
     color: var(--text-color);
     background-color: var(--bg-color);
+    /* 修复：移除 body 的顶部内边距 */
+    /* padding-top: env(safe-area-inset-top); */
 }
 body::before {
     content: '';
@@ -78,13 +80,11 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: sticky;
     top: 0; 
     z-index: 10;
+    background: var(--card-bg-color);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     
-    /* PC 修复：菜单栏完全透明 */
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
-
     padding-top: env(safe-area-inset-top);
     
     margin-left: -20px;
@@ -93,23 +93,59 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     padding-right: 20px;
     
     margin-top: 0; 
+    /* 移除长横线，只保留底部的分隔线 */
     border-bottom: 1px solid var(--border-color);
 }
 
-.main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
-.main-nav li { position: relative; }
+.main-nav ul { 
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+    display: flex; 
+    justify-content: center; 
+    flex-wrap: wrap; 
+}
+.main-nav li { 
+    position: relative; 
+    display: flex;
+    align-items: stretch;
+}
 .main-nav li a { 
-    display: block; 
-    padding: 0.8rem 1rem; /* 恢复 PC 基础高度 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8rem 1rem; /* 电脑基础高度 */
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
-    transition: color 0.2s, border-bottom-color 0.2s; 
+    transition: color 0.2s;
+    /* 移除 a 上的长横线 */
     border-bottom: 2px solid transparent; 
     cursor: pointer; 
+    position: relative; /* 为小圆点定位 */
 }
 .main-nav li a:hover { color: var(--primary-color); }
-.main-nav li a.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+
+/* --- 菜单选中状态：替换为小圆点 --- */
+.main-nav li a.active { 
+    color: var(--primary-color); 
+    font-weight: bold;
+}
+.main-nav li a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0.2rem; /* 靠近文字底部 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    /* 平滑过渡 */
+    transition: all 0.2s ease;
+}
+
+
 .dropdown-content { opacity: 0; visibility: hidden; transform: translateY(-10px); transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s; position: absolute; background-color: transparent; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; list-style: none; padding: 5px; margin-top: -2px; }
 .dropdown-content.show { opacity: 1; visibility: visible; transform: translateY(0); }
 .dropdown-content a { padding: 10px 14px; border-bottom: none !important; border-radius: 6px; text-shadow: var(--card-text-shadow); }
