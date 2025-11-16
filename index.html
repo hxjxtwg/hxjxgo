@@ -2,10 +2,9 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 更新：增加了 viewport-fit=cover 来适配沉浸式全屏 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>个人导航</title>
-    <link rel="icon" href="/logo.svg">
+    <link rel="icon" href="/my-logo.svg">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,10 +23,13 @@
                     </label>
                 </div>
             </div>
-            <nav class="main-nav">
-                <ul id="main-nav-ul"></ul>
-            </nav>
+            <!-- 导航栏 <nav> 已从 <header> 中移出 -->
         </header>
+
+        <!-- 导航栏现在是一个独立的、可以被固定的元素 -->
+        <nav class="main-nav">
+            <ul id="main-nav-ul"></ul>
+        </nav>
 
         <div class="search-section">
             <div id="search-tabs-container" class="search-tabs"></div>
@@ -63,9 +65,7 @@
         
         // --- 3D Tilt Effect ---
         function applyTiltEffect() {
-            // 修复：在移动端禁用此效果
             if (window.innerWidth <= 768) return;
-
             document.querySelectorAll('.link-group a').forEach(card => {
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
