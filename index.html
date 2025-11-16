@@ -62,6 +62,9 @@
         
         // --- 3D Tilt Effect ---
         function applyTiltEffect() {
+            // 修复：在移动端禁用此效果
+            if (window.innerWidth <= 768) return;
+
             document.querySelectorAll('.link-group a').forEach(card => {
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
@@ -276,4 +279,3 @@
     </script>
 </body>
 </html>
-
