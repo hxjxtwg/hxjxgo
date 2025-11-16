@@ -101,7 +101,11 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav {
     position: sticky;
-    top: env(safe-area-inset-top); 
+    /* 修复：将 top 设置为 0。
+     * 因为 body 已经有了安全区内边距，
+     * nav 只需要粘在父容器(body)的顶部（也就是安全区的下方）即可。
+     */
+    top: 0; 
     z-index: 10;
     background: var(--card-bg-color);
     backdrop-filter: blur(12px);
