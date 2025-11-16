@@ -74,19 +74,17 @@ header {
 .header-logo { width: 44px; height: 44px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
 h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
-/* --- PC端默认样式（无安全边距，正常高度） --- */
 .main-nav {
     position: sticky;
     top: 0; 
     z-index: 10;
-    /* PC端：背景透明 */
+    /* PC 修复：背景透明 */
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;
     
-    /* PC端：顶部安全边距为0 */
-    padding-top: 0; 
+    padding-top: env(safe-area-inset-top);
     
     margin-left: -20px;
     margin-right: -20px;
@@ -101,8 +99,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .main-nav li { position: relative; }
 .main-nav li a { 
     display: block; 
-    /* PC 端基础高度：0.8rem */
-    padding: 0.8rem 1rem; 
+    padding: 0.8rem 1rem; /* PC 基础高度 */
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
@@ -118,10 +115,11 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     color: var(--primary-color); 
     font-weight: bold;
 }
+/* PC 端的指示点 (默认显示) */
 .main-nav li a.active::after {
     content: '';
     position: absolute;
-    bottom: 0.2rem; /* PC 端小圆点位置 */
+    bottom: 0.2rem; 
     left: 50%;
     transform: translateX(-50%);
     width: 6px;
@@ -191,25 +189,13 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 
 /* --- 响应式设计 --- */
 @media (max-width: 768px) {
-    /* --- 修复移动端间距和定位 --- */
-    body {
-        /* 移除 body 的 padding-top，让 content 顶部对齐屏幕顶部 */
-        padding-top: 0 !important; 
-    }
-    
-    .container {
-        padding: 15px;
-        padding-top: 0; 
-    }
+    /* --- 修复 PC 端菜单高度和手机端指示点定位 --- */
     
     .main-nav {
-        /* 继承 PC 端的 sticky/top:0/background 修复 */
-        padding-left: 15px;
-        padding-right: 15px;
-        margin-left: -15px;
-        margin-right: -15px;
-        /* 手机端独有的安全区内边距 */
-        padding-top: env(safe-area-inset-top); 
+        /* 强制覆盖 PC 上的透明背景，恢复磨砂效果 */
+        background: var(--card-bg-color);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
     
     .main-nav li a { 
@@ -220,7 +206,21 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     }
 
     .main-nav li a.active::after {
-        bottom: 0.2rem; /* 修复指示点位置 */
+        /* 修复：将指示点紧贴文字底部 */
+        bottom: 0.2rem; 
+    }
+    
+    /* --- 手机端其他样式 (保持不变) --- */
+    body:has(#main-nav-ul) .container {
+        padding: 15px;
+        padding-top: 0; 
+    }
+    
+    .main-nav {
+        padding-left: 15px;
+        padding-right: 15px;
+        margin-left: -15px;
+        margin-right: -15px;
     }
 
     body::before {
@@ -231,6 +231,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     h1 { font-size: 1.2rem; }
     .header-logo { width: 36px; height: 36px; }
     .link-group ul { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+    .main-nav li a { font-size: 0.9rem; }
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
     .card-name { font-size: 0.8rem; }
     
