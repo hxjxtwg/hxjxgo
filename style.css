@@ -28,8 +28,8 @@ body {
     margin: 0;
     color: var(--text-color);
     background-color: var(--bg-color);
-    /* 修复：为状态栏在 body 顶部留出空间 */
-    padding-top: env(safe-area-inset-top);
+    /* 修复：移除 body 的顶部内边距 */
+    /* padding-top: env(safe-area-inset-top); */
 }
 body::before {
     content: '';
@@ -60,7 +60,6 @@ header {
     margin-left: 0;
     margin-right: 0;
     margin-bottom: 0; 
-    /* 修复：将间距加回到 header */
     margin-top: 1rem;
 }
 
@@ -81,8 +80,6 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: sticky;
     top: 0; 
     z-index: 10;
-
-    /* 修复：恢复背景，使内容在其后隐藏 */
     background: var(--card-bg-color);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -93,9 +90,11 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     padding-left: 20px;
     padding-right: 20px;
     
-    /* 修复：移除导致空隙的 margin-top */
     margin-top: 0; 
     border-bottom: 1px solid var(--border-color);
+
+    /* 修复：将安全区内边距应用到菜单栏自身 */
+    padding-top: env(safe-area-inset-top);
 }
 
 .main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
