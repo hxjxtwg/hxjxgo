@@ -8,13 +8,9 @@
     --border-color: #333;
     --card-text-color: #ffffff;
     --card-border-color: rgba(255, 255, 255, 0.18);
-    /* * --- 卡片透明度 (深色模式) ---
-     * 修改 rgba 中的最后一个值 (0.45) 来调整。数值越小，卡片越透明。
-     */
     --card-bg-color: rgba(0, 0, 0, 0.45);
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
-
 body.light-mode {
     --bg-color: #f0f2f5;
     --surface-color: #ffffff;
@@ -22,22 +18,17 @@ body.light-mode {
     --text-color: #000000;
     --text-secondary-color: #5f6368;
     --border-color: #e0e0e0;
-    /* * --- 卡片透明度 (浅色模式) ---
-     * 修改 rgba 中的最后一个值 (0.55) 来调整。数值越小，卡片越透明。
-     */
     --card-text-color: #000000;
     --card-border-color: rgba(0, 0, 0, 0.1);
     --card-bg-color: rgba(255, 255, 255, 0.55);
     --card-text-shadow: none;
 }
-
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
     color: var(--text-color);
     background-color: var(--bg-color);
 }
-
 body::before {
     content: '';
     position: fixed;
@@ -46,123 +37,27 @@ body::before {
     width: 100vw;
     height: 100vh;
     z-index: -1;
-    /* * --- 电脑端背景图 ---
-     * 修改 url('...') 中的图片地址来更换电脑端的背景。
-     */
     background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/wallpaper_1.jpg');
     background-size: cover;
     background-position: center;
 }
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-header {
-    margin-bottom: 2rem;
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo-title {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.header-logo {
-    width: 44px;
-    height: 44px;
-    background-image: url('/logo.svg');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-h1 {
-    font-size: 1.2rem;
-    color: var(--text-color);
-    margin: 0;
-}
-
-.main-nav {
-    margin-top: 1rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.main-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.main-nav li {
-    position: relative;
-}
-
-.main-nav li a {
-    display: block;
-    padding: 0.8rem 1rem;
-    text-decoration: none;
-    color: var(--text-secondary-color);
-    font-weight: 500;
-    transition: color 0.2s, border-bottom-color 0.2s;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-}
-
-.main-nav li a:hover {
-    color: var(--primary-color);
-}
-
-.main-nav li a.active {
-    color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
-}
-
-.dropdown-content {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
-    position: absolute;
-    background-color: transparent;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    list-style: none;
-    padding: 5px;
-    margin-top: -2px;
-}
-.dropdown-content.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-.dropdown-content a {
-    padding: 10px 14px;
-    border-bottom: none !important;
-    border-radius: 6px;
-    text-shadow: var(--card-text-shadow);
-}
-.dropdown-content a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-.dropdown-content a.active {
-    color: var(--primary-color);
-    font-weight: bold;
-}
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+header { margin-bottom: 2rem; }
+.header-content { display: flex; justify-content: space-between; align-items: center; }
+.logo-title { display: flex; align-items: center; gap: 15px; }
+.header-logo { width: 44px; height: 44px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
+h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
+.main-nav { margin-top: 1rem; border-bottom: 1px solid var(--border-color); }
+.main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
+.main-nav li { position: relative; }
+.main-nav li a { display: block; padding: 0.8rem 1rem; text-decoration: none; color: var(--text-secondary-color); font-weight: 500; transition: color 0.2s, border-bottom-color 0.2s; border-bottom: 2px solid transparent; cursor: pointer; }
+.main-nav li a:hover { color: var(--primary-color); }
+.main-nav li a.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+.dropdown-content { opacity: 0; visibility: hidden; transform: translateY(-10px); transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s; position: absolute; background-color: transparent; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; list-style: none; padding: 5px; margin-top: -2px; }
+.dropdown-content.show { opacity: 1; visibility: visible; transform: translateY(0); }
+.dropdown-content a { padding: 10px 14px; border-bottom: none !important; border-radius: 6px; text-shadow: var(--card-text-shadow); }
+.dropdown-content a:hover { background-color: rgba(255, 255, 255, 0.1); }
+.dropdown-content a.active { color: var(--primary-color); font-weight: bold; }
 
 /* --- 搜索区域样式 --- */
 .search-section {
@@ -258,43 +153,27 @@ body.light-mode .search-input {
 /* --- 卡片样式 --- */
 .link-group { margin-top: 2rem; }
 .link-group ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-.link-group a { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: var(--card-text-color); border-radius: 12px; padding: 15px; height: 110px; box-sizing: border-box; text-align: center; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    
+.link-group a { 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: var(--card-text-color); border-radius: 12px; padding: 15px; height: 110px; box-sizing: border-box; text-align: center; 
     background: var(--card-bg-color);
-    /* * --- 玻璃模糊度 ---
-     * 修改 blur() 中的数值来调整“磨砂”效果。数值越小，背景越清晰。
-     */
     backdrop-filter: blur(1px); 
     -webkit-backdrop-filter: blur(1px);
-    border: 1px solid var(--card-border-color); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
-.link-group a:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--card-border-color); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out, box-shadow 0.2s ease-in-out;
+    will-change: transform;
+    opacity: 0;
+    animation: card-pop-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    position: relative;
+    overflow: hidden;
 }
-.card-icon {
-    /* * --- 卡片内图标大小 (电脑端) ---
-     * 修改这里的 width 和 height 来调整卡片上图标的大小。
-     */
-    width: 36px;
-    height: 36px;
-    margin-bottom: 12px;
-    border-radius: 50%;
-    background-color: transparent;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: none;
-}
-.card-name {
-    font-weight: 500;
-    /* * --- 卡片内字体大小 (电脑端) ---
-     * 修改这里的数值来调整卡片上网站名称的字体大小。
-     */
-    font-size: 1rem;
-    line-height: 1.2;
-    word-break: break-word;
-    text-shadow: var(--card-text-shadow);
-}
+@keyframes card-pop-in { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.link-group li:nth-child(1) a { animation-delay: 0.05s; } .link-group li:nth-child(2) a { animation-delay: 0.1s; } .link-group li:nth-child(3) a { animation-delay: 0.15s; } .link-group li:nth-child(4) a { animation-delay: 0.2s; } .link-group li:nth-child(5) a { animation-delay: 0.25s; } .link-group li:nth-child(6) a { animation-delay: 0.3s; } .link-group li:nth-child(7) a { animation-delay: 0.35s; } .link-group li:nth-child(8) a { animation-delay: 0.4s; } .link-group li:nth-child(9) a { animation-delay: 0.45s; } .link-group li:nth-child(10) a { animation-delay: 0.5s; } .link-group li:nth-child(11) a { animation-delay: 0.55s; } .link-group li:nth-child(12) a { animation-delay: 0.6s; }
+.link-group a:hover { box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); transform: translateY(-5px); }
+.link-group a::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(100deg, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 80%); transform: translateX(-150%) skewX(-20deg); transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1); }
+.link-group a:hover::before { transform: translateX(150%) skewX(-20deg); }
+.card-icon { width: 36px; height: 36px; margin-bottom: 12px; border-radius: 50%; background-color: transparent; background-size: cover; background-position: center; background-repeat: no-repeat; background-image: none; }
+.card-name { font-weight: 500; font-size: 1rem; line-height: 1.2; word-break: break-word; text-shadow: var(--card-text-shadow); }
 .placeholder { text-align: center; font-size: 1.2rem; color: var(--text-secondary-color); padding: 4rem; }
 .placeholder.error { color: var(--error-color); }
 .theme-switcher { display: flex; align-items: center; }
@@ -302,9 +181,10 @@ body.light-mode .search-input {
 .theme-switcher svg { position: absolute; width: 24px; height: 24px; transition: opacity 0.3s ease, transform 0.3s ease; stroke: var(--text-color); }
 .theme-switcher .sun-icon { opacity: 0; transform: rotate(-90deg); }
 .theme-switcher .moon-icon { opacity: 1; transform: rotate(0deg); }
-.theme-switcher input { display: none; }
+.theme-switcher input { position: absolute; opacity: 0; width: 0; height: 0; }
 .theme-switcher input:checked + label .sun-icon { opacity: 1; transform: rotate(0deg); }
 .theme-switcher input:checked + label .moon-icon { opacity: 0; transform: rotate(90deg); }
+
 
 /* --- 响应式设计 --- */
 @media (max-width: 768px) {
@@ -313,78 +193,44 @@ body.light-mode .search-input {
     }
 
     body::before {
-        /* * --- 手机端背景图 ---
-         * 修改这里的图片地址来更换手机端的背景。
-         */
         background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/IMG_5251.JPG');
-        /* 修复移动端背景闪烁和缩放问题 */
         background-attachment: scroll; 
     }
 
-    h1 {
-        font-size: 1.2rem;
-    }
-
-    .header-logo {
-        width: 36px;
-        height: 36px;
-    }
-
-    .card-group-title {
-        font-size: 1rem;
-    }
-
-    .link-group ul {
-        /* * --- 手机端卡片宽度 ---
-         * 修改这里的 minmax() 中的第一个值 (100px) 来调整卡片宽度。
-         * 数值越小，每行能容纳的卡片越多。
-         */
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 10px;
-    }
+    h1 { font-size: 1.2rem; }
+    .header-logo { width: 36px; height: 36px; }
+    .link-group ul { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+    .main-nav li a { padding: 0.6rem 0.8rem; font-size: 0.9rem; }
+    .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
+    .card-name { font-size: 0.8rem; }
     
+    /* 修复：在手机端禁用所有高性能消耗的特效 */
     .link-group a {
-        /* * --- 手机端卡片高度 ---
-         * 修改这里的 height 值来调整卡片的高度。
-         */
         height: 90px;
-        /* 修复：在手机端禁用模糊效果以解决闪烁 */
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-        
-        /* 修复：在手机端禁用弹出动画 */
-        animation: none;
+        animation: none; /* 禁用弹出 */
         opacity: 1;
-        /* 修复：在手机端禁用3D倾斜（它依赖JS，但CSS部分可以禁用） */
-        transform-style: flat;
+        transform-style: flat; /* 禁用3D */
+        transition: none; /* 禁用所有过渡 */
+    }
+    .link-group a:hover {
+        transform: none;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* 恢复到默认阴影 */
+    }
+    .link-group a::before {
+        display: none; /* 禁用流光 */
     }
 
-    /* 修复：在手机端禁用下拉菜单的模糊效果 */
     .dropdown-content {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
         background-color: var(--surface-color);
     }
     
-    /* 修复：在手机端禁用搜索框的模糊效果 */
     .search-input {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-    }
-
-    .main-nav li a {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.9rem;
-    }
-    
-    /* * --- 手机端卡片内图标和字体大小 --- */
-    .card-icon {
-        width: 30px;
-        height: 30px;
-        margin-bottom: 8px;
-    }
-    .card-name {
-        font-size: 0.8rem;
     }
     
     .search-section { margin: 1.5rem auto; }
