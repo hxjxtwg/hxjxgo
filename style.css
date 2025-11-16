@@ -48,11 +48,10 @@ body::before {
     max-width: 1200px; 
     margin: 0 auto; 
     padding: 20px; 
-    padding-top: 0; /* 修复：移除 container 顶边距 */
+    padding-top: 0; 
 }
 
 header {
-    /* 修复：移除所有 sticky 相关的样式 */
     position: static;
     background: none;
     backdrop-filter: none;
@@ -60,7 +59,9 @@ header {
     box-shadow: none;
     margin-left: 0;
     margin-right: 0;
-    margin-bottom: 0; /* 修复：移除 header 底边距 */
+    margin-bottom: 0; 
+    /* 修复：将间距加回到 header */
+    margin-top: 1rem;
 }
 
 .header-content {
@@ -69,7 +70,6 @@ header {
     align-items: center;
     padding-left: 0;
     padding-right: 0;
-    /* 修复：为 header 内容区增加顶部内边距 */
     padding-top: 20px; 
 }
 
@@ -78,24 +78,23 @@ header {
 h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav {
-    /* 修复：将 .main-nav 设为“粘性定位” */
     position: sticky;
-    top: 0; /* 粘在 body 的 content-box 顶部 */
+    top: 0; 
     z-index: 10;
 
-    /* 修复：移除背景，使其透明 */
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
+    /* 修复：恢复背景，使内容在其后隐藏 */
+    background: var(--card-bg-color);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     
-    /* 应用全宽负外边距和内边距 */
     margin-left: -20px;
     margin-right: -20px;
     padding-left: 20px;
     padding-right: 20px;
     
-    margin-top: 1rem; /* 恢复 header 和 nav 之间的间距 */
+    /* 修复：移除导致空隙的 margin-top */
+    margin-top: 0; 
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -165,8 +164,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 @media (max-width: 768px) {
     body:has(#main-nav-ul) .container {
         padding: 15px;
-        /* 修复：为顶部安全区域留出空间 */
-        padding-top: 0; /* 修复：body 已经有 padding-top，container 不再需要 */
+        padding-top: 0; 
     }
     
     .main-nav {
