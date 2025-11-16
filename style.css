@@ -28,8 +28,6 @@ body {
     margin: 0;
     color: var(--text-color);
     background-color: var(--bg-color);
-    /* 修复：移除 body 的顶部内边距 */
-    /* padding-top: env(safe-area-inset-top); */
 }
 body::before {
     content: '';
@@ -80,10 +78,12 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: sticky;
     top: 0; 
     z-index: 10;
-    background: var(--card-bg-color);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    
+    /* PC 修复：菜单栏完全透明 */
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
     
     padding-top: env(safe-area-inset-top);
     
@@ -93,33 +93,18 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     padding-right: 20px;
     
     margin-top: 0; 
-    /* 移除长横线，只保留底部的分隔线 */
     border-bottom: 1px solid var(--border-color);
 }
 
-.main-nav ul { 
-    list-style: none; 
-    padding: 0; 
-    margin: 0; 
-    display: flex; 
-    justify-content: center; 
-    flex-wrap: wrap; 
-}
-.main-nav li { 
-    position: relative; 
-    display: flex;
-    align-items: stretch;
-}
+.main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
+.main-nav li { position: relative; }
 .main-nav li a { 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block; 
     padding: 0.8rem 1rem; /* 电脑基础高度 */
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
     transition: color 0.2s;
-    /* 移除 a 上的长横线 */
     border-bottom: 2px solid transparent; 
     cursor: pointer; 
     position: relative; /* 为小圆点定位 */
@@ -131,17 +116,17 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     color: var(--primary-color); 
     font-weight: bold;
 }
+/* PC 端的指示点 */
 .main-nav li a.active::after {
     content: '';
     position: absolute;
-    bottom: 0.2rem; /* 靠近文字底部 */
+    bottom: 0.2rem; /* 调整 PC 端小圆点位置 */
     left: 50%;
     transform: translateX(-50%);
     width: 6px;
     height: 6px;
     background-color: var(--primary-color);
     border-radius: 50%;
-    /* 平滑过渡 */
     transition: all 0.2s ease;
 }
 
