@@ -78,12 +78,10 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: sticky;
     top: 0; 
     z-index: 10;
-    
-    /* PC 修复：菜单栏完全透明 */
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
+    background: var(--card-bg-color);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     
     padding-top: env(safe-area-inset-top);
     
@@ -100,14 +98,14 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .main-nav li { position: relative; }
 .main-nav li a { 
     display: block; 
-    padding: 0.8rem 1rem; /* 电脑基础高度 */
+    padding: 0.8rem 1rem; 
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
     transition: color 0.2s;
     border-bottom: 2px solid transparent; 
     cursor: pointer; 
-    position: relative; /* 为小圆点定位 */
+    position: relative; 
 }
 .main-nav li a:hover { color: var(--primary-color); }
 
@@ -120,7 +118,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .main-nav li a.active::after {
     content: '';
     position: absolute;
-    bottom: 0.2rem; /* 调整 PC 端小圆点位置 */
+    bottom: 0.2rem; /* 修复：调整 PC 端小圆点位置 */
     left: 50%;
     transform: translateX(-50%);
     width: 6px;
