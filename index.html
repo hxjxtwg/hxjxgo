@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>个人导航</title>
-    <link rel="icon" href="/logo.svg">
+    <link rel="icon" href="/my-logo.svg">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
+        <!-- 修复：将 <nav> 移到 <header> 之前 -->
+        <nav class="main-nav">
+            <ul id="main-nav-ul"></ul>
+        </nav>
+        
         <header>
             <div class="header-content">
                 <div class="logo-title">
@@ -23,13 +28,7 @@
                     </label>
                 </div>
             </div>
-            <!-- 导航栏 <nav> 已从 <header> 中移出 -->
         </header>
-
-        <!-- 导航栏现在是一个独立的、可以被固定的元素 -->
-        <nav class="main-nav">
-            <ul id="main-nav-ul"></ul>
-        </nav>
 
         <div class="search-section">
             <div id="search-tabs-container" class="search-tabs"></div>
