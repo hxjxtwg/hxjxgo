@@ -28,8 +28,6 @@ body {
     margin: 0;
     color: var(--text-color);
     background-color: var(--bg-color);
-    /* 修复：移除 body 的顶部内边距 */
-    /* padding-top: env(safe-area-inset-top); */
 }
 body::before {
     content: '';
@@ -100,8 +98,8 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .main-nav li { position: relative; }
 .main-nav li a { 
     display: block; 
-    /* 修复：将菜单栏加高 20px (原 0.8rem + 1.25rem = 2.05rem) */
-    padding: 2.05rem 1rem; 
+    /* 修复：将菜单栏加高 25px (原 0.8rem + 1.5625rem = 2.3625rem) */
+    padding: 2.3625rem 1rem; 
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
@@ -193,9 +191,9 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     .main-nav li a { 
         padding: 0.6rem 0.8rem; /* 原始手机端 padding */
         font-size: 0.9rem; 
-        /* 核心修复：加高 20px (增量为 1.25rem, 总计 0.6rem + 1.25rem = 1.85rem) */
-        padding-top: 1.85rem; 
-        padding-bottom: 1.85rem; 
+        /* 核心修复：加高 25px (增量为 1.5625rem, 总计 0.6rem + 1.5625rem = 2.1625rem) */
+        padding-top: 2.1625rem; 
+        padding-bottom: 2.1625rem; 
     }
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
     .card-name { font-size: 0.8rem; }
