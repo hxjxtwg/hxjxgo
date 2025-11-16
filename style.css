@@ -78,6 +78,8 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: sticky;
     top: 0; 
     z-index: 10;
+
+    /* PC 端默认样式：完全透明 */
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -209,11 +211,14 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     .header-logo { width: 36px; height: 36px; }
     .link-group ul { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
     .main-nav li a { 
-        padding: 0.6rem 0.8rem; /* 原始手机端 padding */
-        font-size: 0.9rem; 
         /* 核心修复：加高 25px (增量为 1.5625rem, 总计 0.6rem + 1.5625rem = 2.1625rem) */
         padding-top: 2.1625rem; 
         padding-bottom: 2.1625rem; 
+        font-size: 0.9rem;
+    }
+    .main-nav li a.active::after {
+        /* 修复：将指示点紧贴文字底部 */
+        bottom: 0.2rem;
     }
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
     .card-name { font-size: 0.8rem; }
