@@ -28,8 +28,6 @@ body {
     margin: 0;
     color: var(--text-color);
     background-color: var(--bg-color);
-    /* 修复：移除 body 的顶部内边距 */
-    /* padding-top: env(safe-area-inset-top); */
 }
 body::before {
     content: '';
@@ -96,32 +94,12 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     border-bottom: 1px solid var(--border-color);
 }
 
-.main-nav ul { 
-    list-style: none; 
-    padding: 0; 
-    margin: 0; 
-    display: flex; 
-    justify-content: center; 
-    flex-wrap: wrap; 
-    /* 新增：设置 UL 的最小高度，以容纳加高后的 LI */
-    min-height: 5rem; 
-}
-
-.main-nav li { 
-    position: relative; 
-    /* 新增：让 LI 占据全部高度 */
-    display: flex;
-    align-items: stretch;
-}
-
+.main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
+.main-nav li { position: relative; }
 .main-nav li a { 
-    display: flex; /* 让 a 内部内容居中 */
-    align-items: center;
-    justify-content: center;
-    /* 核心修复：直接设置固定的垂直内边距 (60px / 2 = 30px)
-     * 1.875rem ≈ 30px。这会比原来的 0.8rem 增加约 30px
-     */
-    padding: 1.875rem 1rem; 
+    display: block; 
+    /* 核心修复：加高 20px (原 0.8rem + 1.25rem = 2.05rem) */
+    padding: 2.05rem 1rem; 
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
