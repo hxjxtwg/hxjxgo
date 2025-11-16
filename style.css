@@ -71,7 +71,7 @@ header {
 }
 
 .logo-title { display: flex; align-items: center; gap: 15px; }
-.header-logo { width: 44px; height: 44px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
+.header-logo { width: 36px; height: 36px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
 h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav {
@@ -180,7 +180,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 .placeholder.error { color: var(--error-color); }
 .theme-switcher { display: flex; align-items: center; }
 .theme-switcher label { width: 30px; height: 30px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
-.theme-switcher svg { position: absolute; width: 24px; height: 24px; transition: opacity 0.3s ease, transform 0.3s ease; stroke: var(--text-color); }
+.theme-switcher svg { position: absolute; width: 12px; height: 12px; transition: opacity 0.3s ease, transform 0.3s ease; stroke: var(--text-color); }
 .theme-switcher .sun-icon { opacity: 0; transform: rotate(-90deg); }
 .theme-switcher .moon-icon { opacity: 1; transform: rotate(0deg); }
 .theme-switcher input { position: absolute; opacity: 0; width: 0; height: 0; }
