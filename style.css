@@ -79,7 +79,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     top: 0; 
     z-index: 10;
 
-    /* 修复：PC 端默认背景完全透明 */
+    /* PC 端默认：完全透明，保留 sticky 定位 */
     background: transparent !important; 
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
@@ -100,7 +100,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .main-nav li { position: relative; }
 .main-nav li a { 
     display: block; 
-    padding: 0.8rem 1rem; /* PC 基础高度 */
+    padding: 0.8rem 1rem; 
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
@@ -211,10 +211,11 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     .header-logo { width: 36px; height: 36px; }
     .link-group ul { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
     .main-nav li a { 
+        padding: 0.6rem 0.8rem; /* 原始手机端 padding */
+        font-size: 0.9rem; 
         /* 核心修复：加高 25px (增量为 1.5625rem, 总计 0.6rem + 1.5625rem = 2.1625rem) */
         padding-top: 2.1625rem; 
         padding-bottom: 2.1625rem; 
-        font-size: 0.9rem;
     }
     
     .main-nav li a.active::after {
