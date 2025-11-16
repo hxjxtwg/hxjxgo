@@ -57,7 +57,6 @@ header {
     box-shadow: none;
     margin-left: 0;
     margin-right: 0;
-    /* 修复：恢复 header 和 nav 之间的间距 */
     margin-bottom: 2rem; 
     margin-top: 1rem;
 }
@@ -79,13 +78,14 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: sticky;
     top: 0; 
     z-index: 10;
-    background: var(--card-bg-color);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     
-    /* PC 修复：移除导致空隙的 padding-top，让它在 PC 上为 0 */
-    padding-top: 0; 
+    /* PC 修复：菜单栏完全透明 */
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+
+    padding-top: env(safe-area-inset-top);
     
     margin-left: -20px;
     margin-right: -20px;
