@@ -41,40 +41,40 @@ body::before {
     background-size: cover;
     background-position: center;
 }
-.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-header { margin-bottom: 2rem; }
-.header-content { display: flex; justify-content: space-between; align-items: center; }
-.logo-title { display: flex; align-items: center; gap: 15px; }
-.header-logo { width: 44px; height: 44px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
-h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
-.main-nav { margin-top: 1rem; border-bottom: 1px solid var(--border-color); }
-.main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
-.main-nav li { position: relative; }
-.main-nav li a { display: block; padding: 0.8rem 1rem; text-decoration: none; color: var(--text-secondary-color); font-weight: 500; transition: color 0.2s, border-bottom-color 0.2s; border-bottom: 2px solid transparent; cursor: pointer; }
-.main-nav li a:hover { color: var(--primary-color); }
-.main-nav li a.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
-.dropdown-content { opacity: 0; visibility: hidden; transform: translateY(-10px); transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s; position: absolute; background-color: transparent; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; list-style: none; padding: 5px; margin-top: -2px; }
-.dropdown-content.show { opacity: 1; visibility: visible; transform: translateY(0); }
-.dropdown-content a { padding: 10px 14px; border-bottom: none !important; border-radius: 6px; text-shadow: var(--card-text-shadow); }
-.dropdown-content a:hover { background-color: rgba(255, 255, 255, 0.1); }
-.dropdown-content a.active { color: var(--primary-color); font-weight: bold; }
 
-/* --- 搜索区域样式 --- */
-.search-section {
-    max-width: 600px;
-    margin: 2.5rem auto;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    /* 修复：移除容器的顶部内边距，交由 header 处理 */
+    /* padding-top: calc(20px + env(safe-area-inset-top)); */
 }
-.search-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+
+header {
+    /* 修复：将 header 设为“粘性定位”，使其在滚动时固定在顶部 */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    
+    /* 修复：将安全区域边距应用到 header 自身 */
+    padding-top: env(safe-area-inset-top);
+    
+    /* 修复：为 header 增加背景，防止内容滚动时穿透 */
+    background: var(--card-bg-color);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    
+    /* 修复：调整内边距和边距，使其看起来更协调 */
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 0.5rem;
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: 2rem;
 }
-.search-tab {
-    position: relative;
-    display: flex;
-    align-items: center;
+
+.header-content {
     gap: 8px;
     padding: 8px 12px;
     border-radius: 8px;
