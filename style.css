@@ -59,7 +59,8 @@ header {
     box-shadow: none;
     margin-left: 0;
     margin-right: 0;
-    margin-bottom: 0; 
+    /* 修复：恢复 header 和 nav 之间的间距 */
+    margin-bottom: 2rem; 
     margin-top: 1rem;
 }
 
@@ -78,6 +79,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav {
     position: sticky;
+    /* 修复：固定在屏幕最顶部 */
     top: 0; 
     z-index: 10;
     background: var(--card-bg-color);
