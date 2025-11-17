@@ -40,7 +40,7 @@ body::before {
     height: 100vh;
     z-index: -1;
     /* 修复：电脑端背景图直接应用于伪元素 */
-    background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/wallpaper_1.jpg');
+    background-image: url('../images/background-desktop.webp');
     background-size: cover;
     background-position: center;
 }
@@ -230,7 +230,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     }
 
     body::before {
-        background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/IMG_5251.JPG');
+        background-image: url('../images/background-mobile.webp');
         background-attachment: scroll; 
     }
 
