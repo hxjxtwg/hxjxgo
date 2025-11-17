@@ -28,8 +28,6 @@ body {
     margin: 0;
     color: var(--text-color);
     background-color: var(--bg-color);
-    /* 修复：移除 body 的顶部内边距 */
-    /* padding-top: env(safe-area-inset-top); */
 }
 body::before {
     content: '';
@@ -39,7 +37,6 @@ body::before {
     width: 100vw;
     height: 100vh;
     z-index: -1;
-    /* 修复：电脑端背景图直接应用于伪元素 */
     background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/wallpaper_1.jpg');
     background-size: cover;
     background-position: center;
@@ -48,8 +45,8 @@ body::before {
 .container { 
     max-width: 1200px; 
     margin: 0 auto; 
-    /* 修复：移除左右 padding，防止菜单栏缩进 */
-    padding: 20px 0; 
+    /* PC 端默认 padding */
+    padding: 20px; 
     padding-top: 20px; 
 }
 
@@ -69,8 +66,9 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* 修复：将内容区域的 padding 设为 20px */
-    padding: 20px;
+    /* 修复：移除 PC 端不必要的 padding 调整 */
+    padding-left: 0;
+    padding-right: 0;
     padding-top: 20px; 
 }
 
@@ -82,6 +80,8 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: sticky;
     top: 0; 
     z-index: 10;
+    
+    /* PC 端默认：完全透明 */
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -89,10 +89,9 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     
     padding-top: env(safe-area-inset-top);
     
-    /* 修复：移除负边距，因为 container padding 已移除 */
+    /* PC 端不需要负边距 */
     margin-left: 0;
     margin-right: 0;
-    /* 恢复左右 padding */
     padding-left: 20px;
     padding-right: 20px;
     
@@ -114,6 +113,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: relative; 
 }
 .main-nav li a:hover { color: var(--primary-color); }
+
 /* --- 菜单选中状态：替换为小圆点 --- */
 .main-nav li a.active { 
     color: var(--primary-color); 
@@ -143,7 +143,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .search-section { 
     max-width: 600px; 
     margin: 2.5rem auto; 
-    padding-left: 20px; /* 修复：增加左右 padding */
+    padding-left: 20px; 
     padding-right: 20px;
 }
 .search-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -197,24 +197,26 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 
 /* --- 响应式设计 --- */
 @media (max-width: 768px) {
-    /* --- 修复移动端间距和定位 --- */
+    /* --- 修复 PC 端菜单高度和手机端指示点定位 --- */
+    
     body {
-        /* PC 端已经移除了 padding-top: env()，这里不再需要 */
-        /* background-attachment: scroll 已经修复了闪烁 */
+        /* 移除 body 的 padding-top，让 nav 自己处理 */
+        padding-top: 0;
     }
     
     .container {
-        /* 移除 container 自己的 padding，由内部元素控制 */
-        padding: 15px 0; 
+        /* 修复：将 container 左右 padding 恢复到 15px */
+        padding-left: 15px;
+        padding-right: 15px;
         padding-top: 0; 
     }
     
     .header-content {
         /* 确保 header 内容有左右边距 */
-        padding-left: 15px;
-        padding-right: 15px;
+        padding-left: 0;
+        padding-right: 0;
     }
-
+    
     .main-nav {
         /* 恢复手机端磨砂背景 */
         background: var(--card-bg-color);
@@ -222,9 +224,10 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
         -webkit-backdrop-filter: blur(12px);
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         
-        /* 修复：移除左右负边距，因为 container padding 已经修复 */
+        /* 修复：移除左右负边距 */
         margin-left: 0;
         margin-right: 0;
+        /* 恢复 nav 左右 padding */
         padding-left: 15px;
         padding-right: 15px;
     }
@@ -237,7 +240,6 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     h1 { font-size: 1.2rem; }
     .header-logo { width: 36px; height: 36px; }
     .link-group ul { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-    
     .main-nav li a { 
         padding: 0.6rem 0.8rem;
         font-size: 0.9rem; 
