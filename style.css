@@ -48,7 +48,6 @@ body::before {
 .container { 
     max-width: 1200px; 
     margin: 0 auto; 
-    /* PC 内容的左右边距 */
     padding: 20px var(--global-padding); 
     padding-top: 20px; 
 }
@@ -56,7 +55,7 @@ body::before {
 header {
     margin-bottom: 2rem; 
     margin-top: 1rem;
-    padding: 0; /* 修复：移除 header 上的 padding */
+    padding: 0; 
 }
 
 .header-content {
@@ -64,8 +63,8 @@ header {
     justify-content: space-between;
     align-items: center;
     padding-top: 20px; 
-    padding-left: 0; 
-    padding-right: 0;
+    padding-left: var(--global-padding);
+    padding-right: var(--global-padding);
 }
 
 .logo-title { display: flex; align-items: center; gap: 15px; }
@@ -97,7 +96,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav ul { 
     list-style: none; 
-    /* 修复：UL 承担 PC 留白，并保持最大宽度 */
+    /* PC: UL 承担 20px 留白 */
     padding: 0 var(--global-padding); 
     margin: 0 auto;
     max-width: 1200px;
@@ -148,9 +147,8 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .search-section { 
     max-width: 600px; 
     margin: 2.5rem auto; 
-    /* 修复：移除 PC 搜索框的 padding，由 container 统一管理 */
-    padding-left: 0; 
-    padding-right: 0;
+    padding-left: var(--global-padding); 
+    padding-right: var(--global-padding);
 }
 .search-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 .search-tab { position: relative; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; transition: background-color 0.2s; }
@@ -220,17 +218,16 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     }
     
     .main-nav {
-        /* 恢复手机磨砂背景 */
         background: var(--card-bg-color);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         
-        /* 修复：移除负边距，因为 container padding 已修复 */
+        /* 核心修复： nav 自身 padding 为 0，确保背景全宽贴边 */
         margin-left: 0;
         margin-right: 0;
-        padding-left: 0; /* 菜单栏背景贴边 */
-        padding-right: 0; /* 菜单栏背景贴边 */
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .main-nav ul {
