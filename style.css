@@ -48,7 +48,6 @@ body::before {
 .container { 
     max-width: 1200px; 
     margin: 0 auto; 
-    /* PC 内容的左右边距 */
     padding: 20px var(--global-padding); 
     padding-top: 20px; 
 }
@@ -57,6 +56,8 @@ header {
     margin-bottom: 2rem; 
     margin-top: 1rem;
     padding: 0; 
+    padding-left: var(--global-padding);
+    padding-right: var(--global-padding);
 }
 
 .header-content {
@@ -97,7 +98,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav ul { 
     list-style: none; 
-    /* UL 承担 PC 留白 */
+    /* PC: UL 承担 20px 留白 */
     padding: 0 var(--global-padding); 
     margin: 0 auto;
     max-width: 1200px;
@@ -148,7 +149,6 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .search-section { 
     max-width: 600px; 
     margin: 2.5rem auto; 
-    /* PC 内容边距 */
     padding-left: var(--global-padding); 
     padding-right: var(--global-padding);
 }
@@ -203,14 +203,14 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 
 /* --- 响应式设计 --- */
 @media (max-width: 768px) {
-    /* --- 修复移动端间距和定位 --- */
     body {
         padding-top: 0;
     }
     
     .container {
-        /* 手机内容边距 */
-        padding: 15px var(--mobile-padding); 
+        /* 修复：将 container 左右 padding 恢复到 15px */
+        padding-left: var(--mobile-padding); 
+        padding-right: var(--mobile-padding);
         padding-top: 0; 
     }
     
@@ -221,17 +221,18 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     }
     
     .main-nav {
-        /* 继承 PC 上的 full-width 修复 */
-        margin-left: 0;
-        margin-right: 0;
-        padding-left: 0;
-        padding-right: 0;
-        
         /* 恢复手机磨砂背景 */
         background: var(--card-bg-color);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        
+        /* 修复：移除负边距，因为 container padding 已修复 */
+        margin-left: 0;
+        margin-right: 0;
+        /* 核心修复： nav 自身 padding 为 0，确保背景全宽贴边 */
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .main-nav ul {
