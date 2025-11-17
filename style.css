@@ -56,7 +56,6 @@ body::before {
 header {
     margin-bottom: 2rem; 
     margin-top: 1rem;
-    /* 修复：将 header 左右 padding 设为 0，让内容对齐 container */
     padding: 0; 
 }
 
@@ -65,7 +64,6 @@ header {
     justify-content: space-between;
     align-items: center;
     padding-top: 20px; 
-    /* 移除 header-content 上的额外 padding */
     padding-left: 0; 
     padding-right: 0;
 }
@@ -78,6 +76,8 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: sticky;
     top: 0; 
     z-index: 10;
+    
+    /* PC 默认：完全透明，背景贴合屏幕 */
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -85,7 +85,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     
     padding-top: env(safe-area-inset-top);
     
-    /* 修复：移除 margin 和 padding，让背景全宽贴边 */
+    /* 核心修复：背景全宽贴边 */
     margin-left: 0;
     margin-right: 0;
     padding-left: 0;
@@ -97,7 +97,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav ul { 
     list-style: none; 
-    /* 修复：UL 承担 PC 留白，并保持最大宽度 */
+    /* UL 承担 PC 留白 */
     padding: 0 var(--global-padding); 
     margin: 0 auto;
     max-width: 1200px;
@@ -148,8 +148,9 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .search-section { 
     max-width: 600px; 
     margin: 2.5rem auto; 
-    padding-left: 20px; 
-    padding-right: 20px;
+    /* PC 内容边距 */
+    padding-left: var(--global-padding); 
+    padding-right: var(--global-padding);
 }
 .search-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 .search-tab { position: relative; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; transition: background-color 0.2s; }
@@ -202,6 +203,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 
 /* --- 响应式设计 --- */
 @media (max-width: 768px) {
+    /* --- 修复移动端间距和定位 --- */
     body {
         padding-top: 0;
     }
@@ -219,17 +221,17 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     }
     
     .main-nav {
+        /* 继承 PC 上的 full-width 修复 */
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+        
         /* 恢复手机磨砂背景 */
         background: var(--card-bg-color);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        
-        /* 修复：移除负边距，由 ul 承担留白 */
-        margin-left: 0;
-        margin-right: 0;
-        padding-left: 0;
-        padding-right: 0;
     }
 
     .main-nav ul {
@@ -255,7 +257,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     }
     
     .main-nav li a.active::after {
-        content: none;
+        content: none; 
     }
 
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
