@@ -10,6 +10,7 @@
     --card-border-color: rgba(255, 255, 255, 0.18);
     --card-bg-color: rgba(0, 0, 0, 0.45);
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    --mobile-padding: 15px; /* 新增变量：定义手机上的标准边距 */
 }
 body.light-mode {
     --bg-color: #f0f2f5;
@@ -42,54 +43,39 @@ body::before {
     background-position: center;
 }
 
+/* --- PC 布局 --- */
 .container { 
     max-width: 1200px; 
     margin: 0 auto; 
-    /* PC 端默认 padding */
     padding: 20px; 
     padding-top: 20px; 
 }
 
 header {
-    position: static;
-    background: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
-    margin-left: 0;
-    margin-right: 0;
     margin-bottom: 2rem; 
     margin-top: 1rem;
+    padding: 0 20px; /* PC Header 左右内边距 */
 }
 
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* 修复：移除 PC 端不必要的 padding 调整 */
-    padding-left: 0;
-    padding-right: 0;
     padding-top: 20px; 
 }
-
-.logo-title { display: flex; align-items: center; gap: 15px; }
-.header-logo { width: 44px; height: 44px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
 h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav {
     position: sticky;
     top: 0; 
     z-index: 10;
-    
-    /* PC 端默认：完全透明 */
-    background: transparent;
+    background: transparent; /* PC 默认透明 */
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;
     
     padding-top: env(safe-area-inset-top);
     
-    /* PC 端不需要负边距 */
     margin-left: 0;
     margin-right: 0;
     padding-left: 20px;
@@ -113,12 +99,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: relative; 
 }
 .main-nav li a:hover { color: var(--primary-color); }
-
-/* --- 菜单选中状态：替换为小圆点 --- */
-.main-nav li a.active { 
-    color: var(--primary-color); 
-    font-weight: bold;
-}
+.main-nav li a.active { color: var(--primary-color); font-weight: bold; }
 .main-nav li a.active::after {
     content: '';
     position: absolute;
@@ -132,14 +113,13 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     transition: all 0.2s ease;
 }
 
-
+/* ... Dropdown, Search, Card Styles (PC Default) ... */
 .dropdown-content { opacity: 0; visibility: hidden; transform: translateY(-10px); transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s; position: absolute; background-color: transparent; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; list-style: none; padding: 5px; margin-top: -2px; }
 .dropdown-content.show { opacity: 1; visibility: visible; transform: translateY(0); }
 .dropdown-content a { padding: 10px 14px; border-bottom: none !important; border-radius: 6px; text-shadow: var(--card-text-shadow); }
 .dropdown-content a:hover { background-color: rgba(255, 255, 255, 0.1); }
 .dropdown-content a.active { color: var(--primary-color); font-weight: bold; }
 
-/* --- 搜索区域样式 --- */
 .search-section { 
     max-width: 600px; 
     margin: 2.5rem auto; 
@@ -159,7 +139,6 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 .search-button svg { stroke: var(--text-secondary-color); transition: stroke 0.2s; }
 .search-button:hover svg { stroke: var(--primary-color); }
 
-/* --- 卡片样式 --- */
 .link-group { margin-top: 2rem; }
 .link-group ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
 .link-group a { 
@@ -197,10 +176,8 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 
 /* --- 响应式设计 --- */
 @media (max-width: 768px) {
-    /* --- 修复 PC 端菜单高度和手机端指示点定位 --- */
-    
     body {
-        /* 移除 body 的 padding-top，让 nav 自己处理 */
+        /* 修复：移除 body 的 padding-top，让 nav 自己处理 */
         padding-top: 0;
     }
     
@@ -211,10 +188,10 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
         padding-top: 0; 
     }
     
-    .header-content {
+    header {
         /* 确保 header 内容有左右边距 */
-        padding-left: 0;
-        padding-right: 0;
+        padding-left: 15px;
+        padding-right: 15px;
     }
     
     .main-nav {
@@ -240,6 +217,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     h1 { font-size: 1.2rem; }
     .header-logo { width: 36px; height: 36px; }
     .link-group ul { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+    
     .main-nav li a { 
         padding: 0.6rem 0.8rem;
         font-size: 0.9rem; 
