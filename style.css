@@ -10,7 +10,8 @@
     --card-border-color: rgba(255, 255, 255, 0.18);
     --card-bg-color: rgba(0, 0, 0, 0.45);
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-    --mobile-padding: 15px; /* 新增变量：定义手机上的标准边距 */
+    --global-padding: 20px; /* PC全局内边距 */
+    --mobile-padding: 15px; /* 手机全局内边距 */
 }
 body.light-mode {
     --bg-color: #f0f2f5;
@@ -47,14 +48,15 @@ body::before {
 .container { 
     max-width: 1200px; 
     margin: 0 auto; 
-    padding: 20px; 
+    /* PC 内容的左右边距 */
+    padding: 20px var(--global-padding); 
     padding-top: 20px; 
 }
 
 header {
     margin-bottom: 2rem; 
     margin-top: 1rem;
-    padding: 0 20px; /* PC Header 左右内边距 */
+    padding: 0; /* Header 内容由 container 挤压 */
 }
 
 .header-content {
@@ -63,29 +65,45 @@ header {
     align-items: center;
     padding-top: 20px; 
 }
+
+.logo-title { display: flex; align-items: center; gap: 15px; }
+.header-logo { width: 44px; height: 44px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
 h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav {
     position: sticky;
     top: 0; 
     z-index: 10;
-    background: transparent; /* PC 默认透明 */
+
+    /* PC 默认：完全透明 */
+    background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;
     
     padding-top: env(safe-area-inset-top);
     
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 20px;
-    padding-right: 20px;
+    /* 修复：使用负边距实现全宽背景，覆盖 container 的 padding */
+    margin-left: calc(-1 * var(--global-padding));
+    margin-right: calc(-1 * var(--global-padding));
+    
+    /* 移除 nav 自身的左右 padding，由 ul 承担 */
+    padding-left: 0;
+    padding-right: 0;
     
     margin-top: 0; 
     border-bottom: 1px solid var(--border-color);
 }
 
-.main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
+.main-nav ul { 
+    list-style: none; 
+    padding: 0 var(--global-padding); /* 修复：UL 承担左右内边距 */
+    margin: 0 auto;
+    max-width: 1200px;
+    display: flex; 
+    justify-content: center; 
+    flex-wrap: wrap; 
+}
 .main-nav li { position: relative; }
 .main-nav li a { 
     display: block; 
@@ -99,7 +117,12 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: relative; 
 }
 .main-nav li a:hover { color: var(--primary-color); }
-.main-nav li a.active { color: var(--primary-color); font-weight: bold; }
+
+/* --- 菜单选中状态：替换为小圆点 --- */
+.main-nav li a.active { 
+    color: var(--primary-color); 
+    font-weight: bold;
+}
 .main-nav li a.active::after {
     content: '';
     position: absolute;
@@ -113,13 +136,14 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     transition: all 0.2s ease;
 }
 
-/* ... Dropdown, Search, Card Styles (PC Default) ... */
+
 .dropdown-content { opacity: 0; visibility: hidden; transform: translateY(-10px); transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s; position: absolute; background-color: transparent; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; list-style: none; padding: 5px; margin-top: -2px; }
 .dropdown-content.show { opacity: 1; visibility: visible; transform: translateY(0); }
 .dropdown-content a { padding: 10px 14px; border-bottom: none !important; border-radius: 6px; text-shadow: var(--card-text-shadow); }
 .dropdown-content a:hover { background-color: rgba(255, 255, 255, 0.1); }
 .dropdown-content a.active { color: var(--primary-color); font-weight: bold; }
 
+/* --- 搜索区域样式 --- */
 .search-section { 
     max-width: 600px; 
     margin: 2.5rem auto; 
@@ -139,6 +163,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 .search-button svg { stroke: var(--text-secondary-color); transition: stroke 0.2s; }
 .search-button:hover svg { stroke: var(--primary-color); }
 
+/* --- 卡片样式 --- */
 .link-group { margin-top: 2rem; }
 .link-group ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
 .link-group a { 
@@ -177,36 +202,41 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 /* --- 响应式设计 --- */
 @media (max-width: 768px) {
     body {
-        /* 修复：移除 body 的 padding-top，让 nav 自己处理 */
         padding-top: 0;
     }
     
     .container {
-        /* 修复：将 container 左右 padding 恢复到 15px */
-        padding-left: 15px;
-        padding-right: 15px;
+        /* 手机内容边距 */
+        padding: 15px var(--mobile-padding); 
         padding-top: 0; 
     }
     
     header {
         /* 确保 header 内容有左右边距 */
-        padding-left: 15px;
-        padding-right: 15px;
+        padding-left: var(--mobile-padding);
+        padding-right: var(--mobile-padding);
     }
     
     .main-nav {
-        /* 恢复手机端磨砂背景 */
+        /* 恢复手机磨砂背景 */
         background: var(--card-bg-color);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         
-        /* 修复：移除左右负边距 */
+        /* 修复：移除负边距 */
         margin-left: 0;
         margin-right: 0;
-        /* 恢复 nav 左右 padding */
-        padding-left: 15px;
-        padding-right: 15px;
+        /* 菜单栏左右贴边 */
+        padding-left: 0;
+        padding-right: 0;
+        /* 保证全宽背景 */
+    }
+
+    .main-nav ul {
+        /* 修复：将内容左右 padding 设为标准手机边距 */
+        padding-left: var(--mobile-padding);
+        padding-right: var(--mobile-padding);
     }
 
     body::before {
@@ -221,13 +251,12 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     .main-nav li a { 
         padding: 0.6rem 0.8rem;
         font-size: 0.9rem; 
-        /* 核心修复：加高 25px (增量为 1.5625rem, 总计 0.6rem + 1.5625rem = 2.1625rem) */
         padding-top: 2.1625rem; 
         padding-bottom: 2.1625rem; 
     }
     
     .main-nav li a.active::after {
-        content: none; /* 修复：手机端隐藏点 */
+        content: none;
     }
 
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
@@ -261,7 +290,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
         -webkit-backdrop-filter: none;
     }
     
-    .search-section { margin: 1.5rem auto; }
+    .search-section { margin: 1.5rem auto; padding-left: 15px; padding-right: 15px;}
     .search-input { padding: 12px 50px 12px 15px; font-size: 1rem; }
     .search-button { width: 36px; height: 36px; }
     .search-tab { padding: 6px 10px; }
