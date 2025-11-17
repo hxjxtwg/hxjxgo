@@ -56,7 +56,8 @@ body::before {
 header {
     margin-bottom: 2rem; 
     margin-top: 1rem;
-    padding: 0; /* Header 内容由 container 挤压 */
+    /* 修复：将 header 左右 padding 设为 0，让内容对齐 container */
+    padding: 0; 
 }
 
 .header-content {
@@ -64,6 +65,9 @@ header {
     justify-content: space-between;
     align-items: center;
     padding-top: 20px; 
+    /* 移除 header-content 上的额外 padding */
+    padding-left: 0; 
+    padding-right: 0;
 }
 
 .logo-title { display: flex; align-items: center; gap: 15px; }
@@ -74,8 +78,6 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: sticky;
     top: 0; 
     z-index: 10;
-
-    /* PC 默认：完全透明 */
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -83,11 +85,9 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     
     padding-top: env(safe-area-inset-top);
     
-    /* 修复：使用负边距实现全宽背景，覆盖 container 的 padding */
-    margin-left: calc(-1 * var(--global-padding));
-    margin-right: calc(-1 * var(--global-padding));
-    
-    /* 移除 nav 自身的左右 padding，由 ul 承担 */
+    /* 修复：移除 margin 和 padding，让背景全宽贴边 */
+    margin-left: 0;
+    margin-right: 0;
     padding-left: 0;
     padding-right: 0;
     
@@ -97,7 +97,8 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav ul { 
     list-style: none; 
-    padding: 0 var(--global-padding); /* 修复：UL 承担左右内边距 */
+    /* 修复：UL 承担 PC 留白，并保持最大宽度 */
+    padding: 0 var(--global-padding); 
     margin: 0 auto;
     max-width: 1200px;
     display: flex; 
@@ -224,17 +225,15 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
         -webkit-backdrop-filter: blur(12px);
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         
-        /* 修复：移除负边距 */
+        /* 修复：移除负边距，由 ul 承担留白 */
         margin-left: 0;
         margin-right: 0;
-        /* 菜单栏左右贴边 */
         padding-left: 0;
         padding-right: 0;
-        /* 保证全宽背景 */
     }
 
     .main-nav ul {
-        /* 修复：将内容左右 padding 设为标准手机边距 */
+        /* 修复：UL 承担手机留白 */
         padding-left: var(--mobile-padding);
         padding-right: var(--mobile-padding);
     }
