@@ -76,7 +76,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     top: 0; 
     z-index: 10;
     
-    /* PC 默认：完全透明，背景贴合屏幕 */
+    /* PC 端默认：完全透明 */
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -84,7 +84,6 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     
     padding-top: env(safe-area-inset-top);
     
-    /* 核心修复：背景全宽贴边 */
     margin-left: 0;
     margin-right: 0;
     padding-left: 0;
@@ -96,7 +95,6 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 
 .main-nav ul { 
     list-style: none; 
-    /* PC: UL 承担 20px 留白 */
     padding: 0 var(--global-padding); 
     margin: 0 auto;
     max-width: 1200px;
@@ -107,7 +105,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .main-nav li { position: relative; }
 .main-nav li a { 
     display: block; 
-    padding: 0.8rem 1rem; 
+    padding: 1.58rem 1rem; 
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
@@ -206,13 +204,11 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     }
     
     .container {
-        /* 手机内容边距 */
         padding: 15px var(--mobile-padding); 
         padding-top: 0; 
     }
     
     header {
-        /* 确保 header 内容有左右边距 */
         padding-left: var(--mobile-padding);
         padding-right: var(--mobile-padding);
     }
