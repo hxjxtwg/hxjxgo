@@ -10,8 +10,6 @@
     --card-border-color: rgba(255, 255, 255, 0.18);
     --card-bg-color: rgba(0, 0, 0, 0.45);
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-    --global-padding: 20px; /* PC全局内边距 */
-    --mobile-padding: 15px; /* 手机全局内边距 */
 }
 body.light-mode {
     --bg-color: #f0f2f5;
@@ -30,6 +28,8 @@ body {
     margin: 0;
     color: var(--text-color);
     background-color: var(--bg-color);
+    /* 修复：移除 body 的顶部内边距 */
+    /* padding-top: env(safe-area-inset-top); */
 }
 body::before {
     content: '';
@@ -39,32 +39,39 @@ body::before {
     width: 100vw;
     height: 100vh;
     z-index: -1;
+    /* 修复：电脑端背景图直接应用于伪元素 */
     background-image: url('https://cdn.jsdelivr.net/gh/xuhxjx/myimg@main/wallpaper_1.jpg');
     background-size: cover;
     background-position: center;
 }
 
-/* --- PC 布局 --- */
 .container { 
     max-width: 1200px; 
     margin: 0 auto; 
-    padding: 20px var(--global-padding); 
+    /* 修复：移除左右 padding，防止菜单栏缩进 */
+    padding: 20px 0; 
     padding-top: 20px; 
 }
 
 header {
+    position: static;
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    margin-left: 0;
+    margin-right: 0;
     margin-bottom: 2rem; 
     margin-top: 1rem;
-    padding: 0; 
 }
 
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    /* 修复：将内容区域的 padding 设为 20px */
+    padding: 20px;
     padding-top: 20px; 
-    padding-left: var(--global-padding);
-    padding-right: var(--global-padding);
 }
 
 .logo-title { display: flex; align-items: center; gap: 15px; }
@@ -75,8 +82,6 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: sticky;
     top: 0; 
     z-index: 10;
-    
-    /* PC 端默认：完全透明 */
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -84,28 +89,22 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     
     padding-top: env(safe-area-inset-top);
     
+    /* 修复：移除负边距，因为 container padding 已移除 */
     margin-left: 0;
     margin-right: 0;
-    padding-left: 0;
-    padding-right: 0;
+    /* 恢复左右 padding */
+    padding-left: 20px;
+    padding-right: 20px;
     
     margin-top: 0; 
     border-bottom: 1px solid var(--border-color);
 }
 
-.main-nav ul { 
-    list-style: none; 
-    padding: 0 var(--global-padding); 
-    margin: 0 auto;
-    max-width: 1200px;
-    display: flex; 
-    justify-content: center; 
-    flex-wrap: wrap; 
-}
+.main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
 .main-nav li { position: relative; }
 .main-nav li a { 
     display: block; 
-    padding: 1.58rem 1rem; 
+    padding: 0.8rem 1rem; 
     text-decoration: none; 
     color: var(--text-secondary-color); 
     font-weight: 500; 
@@ -115,7 +114,6 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     position: relative; 
 }
 .main-nav li a:hover { color: var(--primary-color); }
-
 /* --- 菜单选中状态：替换为小圆点 --- */
 .main-nav li a.active { 
     color: var(--primary-color); 
@@ -145,8 +143,8 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
 .search-section { 
     max-width: 600px; 
     margin: 2.5rem auto; 
-    padding-left: var(--global-padding); 
-    padding-right: var(--global-padding);
+    padding-left: 20px; /* 修复：增加左右 padding */
+    padding-right: 20px;
 }
 .search-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
 .search-tab { position: relative; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; transition: background-color 0.2s; }
@@ -199,37 +197,36 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 
 /* --- 响应式设计 --- */
 @media (max-width: 768px) {
+    /* --- 修复移动端间距和定位 --- */
     body {
-        padding-top: 0;
+        /* PC 端已经移除了 padding-top: env()，这里不再需要 */
+        /* background-attachment: scroll 已经修复了闪烁 */
     }
     
     .container {
-        padding: 15px var(--mobile-padding); 
+        /* 移除 container 自己的 padding，由内部元素控制 */
+        padding: 15px 0; 
         padding-top: 0; 
     }
     
-    header {
-        padding-left: var(--mobile-padding);
-        padding-right: var(--mobile-padding);
+    .header-content {
+        /* 确保 header 内容有左右边距 */
+        padding-left: 15px;
+        padding-right: 15px;
     }
-    
+
     .main-nav {
+        /* 恢复手机端磨砂背景 */
         background: var(--card-bg-color);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         
-        /* 核心修复： nav 自身 padding 为 0，确保背景全宽贴边 */
+        /* 修复：移除左右负边距，因为 container padding 已经修复 */
         margin-left: 0;
         margin-right: 0;
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    .main-nav ul {
-        /* 修复：UL 承担手机留白 */
-        padding-left: var(--mobile-padding);
-        padding-right: var(--mobile-padding);
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
     body::before {
@@ -244,12 +241,13 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     .main-nav li a { 
         padding: 0.6rem 0.8rem;
         font-size: 0.9rem; 
+        /* 核心修复：加高 25px (增量为 1.5625rem, 总计 0.6rem + 1.5625rem = 2.1625rem) */
         padding-top: 2.1625rem; 
         padding-bottom: 2.1625rem; 
     }
     
     .main-nav li a.active::after {
-        content: none; 
+        content: none; /* 修复：手机端隐藏点 */
     }
 
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
@@ -283,7 +281,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
         -webkit-backdrop-filter: none;
     }
     
-    .search-section { margin: 1.5rem auto; padding-left: 15px; padding-right: 15px;}
+    .search-section { margin: 1.5rem auto; }
     .search-input { padding: 12px 50px 12px 15px; font-size: 1rem; }
     .search-button { width: 36px; height: 36px; }
     .search-tab { padding: 6px 10px; }
