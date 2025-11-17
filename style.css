@@ -48,6 +48,7 @@ body::before {
 .container { 
     max-width: 1200px; 
     margin: 0 auto; 
+    /* PC 内容的左右边距 */
     padding: 20px var(--global-padding); 
     padding-top: 20px; 
 }
@@ -55,7 +56,7 @@ body::before {
 header {
     margin-bottom: 2rem; 
     margin-top: 1rem;
-    padding: 0 0; /* 修复：移除 PC header padding */
+    padding: 0 0;
 }
 
 .header-content {
@@ -76,6 +77,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     top: 0; 
     z-index: 10;
     
+    /* PC FIX: 背景完全透明 */
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -83,7 +85,7 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     
     padding-top: env(safe-area-inset-top);
     
-    /* PC端: 移除负边距，因为 container padding 已修复 */
+    /* PC端: 移除左右外边距和内边距 */
     margin-left: 0;
     margin-right: 0;
     padding-left: 0;
@@ -205,9 +207,8 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     }
     
     .container {
-        /* 修复：将 container 左右 padding 恢复到 15px */
-        padding-left: var(--mobile-padding); 
-        padding-right: var(--mobile-padding);
+        /* 手机内容边距 */
+        padding: 15px var(--mobile-padding); 
         padding-top: 0; 
     }
     
