@@ -76,6 +76,7 @@ body::before {
 .logo-title { display: flex; align-items: center; gap: 15px; flex-shrink: 0; }
 .header-logo { width: 38px; height: 38px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
 
+/* 标题颜色跟随主题色 */
 h1 { font-size: 1.2rem; color: var(--primary-color); margin: 0; white-space: nowrap; }
 
 .main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; flex: 1; }
@@ -129,13 +130,13 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     border: 1px solid var(--card-border-color); 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     
+    /* 悬停过渡 */
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
                 box-shadow 0.3s ease,
                 border-color 0.3s ease,
                 background-color 0.3s ease;
     
-    /* 修改：不再指定具体的 animation，由 JS 随机分配 class */
-    opacity: 0; 
+    opacity: 0; /* 初始透明，等待 JS 添加动画类 */
     position: relative;
     overflow: hidden;
 }
@@ -174,14 +175,13 @@ body.light-mode .link-group a:hover {
     to { opacity: 1; transform: scale(1); }
 }
 
-/* --- 动画类 (JS调用) --- */
+/* --- 动画类 (供 JS 调用) --- */
 .anim-up { animation: fadeInUp 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards; }
 .anim-left { animation: fadeInLeft 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards; }
 .anim-right { animation: fadeInRight 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards; }
 .anim-zoom { animation: zoomIn 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards; }
 
-
-/* 延迟设置 - 配合随机动画依然有效 */
+/* 延迟设置，配合随机动画效果更佳 */
 .link-group li:nth-child(1) a { animation-delay: 0.05s; } .link-group li:nth-child(2) a { animation-delay: 0.1s; } .link-group li:nth-child(3) a { animation-delay: 0.15s; } .link-group li:nth-child(4) a { animation-delay: 0.2s; } .link-group li:nth-child(5) a { animation-delay: 0.25s; } .link-group li:nth-child(6) a { animation-delay: 0.3s; } .link-group li:nth-child(7) a { animation-delay: 0.35s; } .link-group li:nth-child(8) a { animation-delay: 0.4s; } .link-group li:nth-child(9) a { animation-delay: 0.45s; } .link-group li:nth-child(10) a { animation-delay: 0.5s; } .link-group li:nth-child(11) a { animation-delay: 0.55s; } .link-group li:nth-child(12) a { animation-delay: 0.6s; }
 
 .card-icon { 
@@ -202,12 +202,18 @@ body.light-mode .link-group a:hover {
     #links-container { padding: 0 15px; }
     
     .main-nav {
-        background: transparent;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: blur(12px);
+        /* 使用极淡半透明背景，实现沉浸式毛玻璃效果 */
+        background: rgba(30, 30, 30, 0.3);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        
         box-shadow: none;
         margin-left: 0; margin-right: 0; padding-left: 15px; padding-right: 15px;
         height: auto; flex-wrap: wrap; padding-top: 5px; padding-bottom: 5px;
+    }
+    /* 浅色模式下的导航栏背景 */
+    body.light-mode .main-nav {
+        background: rgba(255, 255, 255, 0.3);
     }
 
     .logo-title { order: 1; }
@@ -225,11 +231,10 @@ body.light-mode .link-group a:hover {
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
     .card-name { font-size: 0.8rem; }
     
-    /* 手机端样式 */
+    /* 手机端样式：允许入场动画 */
     .link-group a { 
         height: 90px; 
         backdrop-filter: none; -webkit-backdrop-filter: none; 
-        /* 手机端保留动画 */
     }
     
     .link-group a:hover { 
