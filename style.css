@@ -74,7 +74,7 @@ body::before {
 }
 
 .logo-title { display: flex; align-items: center; gap: 15px; flex-shrink: 0; }
-.header-logo { width: 32px; height: 32px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
+.header-logo { width: 36px; height: 36px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
 
 /* 标题颜色跟随主题色 */
 h1 { font-size: 1.2rem; color: var(--primary-color); margin: 0; white-space: nowrap; }
@@ -223,7 +223,7 @@ body.light-mode .link-group a:hover {
 
     body::before { background-image: url('../images/background-mobile.webp'); background-attachment: scroll; }
     h1 { font-size: 1.2rem; }
-    .header-logo { width: 36px; height: 36px; }
+    .header-logo { width: 28px; height: 28px; }
     .link-group ul { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
     .main-nav li a { padding: 0.6rem 0.8rem; font-size: 0.95rem; padding-top: 0.6rem; padding-bottom: 0.6rem; }
     .main-nav li a.active::after { content: none; }
