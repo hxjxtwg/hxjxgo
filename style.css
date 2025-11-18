@@ -7,8 +7,8 @@
     --text-secondary-color: #a0a0a0;
     --border-color: #333;
     --card-text-color: #ffffff;
-    --card-border-color: rgba(255, 255, 255, 0.1); /* 稍微调淡边框，更像 WebStack */
-    --card-bg-color: rgba(30, 30, 30, 0.6); /* 加深一点背景，更有质感 */
+    --card-border-color: rgba(255, 255, 255, 0.1);
+    --card-bg-color: rgba(30, 30, 30, 0.6);
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 body.light-mode {
@@ -116,81 +116,67 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 .search-button:hover svg { stroke: var(--primary-color); }
 
 
-/* --- 核心修改：WebStack 风格卡片动画 --- */
+/* --- 核心动画修改 --- */
 .link-group { margin-top: 1.5rem; }
 .link-group ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
 
 .link-group a { 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
     text-decoration: none; color: var(--card-text-color); border-radius: 12px; padding: 15px; height: 110px; box-sizing: border-box; text-align: center; 
-    
-    /* 质感背景 */
     background: var(--card-bg-color);
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--card-border-color); 
-    
-    /* 默认阴影 */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     
-    /* 关键修改：使用 cubic-bezier 贝塞尔曲线实现丝滑的弹性过渡 */
-    /* transform: 控制上浮; box-shadow: 控制阴影; border-color: 控制边框 */
+    /* 悬停过渡 */
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
                 box-shadow 0.3s ease,
                 border-color 0.3s ease,
                 background-color 0.3s ease;
     
-    opacity: 0; /* 初始透明，等待动画 */
-    animation: card-pop-in 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    opacity: 0; 
+    /* 修改：使用更自然的缓动曲线，模拟 WebStack 的 fadeInUp 效果 */
+    animation: card-pop-in 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
     
     position: relative;
     overflow: hidden;
 }
 
-/* 悬停效果：整体上浮 + 阴影加深 */
+/* 悬停效果 */
 .link-group a:hover { 
-    transform: translateY(-8px); /* 向上浮动 8px，比之前的翻转更高级 */
-    box-shadow: 0 14px 25px -5px rgba(0, 0, 0, 0.2); /* 投影拉长，产生悬浮感 */
-    border-color: var(--primary-color); /* 边框微亮 */
-    background-color: rgba(40, 40, 40, 0.8); /* 背景稍微加深 */
+    transform: translateY(-8px); 
+    box-shadow: 0 14px 25px -5px rgba(0, 0, 0, 0.2); 
+    border-color: var(--primary-color); 
+    background-color: rgba(40, 40, 40, 0.8); 
 }
 body.light-mode .link-group a:hover {
     background-color: rgba(255, 255, 255, 1);
 }
-
-/* 移除原有的扫光特效，WebStack 风格通常不需要这个，显得太乱 */
 .link-group a::before { display: none; }
 
-/* 核心修改：入场动画 - 弹性滑入 (Slide Up + Fade In) */
-/* 这种动画比 3D 翻转更耐看，不会头晕 */
+/* 修改：WebStack 风格入场动画 (Zoom In Up) */
+/* 从轻微缩小和下沉状态，过渡到正常状态 */
 @keyframes card-pop-in {
     0% { 
         opacity: 0; 
-        transform: translateY(30px); /* 从下方 30px 处开始 */
+        transform: translateY(20px) scale(0.95); /* 缩小一点点，更有张力 */
     }
     100% { 
         opacity: 1; 
-        transform: translateY(0); /* 回到原位 */
+        transform: translateY(0) scale(1); 
     }
 }
 
-/* 延迟设置保持不变 */
-.link-group li:nth-child(1) a { animation-delay: 0.05s; } .link-group li:nth-child(2) a { animation-delay: 0.1s; } .link-group li:nth-child(3) a { animation-delay: 0.15s; } .link-group li:nth-child(4) a { animation-delay: 0.2s; } 
-/* ...为了简洁省略后续 nth-child，原文件里保留即可... */
+/* 延迟设置 */
+.link-group li:nth-child(1) a { animation-delay: 0.05s; } .link-group li:nth-child(2) a { animation-delay: 0.1s; } .link-group li:nth-child(3) a { animation-delay: 0.15s; } .link-group li:nth-child(4) a { animation-delay: 0.2s; } .link-group li:nth-child(5) a { animation-delay: 0.25s; } .link-group li:nth-child(6) a { animation-delay: 0.3s; } .link-group li:nth-child(7) a { animation-delay: 0.35s; } .link-group li:nth-child(8) a { animation-delay: 0.4s; } .link-group li:nth-child(9) a { animation-delay: 0.45s; } .link-group li:nth-child(10) a { animation-delay: 0.5s; } .link-group li:nth-child(11) a { animation-delay: 0.55s; } .link-group li:nth-child(12) a { animation-delay: 0.6s; }
 
-/* 核心修改：图标动画 */
 .card-icon { 
     width: 36px; height: 36px; margin-bottom: 12px; border-radius: 50%; 
     background-color: transparent; background-size: cover; background-position: center; background-repeat: no-repeat; background-image: none; 
-    
-    /* 给图标添加过渡，让它能放大 */
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-
-/* 悬停时图标放大 1.15倍，这是 WebStack 的精髓 */
-.link-group a:hover .card-icon {
-    transform: scale(1.15);
-}
+.link-group a:hover .card-icon { transform: scale(1.15); }
 
 .card-name { font-weight: 500; font-size: 1rem; line-height: 1.2; word-break: break-word; text-shadow: var(--card-text-shadow); }
 .placeholder { text-align: center; font-size: 1.2rem; color: var(--text-secondary-color); padding: 4rem; }
@@ -226,24 +212,20 @@ body.light-mode .link-group a:hover {
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
     .card-name { font-size: 0.8rem; }
     
-    /* 手机端卡片优化 */
+    /* 手机端样式 */
     .link-group a { 
         height: 90px; 
         backdrop-filter: none; -webkit-backdrop-filter: none; 
-        /* 手机端保留入场动画，看起来很舒服 */
+        /* 保留与电脑端一致的入场动画，确保手机端也有“浮现”效果 */
     }
     
-    /* 手机端禁用悬停上浮，防止点击时卡片乱跳 */
     .link-group a:hover { 
         transform: none; 
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 保持原样 */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
         border-color: var(--card-border-color);
         background-color: var(--card-bg-color);
     }
-    /* 手机端图标也不要放大 */
-    .link-group a:hover .card-icon {
-        transform: none;
-    }
+    .link-group a:hover .card-icon { transform: none; }
     
     .dropdown-content { backdrop-filter: none; -webkit-backdrop-filter: none; background-color: var(--surface-color); }
     .search-input { backdrop-filter: none; -webkit-backdrop-filter: none; }
