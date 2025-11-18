@@ -74,7 +74,7 @@ body::before {
 }
 
 .logo-title { display: flex; align-items: center; gap: 15px; flex-shrink: 0; }
-.header-logo { width: 38px; height: 38px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
+.header-logo { width: 32px; height: 32px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
 
 /* 标题颜色跟随主题色 */
 h1 { font-size: 1.2rem; color: var(--primary-color); margin: 0; white-space: nowrap; }
