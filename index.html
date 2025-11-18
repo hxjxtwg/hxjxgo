@@ -2,7 +2,12 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <!-- 修改：viewport 允许用户缩放 (user-scalable=yes 是网页的最佳实践) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <!-- 新增：定义浏览器地址栏颜色，与背景融合 -->
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f0f2f5" media="(prefers-color-scheme: light)">
+    
     <title>个人导航</title>
     <link rel="icon" href="/logo.svg">
     <link rel="stylesheet" href="style.css">
@@ -13,8 +18,8 @@
         <nav class="main-nav">
             <div class="logo-title">
                 <div class="header-logo"></div>
-                <!-- H1 已经移走 -->
             </div>
+            <!-- 手机端会自动换行到第二行并可横向滚动 -->
             <ul id="main-nav-ul"></ul>
             <div class="theme-switcher">
                 <input type="checkbox" id="theme-toggle">
@@ -27,7 +32,6 @@
         
         <!-- 搜索区域 -->
         <div class="search-section">
-            <!-- 搜索栏头部：包含垂直排列的标题和选项 -->
             <div class="search-header">
                 <h1 id="main-title">我的导航</h1>
                 <div id="search-tabs-container" class="search-tabs"></div>
@@ -50,9 +54,16 @@
         let searchEngines = [];
         let currentSearchEngine = null;
 
+        // --- Theme Switcher ---
         function applyTheme(theme) {
             document.body.classList.toggle('light-mode', theme === 'light');
             themeToggle.checked = theme === 'light';
+            
+            // 动态更新浏览器地址栏颜色
+            const metaThemeColor = document.querySelector('meta[name="theme-color"][media="(prefers-color-scheme: ' + (theme === 'light' ? 'light' : 'dark') + ')"]');
+            if(metaThemeColor) {
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', metaThemeColor.getAttribute('content'));
+            }
         }
         themeToggle.addEventListener('change', () => {
             const theme = themeToggle.checked ? 'light' : 'dark';
@@ -61,8 +72,9 @@
         });
         applyTheme(localStorage.getItem('theme') || 'dark');
         
+        // --- 3D Tilt Effect (仅电脑端开启) ---
         function applyTiltEffect() {
-            if (window.innerWidth <= 768) return;
+            if (window.innerWidth <= 768) return; // 手机浏览器禁用3D效果以省电
             document.querySelectorAll('.link-group a').forEach(card => {
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
@@ -80,6 +92,7 @@
             });
         }
 
+        // --- Search Logic ---
         function renderSearch() {
             if (searchEngines.length === 0) {
                 document.querySelector('.search-section').style.display = 'none';
@@ -135,6 +148,7 @@
             updateActiveTab();
         }
 
+        // --- Category Loading & Rendering ---
         function loadCategory(menuItem) {
             linksContainer.innerHTML = '';
             mainTitle.textContent = menuItem.name;
