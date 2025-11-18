@@ -9,18 +9,17 @@
 </head>
 <body>
     <div class="container">
-        <!-- 核心修改：所有顶部元素都在 nav 标签内 -->
+        <!-- 顶部导航栏 -->
         <nav class="main-nav">
-            <!-- 1. 左侧：Logo 和 标题 -->
+            <!-- 1. 左侧 Logo (h1 已移走) -->
             <div class="logo-title">
                 <div class="header-logo"></div>
-                <h1 id="main-title">我的导航</h1>
             </div>
 
-            <!-- 2. 中间：导航菜单 -->
+            <!-- 2. 中间 菜单 -->
             <ul id="main-nav-ul"></ul>
 
-            <!-- 3. 右侧：深浅模式切换 -->
+            <!-- 3. 右侧 开关 -->
             <div class="theme-switcher">
                 <input type="checkbox" id="theme-toggle">
                 <label for="theme-toggle">
@@ -30,8 +29,13 @@
             </div>
         </nav>
         
+        <!-- 搜索区域 -->
         <div class="search-section">
-            <div id="search-tabs-container" class="search-tabs"></div>
+            <!-- 修改：新增头部容器，包含标题和搜索选项 -->
+            <div class="search-header">
+                <h1 id="main-title">我的导航</h1>
+                <div id="search-tabs-container" class="search-tabs"></div>
+            </div>
             <div id="search-input-wrapper" class="search-input-wrapper"></div>
         </div>
 
