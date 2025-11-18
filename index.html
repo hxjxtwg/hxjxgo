@@ -11,15 +11,11 @@
     <div class="container">
         <!-- 顶部导航栏 -->
         <nav class="main-nav">
-            <!-- 1. 左侧 Logo (h1 已移走) -->
             <div class="logo-title">
                 <div class="header-logo"></div>
+                <!-- H1 已经移走 -->
             </div>
-
-            <!-- 2. 中间 菜单 -->
             <ul id="main-nav-ul"></ul>
-
-            <!-- 3. 右侧 开关 -->
             <div class="theme-switcher">
                 <input type="checkbox" id="theme-toggle">
                 <label for="theme-toggle">
@@ -31,7 +27,7 @@
         
         <!-- 搜索区域 -->
         <div class="search-section">
-            <!-- 修改：新增头部容器，包含标题和搜索选项 -->
+            <!-- 搜索栏头部：包含垂直排列的标题和选项 -->
             <div class="search-header">
                 <h1 id="main-title">我的导航</h1>
                 <div id="search-tabs-container" class="search-tabs"></div>
@@ -54,7 +50,6 @@
         let searchEngines = [];
         let currentSearchEngine = null;
 
-        // --- Theme Switcher ---
         function applyTheme(theme) {
             document.body.classList.toggle('light-mode', theme === 'light');
             themeToggle.checked = theme === 'light';
@@ -66,7 +61,6 @@
         });
         applyTheme(localStorage.getItem('theme') || 'dark');
         
-        // --- 3D Tilt Effect ---
         function applyTiltEffect() {
             if (window.innerWidth <= 768) return;
             document.querySelectorAll('.link-group a').forEach(card => {
@@ -86,7 +80,6 @@
             });
         }
 
-        // --- Search Logic ---
         function renderSearch() {
             if (searchEngines.length === 0) {
                 document.querySelector('.search-section').style.display = 'none';
@@ -142,7 +135,6 @@
             updateActiveTab();
         }
 
-        // --- Category Loading & Rendering ---
         function loadCategory(menuItem) {
             linksContainer.innerHTML = '';
             mainTitle.textContent = menuItem.name;
