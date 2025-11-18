@@ -85,10 +85,11 @@ body::before {
     height: 60px; 
 }
 
-/* 左侧：Logo 和标题 (原封不动，只加Flex布局) */
+/* 左侧：Logo (注意：h1已经移走) */
 .logo-title { display: flex; align-items: center; gap: 15px; }
 .header-logo { width: 38px; height: 38px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
-h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
+/* h1 样式可以保留给下面的 search-header 用 */
+h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; white-space: nowrap; }
 
 /* 中间：菜单 (原封不动，只加 flex:1 实现居中占据剩余空间) */
 .main-nav ul { 
@@ -145,7 +146,25 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     padding-left: 20px; /* 修复：增加左右 padding */
     padding-right: 20px;
 }
-.search-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+
+/* 修改：搜索栏头部的布局（标题+选项） */
+.search-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* 标题左，选项右 */
+    margin-bottom: 20px; /* 将原本在 tabs 的边距移到这里 */
+    flex-wrap: wrap; /* 允许换行 */
+    gap: 15px;
+}
+
+/* 修改：移除 tabs 原有的下边距和居中，因为现在放在 flex 容器里 */
+.search-tabs { 
+    display: flex; 
+    justify-content: flex-end; /* 选项靠右 */
+    gap: 10px; 
+    flex-wrap: wrap; 
+}
+
 .search-tab { position: relative; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; transition: background-color 0.2s; }
 .search-tab:hover { background: rgba(255,255,255,0.1); }
 .search-tab.active::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background-color: var(--primary-color); border-radius: 50%; }
