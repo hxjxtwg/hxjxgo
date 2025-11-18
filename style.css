@@ -72,7 +72,7 @@ body::before {
 }
 
 .logo-title { display: flex; align-items: center; gap: 15px; flex-shrink: 0; }
-.header-logo { width: 24px; height: 24px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
+.header-logo { width: 36px; height: 36px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
 
 /* 标题样式 (在搜索栏用到) */
 /* 修改：将颜色改为 var(--primary-color) 以跟随选中菜单颜色 */
