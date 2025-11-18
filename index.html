@@ -186,9 +186,17 @@
             applyTiltEffect();
         }
 
+        // --- 修改：定义随机动画类名数组 ---
+        const animations = ['anim-up', 'anim-left', 'anim-right', 'anim-zoom'];
+
         function createCardElement(link) {
             const cardItem = document.createElement('li');
             const linkElement = document.createElement('a');
+            
+            // --- 修改：随机分配一个动画类 ---
+            const randomAnim = animations[Math.floor(Math.random() * animations.length)];
+            linkElement.classList.add(randomAnim);
+
             linkElement.href = link.url;
             linkElement.target = '_blank';
             linkElement.rel = 'noopener noreferrer';
