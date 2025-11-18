@@ -53,31 +53,9 @@ body::before {
     padding-top: 20px; 
 }
 
-header {
-    position: static;
-    background: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: 2rem; 
-    margin-top: 1rem;
-}
+/* header 部分样式已移除 */
 
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    /* 修复：将内容区域的 padding 设为 20px */
-    padding: 20px;
-    padding-top: 20px; 
-}
-
-.logo-title { display: flex; align-items: center; gap: 15px; }
-.header-logo { width: 38px; height: 38px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
-h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
-
+/* --- 修改：主导航栏布局 --- */
 .main-nav {
     position: sticky;
     top: 0; 
@@ -98,9 +76,30 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
     
     margin-top: 0; 
     border-bottom: 1px solid var(--border-color);
+
+    /* --- 新增布局样式：左中右对齐 --- */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* 保持一定高度以垂直居中 */
+    height: 60px; 
 }
 
-.main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; }
+/* 左侧：Logo 和标题 (原封不动，只加Flex布局) */
+.logo-title { display: flex; align-items: center; gap: 15px; }
+.header-logo { width: 38px; height: 38px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
+h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; }
+
+/* 中间：菜单 (原封不动，只加 flex:1 实现居中占据剩余空间) */
+.main-nav ul { 
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+    display: flex; 
+    justify-content: center; 
+    flex-wrap: wrap;
+    flex: 1; /* 占据中间空间 */
+}
 .main-nav li { position: relative; }
 .main-nav li a { 
     display: block; 
@@ -209,11 +208,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
         padding-top: 0; 
     }
     
-    .header-content {
-        /* 确保 header 内容有左右边距 */
-        padding-left: 15px;
-        padding-right: 15px;
-    }
+    /* .header-content { ... } 已删除 */
 
     .main-nav {
         /* 恢复手机端磨砂背景 */
@@ -227,6 +222,25 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
         margin-right: 0;
         padding-left: 15px;
         padding-right: 15px;
+        
+        /* 修改：高度设为自动，允许 flex 换行，否则logo和开关会重叠 */
+        height: auto;
+        flex-wrap: wrap;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    /* 新增：手机端排序 Logo 第一，开关 第二，菜单 第三（换行） */
+    .logo-title { order: 1; }
+    .theme-switcher { order: 2; }
+    .main-nav ul { 
+        order: 3; 
+        width: 100%; /* 菜单占据整行 */
+        justify-content: flex-start; 
+        overflow-x: auto;
+        margin-top: 10px;
+        flex-wrap: nowrap;
+        padding-bottom: 5px;
     }
 
     body::before {
@@ -241,7 +255,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     .main-nav li a { 
         padding: 0.6rem 0.8rem;
         font-size: 0.9rem; 
-        /* 核心修复：加高 25px (增量为 1.5625rem, 总计 0.6rem + 1.5625rem = 2.1625rem) */
+        /* 恢复你原有的“核心修复” */
         padding-top: 2.1625rem; 
         padding-bottom: 2.1625rem; 
     }
