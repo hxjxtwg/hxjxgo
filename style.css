@@ -7,8 +7,8 @@
     --text-secondary-color: #a0a0a0;
     --border-color: #333;
     --card-text-color: #ffffff;
-    --card-border-color: rgba(255, 255, 255, 0.18);
-    --card-bg-color: rgba(0, 0, 0, 0.45);
+    --card-border-color: rgba(255, 255, 255, 0.1); /* 稍微调淡边框，更像 WebStack */
+    --card-bg-color: rgba(30, 30, 30, 0.6); /* 加深一点背景，更有质感 */
     --card-text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 body.light-mode {
@@ -19,8 +19,8 @@ body.light-mode {
     --text-secondary-color: #5f6368;
     --border-color: #e0e0e0;
     --card-text-color: #000000;
-    --card-border-color: rgba(0, 0, 0, 0.1);
-    --card-bg-color: rgba(255, 255, 255, 0.55);
+    --card-border-color: rgba(0, 0, 0, 0.05);
+    --card-bg-color: rgba(255, 255, 255, 0.8);
     --card-text-shadow: none;
 }
 body {
@@ -48,22 +48,19 @@ body::before {
     padding: 0 0 20px 0; 
 }
 
-/* 增加卡片内容区域的左右间距 */
 #links-container {
     padding: 0 20px;
 }
 
-/* --- 主导航栏布局 (浏览器版) --- */
+/* --- 导航栏 --- */
 .main-nav {
     position: sticky;
     top: 0; 
     z-index: 10;
-    
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;
-    
     padding-top: 0; 
     margin-left: 0;
     margin-right: 0;
@@ -71,7 +68,6 @@ body::before {
     padding: 10px 20px; 
     margin-top: 0; 
     border-bottom: 1px solid var(--border-color);
-
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -80,52 +76,14 @@ body::before {
 .logo-title { display: flex; align-items: center; gap: 15px; flex-shrink: 0; }
 .header-logo { width: 38px; height: 38px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
 
-h1 { 
-    font-size: 1.2rem; 
-    color: var(--primary-color); 
-    margin: 0; 
-    white-space: nowrap; 
-}
+h1 { font-size: 1.2rem; color: var(--primary-color); margin: 0; white-space: nowrap; }
 
-.main-nav ul { 
-    list-style: none; 
-    padding: 0; 
-    margin: 0; 
-    display: flex; 
-    justify-content: center; 
-    flex-wrap: wrap;
-    flex: 1; 
-}
+.main-nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; flex-wrap: wrap; flex: 1; }
 .main-nav li { position: relative; }
-.main-nav li a { 
-    display: block; 
-    padding: 0.5rem 1rem; 
-    text-decoration: none; 
-    color: var(--text-secondary-color); 
-    font-weight: 500; 
-    transition: color 0.2s;
-    border-bottom: 2px solid transparent; 
-    cursor: pointer; 
-    position: relative; 
-    white-space: nowrap; 
-}
+.main-nav li a { display: block; padding: 0.5rem 1rem; text-decoration: none; color: var(--text-secondary-color); font-weight: 500; transition: color 0.2s; border-bottom: 2px solid transparent; cursor: pointer; position: relative; white-space: nowrap; }
 .main-nav li a:hover { color: var(--primary-color); }
-.main-nav li a.active { 
-    color: var(--primary-color); 
-    font-weight: bold;
-}
-.main-nav li a.active::after {
-    content: '';
-    position: absolute;
-    bottom: 0.2rem; 
-    left: 50%;
-    transform: translateX(-50%);
-    width: 6px;
-    height: 6px;
-    background-color: var(--primary-color);
-    border-radius: 50%;
-    transition: all 0.2s ease;
-}
+.main-nav li a.active { color: var(--primary-color); font-weight: bold; }
+.main-nav li a.active::after { content: ''; position: absolute; bottom: 0.2rem; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background-color: var(--primary-color); border-radius: 50%; transition: all 0.2s ease; }
 
 .theme-switcher { display: flex; align-items: center; flex-shrink: 0; }
 .theme-switcher label { width: 30px; height: 30px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
@@ -142,35 +100,14 @@ h1 {
 .dropdown-content a:hover { background-color: rgba(255, 255, 255, 0.1); }
 .dropdown-content a.active { color: var(--primary-color); font-weight: bold; }
 
-/* --- 搜索区域样式 --- */
-.search-section { 
-    max-width: 600px; 
-    margin: 2rem auto; 
-    padding-left: 20px; 
-    padding-right: 20px;
-}
-
-.search-header {
-    display: flex;
-    flex-direction: column; 
-    align-items: center; 
-    margin-bottom: 10px; 
-    gap: 5px; 
-}
-
-.search-tabs { 
-    display: flex; 
-    justify-content: center; 
-    gap: 10px; 
-    flex-wrap: wrap; 
-}
-
+.search-section { max-width: 600px; margin: 2rem auto; padding-left: 20px; padding-right: 20px; }
+.search-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; gap: 5px; }
+.search-tabs { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .search-tab { position: relative; display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; transition: background-color 0.2s; }
 .search-tab:hover { background: rgba(255,255,255,0.1); }
 .search-tab.active::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background-color: var(--primary-color); border-radius: 50%; }
 .search-tab span { color: var(--text-secondary-color); font-weight: 500; font-size: 0.9rem; }
 .search-tab.active span { color: var(--text-color); }
-
 .search-input-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
 .search-input { width: 100%; background: rgba(0, 0, 0, 0.25); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--card-border-color); border-radius: 12px; padding: 15px 60px 15px 20px; font-size: 1.1rem; color: var(--text-color); outline: none; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); box-sizing: border-box; }
 body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
@@ -178,44 +115,83 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 .search-button svg { stroke: var(--text-secondary-color); transition: stroke 0.2s; }
 .search-button:hover svg { stroke: var(--primary-color); }
 
-/* --- 卡片样式 --- */
+
+/* --- 核心修改：WebStack 风格卡片动画 --- */
 .link-group { margin-top: 1.5rem; }
 .link-group ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+
 .link-group a { 
-    display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: var(--card-text-color); border-radius: 12px; padding: 15px; height: 110px; box-sizing: border-box; text-align: center; 
-    background: var(--card-bg-color);
-    backdrop-filter: blur(1px); 
-    -webkit-backdrop-filter: blur(1px);
-    border: 1px solid var(--card-border-color); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    transform-style: preserve-3d;
-    transition: transform 0.1s ease-out, box-shadow 0.2s ease-in-out;
-    will-change: transform;
-    opacity: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    text-decoration: none; color: var(--card-text-color); border-radius: 12px; padding: 15px; height: 110px; box-sizing: border-box; text-align: center; 
     
-    /* 3D 翻转入场动画 */
+    /* 质感背景 */
+    background: var(--card-bg-color);
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border-color); 
+    
+    /* 默认阴影 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    /* 关键修改：使用 cubic-bezier 贝塞尔曲线实现丝滑的弹性过渡 */
+    /* transform: 控制上浮; box-shadow: 控制阴影; border-color: 控制边框 */
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.3s ease,
+                border-color 0.3s ease,
+                background-color 0.3s ease;
+    
+    opacity: 0; /* 初始透明，等待动画 */
     animation: card-pop-in 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     
     position: relative;
     overflow: hidden;
 }
 
-/* 3D 翻转展示动画 (3D Flip) */
+/* 悬停效果：整体上浮 + 阴影加深 */
+.link-group a:hover { 
+    transform: translateY(-8px); /* 向上浮动 8px，比之前的翻转更高级 */
+    box-shadow: 0 14px 25px -5px rgba(0, 0, 0, 0.2); /* 投影拉长，产生悬浮感 */
+    border-color: var(--primary-color); /* 边框微亮 */
+    background-color: rgba(40, 40, 40, 0.8); /* 背景稍微加深 */
+}
+body.light-mode .link-group a:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+/* 移除原有的扫光特效，WebStack 风格通常不需要这个，显得太乱 */
+.link-group a::before { display: none; }
+
+/* 核心修改：入场动画 - 弹性滑入 (Slide Up + Fade In) */
+/* 这种动画比 3D 翻转更耐看，不会头晕 */
 @keyframes card-pop-in {
     0% { 
         opacity: 0; 
-        transform: perspective(1000px) rotateX(30deg) translateY(30px); 
+        transform: translateY(30px); /* 从下方 30px 处开始 */
     }
     100% { 
         opacity: 1; 
-        transform: perspective(1000px) rotateX(0) translateY(0); 
+        transform: translateY(0); /* 回到原位 */
     }
 }
 
+/* 延迟设置保持不变 */
 .link-group li:nth-child(1) a { animation-delay: 0.05s; } .link-group li:nth-child(2) a { animation-delay: 0.1s; } .link-group li:nth-child(3) a { animation-delay: 0.15s; } .link-group li:nth-child(4) a { animation-delay: 0.2s; } 
-.link-group a:hover { box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); transform: translateY(-5px); }
-.link-group a::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(100deg, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 80%); transform: translateX(-150%) skewX(-20deg); transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1); }
-.link-group a:hover::before { transform: translateX(150%) skewX(-20deg); }
-.card-icon { width: 36px; height: 36px; margin-bottom: 12px; border-radius: 50%; background-color: transparent; background-size: cover; background-position: center; background-repeat: no-repeat; background-image: none; }
+/* ...为了简洁省略后续 nth-child，原文件里保留即可... */
+
+/* 核心修改：图标动画 */
+.card-icon { 
+    width: 36px; height: 36px; margin-bottom: 12px; border-radius: 50%; 
+    background-color: transparent; background-size: cover; background-position: center; background-repeat: no-repeat; background-image: none; 
+    
+    /* 给图标添加过渡，让它能放大 */
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 悬停时图标放大 1.15倍，这是 WebStack 的精髓 */
+.link-group a:hover .card-icon {
+    transform: scale(1.15);
+}
+
 .card-name { font-weight: 500; font-size: 1rem; line-height: 1.2; word-break: break-word; text-shadow: var(--card-text-shadow); }
 .placeholder { text-align: center; font-size: 1.2rem; color: var(--text-secondary-color); padding: 4rem; }
 .placeholder.error { color: var(--error-color); }
@@ -224,10 +200,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 /* --- 手机端浏览器适配 --- */
 @media (max-width: 768px) {
     .container { padding: 0 0 15px 0; }
-    
-    #links-container {
-        padding: 0 15px;
-    }
+    #links-container { padding: 0 15px; }
     
     .main-nav {
         background: transparent;
@@ -235,25 +208,12 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
         -webkit-backdrop-filter: blur(12px);
         box-shadow: none;
         margin-left: 0; margin-right: 0; padding-left: 15px; padding-right: 15px;
-        height: auto; 
-        flex-wrap: wrap;
-        padding-top: 5px; 
-        padding-bottom: 5px;
+        height: auto; flex-wrap: wrap; padding-top: 5px; padding-bottom: 5px;
     }
 
     .logo-title { order: 1; }
     .theme-switcher { order: 2; }
-    .main-nav ul { 
-        order: 3; 
-        width: 100%; 
-        justify-content: flex-start; 
-        overflow-x: auto; 
-        margin-top: 5px;
-        flex-wrap: nowrap; 
-        padding-bottom: 5px;
-        -webkit-overflow-scrolling: touch; 
-        scrollbar-width: none; 
-    }
+    .main-nav ul { order: 3; width: 100%; justify-content: flex-start; overflow-x: auto; margin-top: 5px; flex-wrap: nowrap; padding-bottom: 5px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     .main-nav ul::-webkit-scrollbar { display: none; }
 
     body::before { background-image: url('../images/background-mobile.webp'); background-attachment: scroll; }
@@ -262,22 +222,28 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     .link-group ul { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
     .main-nav li a { padding: 0.6rem 0.8rem; font-size: 0.95rem; padding-top: 0.6rem; padding-bottom: 0.6rem; }
     .main-nav li a.active::after { content: none; }
+    
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
     .card-name { font-size: 0.8rem; }
     
-    /* 修改：手机端卡片样式 - 允许动画和过渡 */
+    /* 手机端卡片优化 */
     .link-group a { 
         height: 90px; 
-        backdrop-filter: none; 
-        -webkit-backdrop-filter: none; 
-        /* 移除 animation: none, 允许入场动画执行 */
-        /* 移除 opacity: 1, 允许动画控制透明度 */
-        /* 移除 transform-style: flat, 允许3D效果 */
-        /* 移除 transition: none, 允许点击反馈 */
+        backdrop-filter: none; -webkit-backdrop-filter: none; 
+        /* 手机端保留入场动画，看起来很舒服 */
     }
     
-    .link-group a:hover { transform: none; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
-    .link-group a::before { display: none; } /* 手机端依然建议隐藏扫光特效，避免性能问题 */
+    /* 手机端禁用悬停上浮，防止点击时卡片乱跳 */
+    .link-group a:hover { 
+        transform: none; 
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 保持原样 */
+        border-color: var(--card-border-color);
+        background-color: var(--card-bg-color);
+    }
+    /* 手机端图标也不要放大 */
+    .link-group a:hover .card-icon {
+        transform: none;
+    }
     
     .dropdown-content { backdrop-filter: none; -webkit-backdrop-filter: none; background-color: var(--surface-color); }
     .search-input { backdrop-filter: none; -webkit-backdrop-filter: none; }
