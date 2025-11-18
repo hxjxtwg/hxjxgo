@@ -228,7 +228,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     }
     body::before { background-image: url('../images/background-mobile.webp'); background-attachment: scroll; }
     h1 { font-size: 1.2rem; }
-    .header-logo { width: 36px; height: 36px; }
+    .header-logo { width: 24px; height: 24px; }
     .link-group ul { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
     .main-nav li a { padding: 0.6rem 0.8rem; font-size: 0.9rem; padding-top: 2.1625rem; padding-bottom: 2.1625rem; }
     .main-nav li a.active::after { content: none; }
