@@ -116,7 +116,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 .search-button:hover svg { stroke: var(--primary-color); }
 
 
-/* --- 核心动画修改 --- */
+/* --- 卡片基础样式 --- */
 .link-group { margin-top: 1.5rem; }
 .link-group ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
 
@@ -129,16 +129,13 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     border: 1px solid var(--card-border-color); 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     
-    /* 悬停过渡 */
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
                 box-shadow 0.3s ease,
                 border-color 0.3s ease,
                 background-color 0.3s ease;
     
+    /* 修改：不再指定具体的 animation，由 JS 随机分配 class */
     opacity: 0; 
-    /* 修改：使用更自然的缓动曲线，模拟 WebStack 的 fadeInUp 效果 */
-    animation: card-pop-in 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
-    
     position: relative;
     overflow: hidden;
 }
@@ -155,20 +152,36 @@ body.light-mode .link-group a:hover {
 }
 .link-group a::before { display: none; }
 
-/* 修改：WebStack 风格入场动画 (Zoom In Up) */
-/* 从轻微缩小和下沉状态，过渡到正常状态 */
-@keyframes card-pop-in {
-    0% { 
-        opacity: 0; 
-        transform: translateY(20px) scale(0.95); /* 缩小一点点，更有张力 */
-    }
-    100% { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
-    }
+/* --- 随机动画库 (Random Animations) --- */
+/* 1. 向上淡入 */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* 2. 向左淡入 */
+@keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+/* 3. 向右淡入 */
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+/* 4. 缩放淡入 */
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to { opacity: 1; transform: scale(1); }
 }
 
-/* 延迟设置 */
+/* --- 动画类 (JS调用) --- */
+.anim-up { animation: fadeInUp 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards; }
+.anim-left { animation: fadeInLeft 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards; }
+.anim-right { animation: fadeInRight 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards; }
+.anim-zoom { animation: zoomIn 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) forwards; }
+
+
+/* 延迟设置 - 配合随机动画依然有效 */
 .link-group li:nth-child(1) a { animation-delay: 0.05s; } .link-group li:nth-child(2) a { animation-delay: 0.1s; } .link-group li:nth-child(3) a { animation-delay: 0.15s; } .link-group li:nth-child(4) a { animation-delay: 0.2s; } .link-group li:nth-child(5) a { animation-delay: 0.25s; } .link-group li:nth-child(6) a { animation-delay: 0.3s; } .link-group li:nth-child(7) a { animation-delay: 0.35s; } .link-group li:nth-child(8) a { animation-delay: 0.4s; } .link-group li:nth-child(9) a { animation-delay: 0.45s; } .link-group li:nth-child(10) a { animation-delay: 0.5s; } .link-group li:nth-child(11) a { animation-delay: 0.55s; } .link-group li:nth-child(12) a { animation-delay: 0.6s; }
 
 .card-icon { 
@@ -216,7 +229,7 @@ body.light-mode .link-group a:hover {
     .link-group a { 
         height: 90px; 
         backdrop-filter: none; -webkit-backdrop-filter: none; 
-        /* 保留与电脑端一致的入场动画，确保手机端也有“浮现”效果 */
+        /* 手机端保留动画 */
     }
     
     .link-group a:hover { 
