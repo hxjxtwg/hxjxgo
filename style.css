@@ -139,23 +139,23 @@ h1 { font-size: 1.2rem; color: var(--text-color); margin: 0; white-space: nowrap
     padding-right: 20px;
 }
 
-/* 修改：垂直堆叠布局 (Vertical Stack) */
+/* 修改：垂直堆叠布局 + 居中对齐 */
 .search-header {
     display: flex;
     flex-direction: column; /* 上下排列 */
-    align-items: flex-start; /* 左对齐 */
-    margin-bottom: 10px; /* 整体距离输入框的间距 */
-    gap: 8px; /* 标题和选项之间的紧凑间距 */
+    align-items: center; /* 修改：改为居中对齐 */
+    margin-bottom: 10px; 
+    gap: 8px; 
 }
 
 .search-tabs { 
     display: flex; 
-    justify-content: flex-start; /* 选项左对齐 */
+    justify-content: center; /* 修改：改为居中对齐 */
     gap: 15px; 
     flex-wrap: wrap; 
 }
 
-.search-tab { position: relative; display: flex; align-items: center; gap: 8px; padding: 4px 8px; /* 稍微减小内边距让它紧凑点 */ border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; transition: background-color 0.2s; }
+.search-tab { position: relative; display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; transition: background-color 0.2s; }
 .search-tab:hover { background: rgba(255,255,255,0.1); }
 .search-tab.active::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background-color: var(--primary-color); border-radius: 50%; }
 .search-tab span { color: var(--text-secondary-color); font-weight: 500; font-size: 0.95rem; }
