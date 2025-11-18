@@ -45,11 +45,10 @@ body::before {
 .container { 
     max-width: 1200px; 
     margin: 0 auto; 
-    /* 容器本身不设左右padding，保证导航栏全宽 */
     padding: 0 0 20px 0; 
 }
 
-/* --- 修改：给卡片内容区域单独添加左右间距 --- */
+/* 增加卡片内容区域的左右间距 */
 #links-container {
     padding: 0 20px;
 }
@@ -59,10 +58,12 @@ body::before {
     position: sticky;
     top: 0; 
     z-index: 10;
+    
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;
+    
     padding-top: 0; 
     margin-left: 0;
     margin-right: 0;
@@ -70,6 +71,7 @@ body::before {
     padding: 10px 20px; 
     margin-top: 0; 
     border-bottom: 1px solid var(--border-color);
+
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -189,11 +191,26 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     transition: transform 0.1s ease-out, box-shadow 0.2s ease-in-out;
     will-change: transform;
     opacity: 0;
-    animation: card-pop-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    
+    /* 修改：这里应用了新的 3D 翻转入场动画 */
+    animation: card-pop-in 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    
     position: relative;
     overflow: hidden;
 }
-@keyframes card-pop-in { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* 修改：3D 翻转展示动画 (3D Flip) */
+@keyframes card-pop-in {
+    0% { 
+        opacity: 0; 
+        transform: perspective(1000px) rotateX(30deg) translateY(30px); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: perspective(1000px) rotateX(0) translateY(0); 
+    }
+}
+
 .link-group li:nth-child(1) a { animation-delay: 0.05s; } .link-group li:nth-child(2) a { animation-delay: 0.1s; } .link-group li:nth-child(3) a { animation-delay: 0.15s; } .link-group li:nth-child(4) a { animation-delay: 0.2s; } 
 .link-group a:hover { box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); transform: translateY(-5px); }
 .link-group a::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(100deg, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 80%); transform: translateX(-150%) skewX(-20deg); transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1); }
@@ -208,7 +225,6 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 @media (max-width: 768px) {
     .container { padding: 0 0 15px 0; }
     
-    /* 修改：手机端也给内容区域添加内边距 */
     #links-container {
         padding: 0 15px;
     }
