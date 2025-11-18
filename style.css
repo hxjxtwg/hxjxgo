@@ -46,10 +46,9 @@ body::before {
     max-width: 1200px; 
     margin: 0 auto; 
     padding: 20px 0; 
-    padding-top: 20px; 
 }
 
-/* --- 主导航栏布局 --- */
+/* --- 主导航栏布局 (浏览器版) --- */
 .main-nav {
     position: sticky;
     top: 0; 
@@ -58,13 +57,17 @@ body::before {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;
-    padding-top: env(safe-area-inset-top);
+    
+    /* 浏览器版：不需要极大的顶部安全距离，稍微保留一点呼吸感即可 */
+    padding-top: 0; 
+    
     margin-left: 0;
     margin-right: 0;
     padding-left: 20px;
     padding-right: 20px;
     margin-top: 0; 
     border-bottom: 1px solid var(--border-color);
+
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -72,10 +75,9 @@ body::before {
 }
 
 .logo-title { display: flex; align-items: center; gap: 15px; flex-shrink: 0; }
-.header-logo { width: 36px; height: 36px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
+.header-logo { width: 38px; height: 38px; background-image: url('/logo.svg'); background-size: contain; background-position: center; background-repeat: no-repeat; }
 
-/* 标题样式 (在搜索栏用到) */
-/* 修改：将颜色改为 var(--primary-color) 以跟随选中菜单颜色 */
+/* 标题样式：颜色跟随选中菜单 (var(--primary-color)) */
 h1 { 
     font-size: 1.2rem; 
     color: var(--primary-color); 
@@ -83,6 +85,7 @@ h1 {
     white-space: nowrap; 
 }
 
+/* 菜单列表 */
 .main-nav ul { 
     list-style: none; 
     padding: 0; 
@@ -103,6 +106,7 @@ h1 {
     border-bottom: 2px solid transparent; 
     cursor: pointer; 
     position: relative; 
+    white-space: nowrap; /* 防止菜单文字换行 */
 }
 .main-nav li a:hover { color: var(--primary-color); }
 .main-nav li a.active { 
@@ -137,35 +141,36 @@ h1 {
 .dropdown-content a:hover { background-color: rgba(255, 255, 255, 0.1); }
 .dropdown-content a.active { color: var(--primary-color); font-weight: bold; }
 
-/* --- 搜索区域样式 (核心修改部分) --- */
+/* --- 搜索区域样式 --- */
 .search-section { 
     max-width: 600px; 
-    margin: 2.5rem auto; 
+    margin: 2rem auto; 
     padding-left: 20px; 
     padding-right: 20px;
 }
 
-/* 修改：垂直堆叠布局 + 居中对齐 */
+/* 搜索头部：居中垂直堆叠 */
 .search-header {
     display: flex;
-    flex-direction: column; /* 上下排列 */
-    align-items: center; /* 修改：改为居中对齐 */
+    flex-direction: column; 
+    align-items: center; /* 居中对齐 */
     margin-bottom: 10px; 
-    gap: 8px; 
+    gap: 5px; /* 减小间距，不浪费空间 */
 }
 
 .search-tabs { 
     display: flex; 
-    justify-content: center; /* 修改：改为居中对齐 */
-    gap: 15px; 
+    justify-content: center; /* 居中对齐 */
+    gap: 10px; 
     flex-wrap: wrap; 
 }
 
-.search-tab { position: relative; display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; transition: background-color 0.2s; }
+.search-tab { position: relative; display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 8px; cursor: pointer; background: transparent; border: 1px solid transparent; transition: background-color 0.2s; }
 .search-tab:hover { background: rgba(255,255,255,0.1); }
 .search-tab.active::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background-color: var(--primary-color); border-radius: 50%; }
-.search-tab span { color: var(--text-secondary-color); font-weight: 500; font-size: 0.95rem; }
+.search-tab span { color: var(--text-secondary-color); font-weight: 500; font-size: 0.9rem; }
 .search-tab.active span { color: var(--text-color); }
+
 .search-input-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
 .search-input { width: 100%; background: rgba(0, 0, 0, 0.25); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--card-border-color); border-radius: 12px; padding: 15px 60px 15px 20px; font-size: 1.1rem; color: var(--text-color); outline: none; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); box-sizing: border-box; }
 body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
@@ -174,7 +179,7 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 .search-button:hover svg { stroke: var(--primary-color); }
 
 /* --- 卡片样式 --- */
-.link-group { margin-top: 2rem; }
+.link-group { margin-top: 1.5rem; }
 .link-group ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
 .link-group a { 
     display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: var(--card-text-color); border-radius: 12px; padding: 15px; height: 110px; box-sizing: border-box; text-align: center; 
@@ -201,37 +206,61 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
 .placeholder.error { color: var(--error-color); }
 
 
-/* --- 响应式设计 --- */
+/* --- 手机端浏览器适配 (关键修改) --- */
 @media (max-width: 768px) {
-    .container { padding: 15px 0; padding-top: 0; }
+    .container { padding: 15px 0; }
+    
     .main-nav {
         background: var(--card-bg-color);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        
         margin-left: 0; margin-right: 0; padding-left: 15px; padding-right: 15px;
-        height: auto;
+        
+        height: auto; /* 自动高度适应内容 */
         flex-wrap: wrap;
         padding-top: 10px;
-        padding-bottom: 10px;
+        padding-bottom: 5px;
+        /* 移除粘性定位，随页面滚动，节省浏览空间 */
+        /* position: relative; */ /* 如果你喜欢它一直吸顶就保持 sticky，否则改为 relative */
     }
+
+    /* 第一行：Logo 和 开关 */
     .logo-title { order: 1; }
     .theme-switcher { order: 2; }
+    
+    /* 第二行：菜单 (可横向滚动) */
     .main-nav ul { 
         order: 3; 
         width: 100%; 
         justify-content: flex-start; 
-        overflow-x: auto;
-        margin-top: 10px;
-        flex-wrap: nowrap;
+        overflow-x: auto; /* 允许横向滚动 */
+        margin-top: 5px;
+        flex-wrap: nowrap; /* 不换行，所有菜单排成一排 */
         padding-bottom: 5px;
+        
+        /* 增加惯性滚动，体验像原生App */
+        -webkit-overflow-scrolling: touch; 
+        scrollbar-width: none; /* Firefox 隐藏滚动条 */
     }
+    /* 隐藏 Chrome/Safari 滚动条 */
+    .main-nav ul::-webkit-scrollbar { display: none; }
+
     body::before { background-image: url('../images/background-mobile.webp'); background-attachment: scroll; }
     h1 { font-size: 1.2rem; }
-    .header-logo { width: 24px; height: 24px; }
+    .header-logo { width: 36px; height: 36px; }
     .link-group ul { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-    .main-nav li a { padding: 0.6rem 0.8rem; font-size: 0.9rem; padding-top: 2.1625rem; padding-bottom: 2.1625rem; }
+    
+    /* 手机端菜单项样式优化 */
+    .main-nav li a { 
+        padding: 0.6rem 0.8rem; 
+        font-size: 0.95rem; 
+        padding-top: 0.6rem; 
+        padding-bottom: 0.6rem; 
+    }
     .main-nav li a.active::after { content: none; }
+
     .card-icon { width: 30px; height: 30px; margin-bottom: 8px; }
     .card-name { font-size: 0.8rem; }
     .link-group a { height: 90px; backdrop-filter: none; -webkit-backdrop-filter: none; animation: none; opacity: 1; transform-style: flat; transition: none; }
@@ -239,6 +268,8 @@ body.light-mode .search-input { background: rgba(255, 255, 255, 0.4); }
     .link-group a::before { display: none; }
     .dropdown-content { backdrop-filter: none; -webkit-backdrop-filter: none; background-color: var(--surface-color); }
     .search-input { backdrop-filter: none; -webkit-backdrop-filter: none; }
+    
+    /* 搜索栏调整 */
     .search-section { margin: 1.5rem auto; }
     .search-input { padding: 12px 50px 12px 15px; font-size: 1rem; }
     .search-button { width: 36px; height: 36px; }
